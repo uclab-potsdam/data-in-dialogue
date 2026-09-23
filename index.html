@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Data in Dialogue</title>
+<meta name="description" content="An Interactive Atlas of Critical Data Visualization">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<meta name="color-scheme" content="light dark">
+<meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+
+<link rel="icon" type="image/svg+xml" sizes="any" href="https://infovis.fh-potsdam.de/atlas/favicon.svg">
+<link rel="icon" type="image/png" sizes="512x512" href="https://infovis.fh-potsdam.de/atlas/favicon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://infovis.fh-potsdam.de/atlas/">
+<meta property="og:title" content="Data in Dialogue">
+<meta property="og:description" content="An Interactive Atlas of Critical Data Visualization">
+<meta property="og:image" content="https://infovis.fh-potsdam.de/atlas/src/img/banner.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+
+<link rel="alternate" type="application/rss+xml" title="Data in Dialogue" href="https://infovis.fh-potsdam.de/atlas/feed.xml">
+
+<link rel="stylesheet" href="src/app/style.css">
+</head>
+<body>
+
+<div id="loading-overlay" aria-busy="true" aria-live="polite">
+    <img id="loading-indicator" src="favicon.svg" alt="Loading" role="status">
+</div>
+
+<div id="info-btn" class="ui-btn" title="About this webpage (I)">
+    <svg class="info-glyph" viewBox="0.4 0 24 24">
+        <line style="stroke-linecap:butt;stroke-linejoin:miter" x1="12" y1="11" x2="12" y2="24" stroke-width="3"/>
+        <circle cx="12" cy="4" r="1" stroke-width="3"/>
+    </svg>
+    <svg class="info-x" viewBox="0 0 24 24">
+        <line style="stroke-linecap:butt;stroke-linejoin:miter" x1="5" y1="5" x2="19" y2="19"/>
+        <line style="stroke-linecap:butt;stroke-linejoin:miter" x1="19" y1="5" x2="5" y2="19"/>
+    </svg>
+</div>
+
+<div id="search-box" title="Search collection (F)">
+    <div id="search-icon">
+        <svg viewBox="0 0 24 24" class="search-loupe">
+            <circle cx="10" cy="11" r="8"/>
+            <line style="stroke-linecap:butt;stroke-linejoin:miter" x1="16" y1="17" x2="22" y2="23"/>
+        </svg>
+        <svg viewBox="0 0 24 24" class="search-cross">
+            <line style="stroke-linecap:butt;stroke-linejoin:miter" x1="5" y1="5" x2="19" y2="19"/>
+            <line style="stroke-linecap:butt;stroke-linejoin:miter" x1="19" y1="5" x2="5" y2="19"/>
+        </svg>        
+    </div>
+    <!-- enterkeyhint labels the soft keyboard's return key "search" rather than "go", which is what it does: the query is already live, so the key confirms and dismisses. type stays text, not search, since the × button is this interface's own. -->
+    <input id="search-input" type="text" placeholder="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" tabindex="1" />
+</div>
+
+<div id="search-cancel-btn" class="ui-btn" title="Reset selection (Esc)">
+    <svg viewBox="0 0 24 24">
+        <line style="stroke-linecap:butt;stroke-linejoin:miter" x1="5" y1="5" x2="19" y2="19"/>
+        <line style="stroke-linecap:butt;stroke-linejoin:miter" x1="19" y1="5" x2="5" y2="19"/>
+    </svg>
+</div>
+
+<!-- Share the selected item: the system share sheet where there is one, else the text goes to the clipboard. Shown only with an item selected: left of the × on desktop, in the bottom-left corner on a phone. -->
+<div id="share-btn" class="ui-btn" title="Share this item">
+    <svg viewBox="0 0 24 24" class="share-glyph" aria-hidden="true">
+        <path style="stroke-linecap:butt;stroke-linejoin:round" d="M9.11 8.51H5.7A1.05 1.05 0 0 0 4.65 9.56V20.95A1.05 1.05 0 0 0 5.7 22.01H18.3A1.05 1.05 0 0 0 19.35 20.95V9.56A1.05 1.05 0 0 0 18.3 8.51H14.89"/>
+        <path style="stroke-linecap:butt;stroke-linejoin:miter" d="M12 1V14.29M7.7 5.31L12 1L16.3 5.31"/>
+    </svg>
+    <!-- Where the browser has no share sheet the button copies instead, and says so: two sheets, the one behind up and to the right. -->
+    <svg viewBox="0 0 24 24" class="share-copy" aria-hidden="true">
+        <path style="stroke-linecap:butt;stroke-linejoin:round" d="M9 8.5V4.5A1 1 0 0 1 10 3.5H19.5A1 1 0 0 1 20.5 4.5V14A1 1 0 0 1 19.5 15H15.5"/>
+        <rect style="stroke-linejoin:round" x="3.5" y="8.5" width="11.5" height="12" rx="1"/>
+    </svg>
+    <svg viewBox="0 0 24 24" class="share-done" aria-hidden="true">
+        <path style="stroke-linecap:butt;stroke-linejoin:miter" d="M5 12.5l4.5 4.5L19 7.5"/>
+    </svg>
+</div>
+
+<div id="shuffle-btn" class="ui-btn" title="Random item (R)">
+<svg viewBox="0 0 24 24">
+  <path style="stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10"
+        d="M2 17H6C7 17 8 16 9 15L13 9C14 8 15 7 16 7H21
+           M18 4L22 7L18 10"/>
+  <path style="stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10"
+        d="M2 7H6C7 7 8 7 10 8.5
+           M21 17H16C15 17 14 16.5 12.5 14.5
+           M18 14L22 17L18 20"/>
+</svg>
+
+</div>
+
+<!-- View switcher: three segments, grid | map | list, with the map in the middle because it is the view the other two are read against. The container keeps the old #mode-btn id, so its corner position and the lightbox exit cue still find it; each segment is its own button. -->
+<div id="mode-btn" class="view-switch" role="group" aria-label="View">
+    <button type="button" class="view-seg" data-view="map" title="Map view (1)" aria-label="Map view" aria-pressed="true">
+        <svg viewBox="0 0 24 24" class="icon-map" aria-hidden="true">
+            <rect x="9.5" y="9.5" width="5" height="5" fill="currentColor"/>
+            <rect x="3" y="11" width="3" height="3" fill="currentColor"/>
+            <rect x="9.5" y="2.5" width="3" height="3" fill="currentColor"/>
+            <rect x="17.5" y="7.5" width="3" height="3" fill="currentColor"/>
+            <rect x="5.5" y="17.5" width="3" height="3" fill="currentColor"/>
+            <rect x="15" y="18" width="3" height="3" fill="currentColor"/>
+        </svg>
+    </button>
+    <button type="button" class="view-seg" data-view="grid" title="Grid view (2)" aria-label="Grid view" aria-pressed="false">
+        <svg viewBox="0 0 24 24" class="icon-grid" aria-hidden="true">
+            <!-- A three-column masonry with the breaks staggered from column to column, so no gaps line up into a cross. Columns and rows are 2 apart. -->
+            <rect x="4" y="5" width="4" height="5" fill="currentColor"/>
+            <rect x="4" y="12" width="4" height="7" fill="currentColor"/>
+            <rect x="10" y="5" width="4" height="8" fill="currentColor"/>
+            <rect x="10" y="15" width="4" height="4" fill="currentColor"/>
+            <rect x="16" y="5" width="4" height="3" fill="currentColor"/>
+            <rect x="16" y="10" width="4" height="9" fill="currentColor"/>
+        </svg>
+    </button>
+    <button type="button" class="view-seg" data-view="list" title="List view (3)" aria-label="List view" aria-pressed="false">
+        <svg viewBox="0 0 24 24" class="icon-list" aria-hidden="true">
+            <!-- Dots on the left, where the list's thumbnail column sits. -->
+            <rect x="5" y="6" width="2.2" height="2.2" fill="currentColor"/>
+            <rect x="9.0" y="6" width="10.2" height="2.2" fill="currentColor"/>
+            <rect x="5" y="11" width="2.2" height="2.2" fill="currentColor"/>
+            <rect x="9.0" y="11" width="10.2" height="2.2" fill="currentColor"/>
+            <rect x="5" y="16" width="2.2" height="2.2" fill="currentColor"/>
+            <rect x="9.0" y="16" width="10.2" height="2.2" fill="currentColor"/>
+        </svg>
+    </button>
+</div>
+
+<div id="list-view"><canvas id="list-links" aria-hidden="true"></canvas></div>
+<div id="grid-view" aria-label="Grid"><div class="grid-inner"></div></div>
+
+<div id="tag-sidebar" aria-label="Tags"><div id="tag-cloud"></div></div>
+<div id="tag-gap-cover" aria-hidden="true"></div>
+<span id="tag-measure" aria-hidden="true"></span>
+
+<canvas id="netvis" aria-hidden="true"></canvas>
+
+<main></main>
+
+<div id="mode-bridge" aria-hidden="true"></div>
+<canvas id="stub-bridge" aria-hidden="true"></canvas>
+
+<div id="lightbox"></div>
+<div id="info-overlay"></div>
+<div id="info-overlay-close" class="ui-btn">
+    <svg viewBox="0 0 24 24">
+        <line style="stroke-linecap:butt;stroke-linejoin:miter" x1="5" y1="5" x2="19" y2="19"/>
+        <line style="stroke-linecap:butt;stroke-linejoin:miter" x1="19" y1="5" x2="5" y2="19"/>
+    </svg>
+</div>
+
+<script>
+// One mode for the whole app, decided once at load. Desktop means there is a mouse or trackpad (a laptop, a desktop,
+// an iPad with one connected); everything else is mobile, at any screen size: a phone, and a tablet used by touch.
+// Mobile has no view transitions, no net vis in the map and no tag vis, and shows an item in the full-screen detail
+// (src/app/item.js) in every view. A narrow desktop window stays desktop, since it still has hover. The stylesheet
+// keys off the is-mobile class rather than its own device queries, so the CSS and the JS can't disagree. Plugging in
+// a mouse mid-session takes a reload.
+const isMobile = !window.matchMedia('(any-hover: hover) and (any-pointer: fine)').matches;
+document.documentElement.classList.toggle('is-mobile', isMobile);
+document.body.classList.toggle('is-mobile', isMobile);
+
+// The app is plain scripts sharing one global scope, run in this order (async = false keeps inserted scripts in
+// order). main.js goes last: it fetches items.json and starts everything, so the rest must already be defined.
+['core', 'components', 'map', 'list', 'grid', ...(isMobile ? ['item'] : ['tag']), 'main'].forEach((name) => {
+    const s = document.createElement('script');
+    s.src = 'src/app/' + name + '.js';
+    s.async = false;
+    document.body.appendChild(s);
+});
+</script>
+</body>
+</html>

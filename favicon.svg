@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" viewBox="0 0 128 128" width="128" height="128">
+  <defs/>
+  <g id="favicon_1" fill="none" stroke-dasharray="none" stroke="none" fill-opacity="1" stroke-opacity="1">
+    <title>favicon 1</title>
+    <g id="favicon_1_Layer_1">
+      <title>Layer 1</title>
+      <g id="Graphic_3">
+        <path d="M 4.8 46.8 C 5.667125 19.417439 36.947696 6.018485 62.94809 4.5596964 C 88.94848 3.100908 122.67073 18.650545 124 48 C 125.13279 73.01126 111.56489 87.56762 79.93586 89.95618 C 79.280545 100.55513 82.6011 110.81763 90.86797 122.87887 C 69.411864 116.23376 61.01747 101.1771 57.39763 91.38827 C 23.048432 89.77145 3.9668093 73.11096 4.8 46.8 Z" fill="white"/>
+        <path d="M 4.8 46.8 C 5.667125 19.417439 36.947696 6.018485 62.94809 4.5596964 C 88.94848 3.100908 122.67073 18.650545 124 48 C 125.13279 73.01126 111.56489 87.56762 79.93586 89.95618 C 79.280545 100.55513 82.6011 110.81763 90.86797 122.87887 C 69.411864 116.23376 61.01747 101.1771 57.39763 91.38827 C 23.048432 89.77145 3.9668093 73.11096 4.8 46.8 Z" stroke="black" stroke-linecap="square" stroke-linejoin="miter" stroke-width="4"/>
+      </g>
+      <g id="Group_180">
+        <g id="Graphic_179">
+          <rect x="66.72793" y="16.22433" width="12" height="60" fill="black"/>
+        </g>
+        <g id="Graphic_177">
+          <rect x="84.72793" y="56.22433" width="12" height="20" fill="black"/>
+        </g>
+        <g id="Graphic_175">
+          <rect x="48.72793" y="46.22433" width="12" height="30" fill="black"/>
+        </g>
+        <g id="Graphic_174">
+          <rect x="30.727932" y="66.22433" width="12" height="10" fill="black"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
