@@ -39,19 +39,11 @@ function _listThumbArea(open = false) {
     return edge * edge;
 }
 
-/** Update list title for the current UI state. */
-function _updateListTitle() {
-    _updateDocTitle();
-}
-
 /** Update list hash for the current UI state. */
 function _updateListHash(updateHash = true, push = false) {
     if (!updateHash) return;
     _writeAddress({ view: 'list', ..._filterParts(), i: listSelectedId }, push);
 }
-
-/** Apply list thumb size. */
-// List neighbour shifts: the hovered row's meta overlay and grown thumb need vertical room, so the two visible rows in each direction shift DOWN only (the second half as far). Visible-aware: sibling walks skip .list-out rows hidden by filters.
 
 // ── JS-driven row hover (see the .row-hover CSS note) ─────────────────────
 const _listHoverPtr = { x: -1, y: -1 };
@@ -78,6 +70,8 @@ function _setListRowHover(row) {
     _listHoverRow = row;
     // Only the hovered row responds to the pointer.
     if (row) row.classList.add('row-hover');
+    // The sidebar answers the same hover: see _setItemPeek.
+    if (typeof _setItemPeek === 'function') _setItemPeek(row ? row.getAttribute('data-id') : '');
 }
 
 function _updateListHoverFromPointer() {
@@ -160,6 +154,7 @@ function _deselectListItemFromClick(itemEl, id) {
     }
 }
 
+/** Apply list thumb size. */
 function _applyListThumbSize(itemEl) {
     if (!itemEl) return;
     const img = itemEl.querySelector('img.list-thumb');
@@ -216,9 +211,11 @@ function _applyListThumbSize(itemEl) {
         }
     }
 
-    // Prevent thumbnail resize animations during search updates / lazy loading
+    /* Prevent thumbnail resize animations during search updates / lazy loading. The edge colour is exempt: it is
+       what the tag preview lifts to --fg and back, and a blanket 'none' wrote that straight over the stylesheet's
+       own easing, so the edge arrived and left in a single frame. Nothing is sized from it, so it cannot jitter. */
     const allowTrans = itemEl.classList.contains('selected') || itemEl.classList.contains('animating');
-    img.style.transition = allowTrans ? '' : 'none';
+    img.style.transition = allowTrans ? '' : 'border-color var(--uiHoverTrans) var(--uiEase)';
 
     let scale = Math.sqrt(area / (nw * nh));
     if (colW > 0 && (nw * scale) > colW) scale = colW / nw;
@@ -365,7 +362,6 @@ function _openListExtra(itemEl, instant = false) {
     extra.addEventListener('transitionend', onEnd);
 }
 
-/** Close list extra. */
 /** Cancel a running meta flow-height ease (e.g. the row is being re-selected). */
 function _cancelMetaFlowEase(itemEl) {
     if (itemEl && itemEl.__metaFlowAnim) {
@@ -425,6 +421,7 @@ function _easeMetaFlowHeightOut(itemEl) {
     itemEl.__metaFlowTO = setTimeout(_poll, D + 100);
 }
 
+/** Close list extra. */
 function _closeListExtra(itemEl, instant = false) {
     const extra = itemEl ? itemEl.querySelector('.list-extra') : null;
     if (!extra) return;
@@ -446,7 +443,7 @@ function _closeListExtra(itemEl, instant = false) {
 }
 
 /** Helper: scroll list el. */
-function _scrollListEl(el, animate = true, align = 'center') {
+function _scrollListEl(el, align) {
     if (!listView || !el) return;
 
     const padTop = parseFloat(getComputedStyle(listView).paddingTop) || 0;
@@ -462,26 +459,12 @@ function _scrollListEl(el, animate = true, align = 'center') {
     // Need scroll if the item top is above the desired band, or bottom is below viewport
     const needsScroll = (r.top < cr.top + desiredTop) || (r.bottom > cr.bottom - 12);
 
-    // align modes: 'ensure-top10' scrolls only if needed to put the item top near 10vh, 'top10' always does, 'center' centres in the viewport, 'start' aligns just below the padding.
+    // Two align modes: 'ensure-top10' scrolls only if needed to put the item top near 10vh, 'top10' always does.
     if (align === 'ensure-top10' && !needsScroll) return;
 
-    let top = 0;
-    if (align === 'center') {
-        top = el.offsetTop - (listView.clientHeight - el.offsetHeight) / 2;
-    } else if (align === 'start') {
-        top = el.offsetTop - padTop - 8;
-    } else { // 'top10' or 'ensure-top10'
-        top = el.offsetTop + rowPadTop - desiredTop;
-    }
-
-    top = Math.max(0, top);
-    // IMPORTANT: for mode switches / instant selection we need a true synchronous snap
-    // so geometry reads (getBoundingClientRect) reflect the final scroll position.
-    if (animate) {
-        listView.scrollTo({ top, behavior: SCROLL_BEHAVIOR });
-    } else {
-        listView.scrollTop = top;
-    }
+    // IMPORTANT: a true synchronous snap, never scrollTo({behavior}), so the geometry reads that follow a mode
+    // switch or an instant selection see the final scroll position.
+    listView.scrollTop = Math.max(0, el.offsetTop + rowPadTop - desiredTop);
 }
 
 /** Helper: sync list extra. */
@@ -490,11 +473,9 @@ function _syncListExtra(itemEl) {
     // both with a row already open, so the content has to be there.
     const extra = _ensureListExtra(itemEl);
     if (!extra) return;
-    extra.style.maxHeight = itemEl.classList.contains('selected') ? 'none' : '0px';
-
+    extra.style.maxHeight = 'none';
 }
 
-/** Update the list meta offset for the current UI state, computed from layout dimensions and known CSS transform constants so the result is independent of animation timing: no getBoundingClientRect during transitions. */
 /** Re-measure a row once its type has finished easing. The meta offsets come from the title's height, which is still moving when a selection is made, so one pass at settle corrects them. */
 function _settleListRowMetrics(itemEl) {
     if (!itemEl) return;
@@ -506,6 +487,7 @@ function _settleListRowMetrics(itemEl) {
     }, UI_TRANS_MS + 40);
 }
 
+/** Update the list meta offset for the current UI state, computed from layout dimensions and known CSS transform constants so the result is independent of animation timing: no getBoundingClientRect during transitions. */
 function _updateListMetaOffset(itemEl) {
     if (!itemEl) return;
 
@@ -693,12 +675,12 @@ function _scrollListToTop(durMs = 330) {
         if (listView.scrollTop > 1) listView.scrollTop = 0;
     }, durMs + 140);
 }
-/** Get list desired top. */
 /** Anchor target that keeps a row vertically centred, as a function of the rect the caller has already measured this frame. */
 function _listCenterTargetTop(r, cr) {
     return Math.max(0, (cr.height - r.height) / 2);
 }
 
+/** Get list desired top. */
 function _getListDesiredTop() {
     const padTop = parseFloat(getComputedStyle(listView).paddingTop) || 0;
     const offset10vh = Math.round(window.innerHeight * 0.08); // slightly tighter than 10vh
@@ -918,39 +900,21 @@ function _holdListAnchor(el, targetTop, durMs, discrete) {
     _onFrame('list.anchorFrame', tick);
 }
 // Thumbnail sizing can change heights above the selected item after we scrolled to it, pushing the selection out of view; this keeps the row pinned just below the top padding band until layout settles.
-function _pinInitialListSelection(id, durMs = 1200, align = 'band') {
+/* Desktop only: the phone shows a selection as the full-screen detail and the router returns before reaching
+   this (see the isMobile branch above its one call site). */
+function _pinInitialListSelection(id, durMs) {
     if (!listView || !id) return;
     const el = _getListItemEl(id);
     if (!el) return;
 
-    // Mobile: cancel the chunked thumb-sizing loop and run it synchronously for all items, then do one instant snap. No anchor loop or discrete corrections, which read as visible scroll motion; the loading overlay covers the synchronous sizing.
-    if (isMobile) {
-        _cancelListThumbSizing();
-        const _allItems = listView.querySelectorAll('.list-item');
-        for (let i = 0; i < _allItems.length; i++) {
-            _applyListThumbSizeOnce(_allItems[i]);
-        }
-        try {
-            el.scrollIntoView({ block: 'start', behavior: 'instant' });
-            const offset = Math.round(window.innerHeight * 0.08);
-            window.scrollBy(0, -offset);
-        } catch (e) {
-            _scrollListEl(el, false, 'top10');
-        }
-        return;
-    }
-
     /* A deep link and a hash change are the same arrival, so they land the same way: see the 'center' mode in setListSelection. */
-    const target = (align === 'center')
-        ? _listCenterTargetTop
-        : _getListDesiredTop().desiredTop;
+    const target = _listCenterTargetTop;
 
     // One synchronous correction using live geometry.
     const cr = listView.getBoundingClientRect();
     const r = el.getBoundingClientRect();
     const curTop = r.top - cr.top;
-    const t0 = (typeof target === 'function') ? target(r, cr) : target;
-    listView.scrollTop = Math.max(0, listView.scrollTop + (curTop - t0));
+    listView.scrollTop = Math.max(0, listView.scrollTop + (curTop - target(r, cr)));
 
     // Then keep it pinned while lazy sizing / image loads settle.
     _startListAnchorScroll(el, target, durMs);
@@ -976,7 +940,7 @@ function _pinInitialListSelection(id, durMs = 1200, align = 'band') {
     // Final snap if it's still cut off.
     setTimeout(() => {
         if (listSelectedId !== id) return;
-        if (_isListItemCutOff(el)) _scrollListEl(el, false, 'top10');
+        if (_isListItemCutOff(el)) _scrollListEl(el, 'top10');
     }, durMs + 140);
 }
 
@@ -1023,7 +987,7 @@ function _listBackgroundClear() {
         _clearTagFilterKeepView(true);
         _animateListFilter();
         _updateListHash(true, true);
-        _updateListTitle();
+        _updateDocTitle();
         return true;
     }
     if (searchInput && searchInput.value && searchInput.value.trim()) {
@@ -1034,7 +998,7 @@ function _listBackgroundClear() {
         searchBox.classList.remove('open');
         renderList();
         _updateListHash(true, true);
-        _updateListTitle();
+        _updateDocTitle();
         return true;
     }
     return false;
@@ -1104,12 +1068,8 @@ function setListSelection(id, shouldScroll = false, animate = true, updateHash =
     // Stop any ongoing anchor corrections when changing selection.
     _stopListAnchorScroll();
 
-    // When switching directly A → B, remove stagger delays so collapse + expand feel synchronous.
+    // Switching directly from one row to another, rather than opening or closing one.
     const isSwitch = !!(prevEl && nextEl && prevEl !== nextEl);
-    if (isSwitch && !instant) {
-        document.body.classList.add('list-switching');
-        setTimeout(() => document.body.classList.remove('list-switching'), dur + 120);
-    }
 
     // Deterministic scroll compensation: collapsing a previously expanded item ABOVE the new selection reduces the height above it and would pull it upward, so scroll up by exactly the previous expand delta to keep the clicked row stable.
     let __collapseCompDelta = 0;
@@ -1140,7 +1100,7 @@ function setListSelection(id, shouldScroll = false, animate = true, updateHash =
         if (prevEl) _collapseListRow(prevEl, instant, dur);
         listSelectedId = null;
         _updateListHash(updateHash, push);
-        _updateListTitle();
+        _updateDocTitle();
         if (instant) {
             _scheduleTagCloudUpdate(true);
         } else {
@@ -1224,7 +1184,7 @@ function setListSelection(id, shouldScroll = false, animate = true, updateHash =
         }
 
         _updateListHash(updateHash, push);
-        _updateListTitle();
+        _updateDocTitle();
 
         if (shouldScroll) {
             if (wantsCenter && scrollAnim) {
@@ -1289,11 +1249,9 @@ function setListSelection(id, shouldScroll = false, animate = true, updateHash =
                         }
                     }, dur + 420);
                 });
-            } else if (!scrollAnim) {
-                // Instant snap (no rAF) so mode-switch image transitions measure the final target rect.
-                _scrollListEl(el, false, 'top10');
             } else {
-                // Focus already in view: do not auto-scroll.
+                // Instant snap (no rAF) so mode-switch image transitions measure the final target rect.
+                _scrollListEl(el, 'top10');
             }
         }
 
@@ -1302,7 +1260,7 @@ function setListSelection(id, shouldScroll = false, animate = true, updateHash =
         else el.classList.remove('animating');
     } else {
         _updateListHash(updateHash, push);
-        _updateListTitle();
+        _updateDocTitle();
     }
 
     if (instant) {
@@ -1647,7 +1605,7 @@ function _renderListFull() {
     _bindListThumbSizing(!needsBuild);
     if (needsBuild) tagVis.bindLinkRows();
     tagVis.linksSettle();
-    _updateListTitle();
+    _updateDocTitle();
     _scheduleTagCloudUpdate(true);
 }
 
@@ -2063,7 +2021,7 @@ function _animateListFilter(opts) {
 
     // The visible order is known now; keep dependent UI in sync.
     listOrderIds = afterVisible.map(n => n.getAttribute('data-id'));
-    _updateListTitle();
+    _updateDocTitle();
     _scheduleTagCloudUpdate(true);
     _updateCancelButton();
 }
@@ -2131,7 +2089,7 @@ if (listView) {
             // Update URL (list semantics)
             _writeAddress({ view: 'list', ...(activeTag ? { t: activeTag } : {}) }, true);
 
-            _updateListTitle();
+            _updateDocTitle();
             return;
         }
 
@@ -2166,7 +2124,13 @@ if (listView) {
                 return;
             }
 
-            const toggleEl = e.target.closest('.list-title, .list-authors, .list-source');
+            /* Authors and source are text to be read, and often text to be taken away: a name to paste into the
+               search box, a reference to quote. They stay put under a click, as they do in the monad, so a
+               click into them can place a caret and a drag across them can select. The title still closes. */
+            if (e.target.closest('.list-authors, .list-source')) return;
+            // A click that ends a highlight was the end of a drag over text, wherever it happens to land.
+            if (_endsTextSelection()) return;
+            const toggleEl = e.target.closest('.list-title');
             if (toggleEl) {
                 _deselectListItemFromClick(itemEl, id);
                 return;
@@ -2302,7 +2266,7 @@ function switchToListView(updateHash = true, push = true, carry = true) {
             } else {
                 // Taller than the viewport: centring is meaningless; put its
                 // top in the usual reading band instead.
-                _scrollListEl(_el, false, 'top10');
+                _scrollListEl(_el, 'top10');
             }
 
             // Pin the landed placement through late layout: thumbnails whose dimensions weren't preknown resize on load and push the row out of place. Anchored to whatever offset the landing produced; user interaction cancels the hold.
@@ -2317,7 +2281,7 @@ function switchToListView(updateHash = true, push = true, carry = true) {
     if (updateHash) {
         _setHashForCurrentState(push);
     }
-    _updateListTitle();
+    _updateDocTitle();
 
     if (q.length > 0) searchBox.classList.add('open');
     purgeHighResImages();

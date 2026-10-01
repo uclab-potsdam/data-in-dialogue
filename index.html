@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Data in Dialogue</title>
-<meta name="description" content="An Interactive Atlas of Critical Data Visualization">
+<title>Data in Dialogue: An Interactive Atlas of Critical Data Visualization</title>
+<meta name="description" content="This growing collection gathers projects and publications about data visualization for critique, deliberation, and empowerment.">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 <meta name="color-scheme" content="light dark">
@@ -14,12 +14,14 @@
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://infovis.fh-potsdam.de/atlas/">
-<meta property="og:title" content="Data in Dialogue">
-<meta property="og:description" content="An Interactive Atlas of Critical Data Visualization">
+<meta property="og:title" content="Data in Dialogue: An Interactive Atlas of Critical Data Visualization">
+<meta property="og:description" content="This growing collection gathers projects and publications about data visualization for critique, deliberation, and empowerment.">
 <meta property="og:image" content="https://infovis.fh-potsdam.de/atlas/src/img/banner.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Three speech bubbles on a grey background, holding a bar chart, a bubble map, and a node-link diagram.">
+<meta property="og:locale" content="en_US" />
 
 <link rel="alternate" type="application/rss+xml" title="Data in Dialogue" href="https://infovis.fh-potsdam.de/atlas/feed.xml">
 
@@ -150,6 +152,23 @@
         <line style="stroke-linecap:butt;stroke-linejoin:miter" x1="5" y1="5" x2="19" y2="19"/>
         <line style="stroke-linecap:butt;stroke-linejoin:miter" x1="19" y1="5" x2="5" y2="19"/>
     </svg>
+</div>
+
+<!-- Shown once the atlas has loaded, and only when the address named nothing: an item, a tag, a query or a view is
+     a reader who already knows where they are going, or a shared link, and a greeting over either is in the way.
+     The bubbles are the same file the About panel shows (src/img/bubbles.svg). -->
+<div id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcome-title" hidden>
+    <div id="welcome-card">
+        <div id="welcome-figure" aria-hidden="true">
+            <img src="src/img/bubbles.svg" width="600" height="200" alt="">
+        </div>
+        <h1 id="welcome-title">Welcome to Data in Dialogue</h1>
+        <p>This growing collection gathers projects and publications about data visualization for critique, deliberation, and empowerment.</p>
+        <div id="welcome-actions">
+            <button type="button" id="welcome-more" class="welcome-btn">Learn More</button>
+            <button type="button" id="welcome-start" class="welcome-btn welcome-btn-go">Start Exploring</button>
+        </div>
+    </div>
 </div>
 
 <script>

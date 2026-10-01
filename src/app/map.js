@@ -170,6 +170,43 @@ function _netExtractIdFromTarget(t) {
 }
 
 /** Set hovered id + animate hover highlight. */
+/* The other end of every edge the hover brightens. Read off _netEdgeList rather than the item's own links, so the
+   set is exactly the one the canvas draws a bright line to — an item that links this one without being linked back
+   still has an edge, and would otherwise sit at --midgray with a lit line running into it. */
+let _linkLitIds = null;
+
+function _clearLinkLit() {
+    if (!_linkLitIds) return;
+    const byId = _getTagItemById();
+    for (let i = 0; i < _linkLitIds.length; i++) {
+        const it = byId[_linkLitIds[i]];
+        if (it && it._article) it._article.classList.remove('link-lit');
+    }
+    _linkLitIds = null;
+}
+
+function _setLinkLit(id) {
+    _clearLinkLit();
+    /* Only where the full edge list is what is drawn: inside a selection the ring already IS the open item's links,
+       and lighting a hovered ring item's own links would speak about something other than what is being read. The
+       test is the draw's own branch, so the two cannot disagree. */
+    if (!id || (viewMode === 'monad' && selectedMonadId)) return;
+    const edges = _netEdgeList || [];
+    const byId = _getTagItemById();
+    const lit = [];
+    for (let i = 0; i < edges.length; i++) {
+        const e = edges[i];
+        const other = (e[0] === id) ? e[1] : (e[1] === id ? e[0] : null);
+        if (!other) continue;
+        const it = byId[other];
+        if (it && it._article) {
+            it._article.classList.add('link-lit');
+            lit.push(other);
+        }
+    }
+    _linkLitIds = lit.length ? lit : null;
+}
+
 function _netSetHover(id, on) {
     if (!id) return;
     if (on) {
@@ -178,7 +215,11 @@ function _netSetHover(id, on) {
             _netHoverT = 0;
         }
         _netHoverTarget = 1;
-    } else if (_netHoverId === id) _netHoverTarget = 0;
+        _setLinkLit(id);
+    } else if (_netHoverId === id) {
+        _netHoverTarget = 0;
+        _clearLinkLit();
+    }
     // Reset timing so the new duration is applied immediately (no "sticky" dt).
     _netHoverLastTs = performance.now();
     // One draw kicks off the hover animation; subsequent frames are driven by _netHoverAnimating.
@@ -198,6 +239,7 @@ function _netSetHover(id, on) {
         if (id !== rel) {
             _netSetHover(id, true);
             _stubHoverReveal(id);
+            if (typeof _setItemPeek === 'function') _setItemPeek(id);
         }
     }, true);
 
@@ -208,6 +250,7 @@ function _netSetHover(id, on) {
         if (id !== rel) {
             _netSetHover(id, false);
             _stubHoverRelease(id);
+            if (typeof _setItemPeek === 'function') _setItemPeek('');
         }
     }, true);
 })();
@@ -265,14 +308,13 @@ function _netResizeIfNeeded() {
     _netCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
-/** Heavy UI states where NetVis must not draw at all: either the canvas is forced to opacity 0 by dedicated CSS rules, so drawing is wasted, or the surface itself is gone (list-switching).
+/** Heavy UI states where NetVis must not draw at all: the canvas is forced to opacity 0 by dedicated CSS rules, so drawing is wasted.
  *  `animated` and `zoom-animating` are NOT hard-suspend signals: during those the draw loop falls back to getBoundingClientRect so the lines track the CSS-interpolated transforms rather than the already-snapped _tx/_ty. */
 function _netIsHardSuspended() {
     const b = document.body;
     if (b.classList.contains('list-view')) return true;
     if (b.classList.contains('grid-view')) return true;
     if (b.classList.contains('lightbox-active')) return true;
-    if (b.classList.contains('list-switching')) return true;
     if (b.classList.contains('mode-bridging')) return true;
     // to-list fades the canvas out via CSS; to-main fades it back in, so only the former hard-suspends.
     if (b.classList.contains('mode-xfade') && b.classList.contains('to-list')) return true;
@@ -283,14 +325,11 @@ function _netIsHardSuspended() {
  *  redraw every frame so they track the moving items. */
 function _netIsInteracting() {
     const b = document.body;
-    // try/catch: viewMode/isMobile may still be in TDZ during early boot.
-    try {
-        if (viewMode === 'monad' && !isMobile) {
-            // Monad-desktop already runs at full rate during zoom/scroll
-            // (only a handful of edges are visible at a time). No throttle.
-            return false;
-        }
-    } catch (_) { /* fall through */ }
+    if (viewMode === 'monad' && !isMobile) {
+        // Monad-desktop already runs at full rate during zoom/scroll
+        // (only a handful of edges are visible at a time). No throttle.
+        return false;
+    }
     return (
         _netHasRecentInteraction() ||
         b.classList.contains('zoom-animating') ||
@@ -580,6 +619,7 @@ function _netDrawFrame() {
                 if (!tid || tid === monadSelId) continue;
                 const b = positions[tid];
                 if (!b) continue;
+                if (_tagPeekIds && !(_tagPeekIds.has(monadSelId) && _tagPeekIds.has(tid))) continue;
                 if (!_edgeVisible(a.cx, a.cy, b.cx, b.cy)) continue;
 
                 _netCtx.moveTo(a.cx, a.cy);
@@ -602,6 +642,10 @@ function _netDrawFrame() {
             if (!a) continue;
             const b = positions[idB];
             if (!b) continue;
+            /* A tag preview leaves only the edges inside the set: what it is asked to show is how the items under
+               that tag are joined, and a line running out to an item on its way out of the picture says nothing
+               about that while reading as the strongest thing on screen. Both ends have to be in the set. */
+            if (_tagPeekIds && !(_tagPeekIds.has(idA) && _tagPeekIds.has(idB))) continue;
             if (!_edgeVisible(a.cx, a.cy, b.cx, b.cy)) continue;
 
             _netCtx.moveTo(a.cx, a.cy);
@@ -858,7 +902,7 @@ let _mapOccKeyTagW = -1;   // _tagSidebarW at cache time
 function _invalidateMapOcc() { _mapOccVal = -1; }
 function __mapTagOcclusionPx() {
     // Only relevant when the desktop tag sidebar is actually shown.
-    if (!_tagSidebarEnabled || !_tagSidebarEnabled()) return 0;
+    if (!_tagSidebarEnabled()) return 0;
     if (!document.body.classList.contains('has-tag-sidebar')) return 0;
     const el = _tagSidebarEl;
     if (!el) return 0;
@@ -891,7 +935,7 @@ function _applyTagFilterToMap() {
     const _restoreSrcIds = (isMobile && viewMode !== 'monad') ? [] : null;
     for (let i = 0, len = items.length; i < len; i++) {
         const it = items[i];
-        const article = _ensureArticle(it);
+        const article = getOrCreateArticle(it);
         if (!article) continue;
         article.classList.remove('tag-transition-hide');
         const wasHidden = article.classList.contains('tag-filtered-out');
@@ -1421,8 +1465,7 @@ function _subsetTargetZoomFor(n, areaPx) {
 
 /** Fit the map camera to the bounding box of visible (breathing) items. */
 function _fitVisibleBounds(isVisible, animate) {
-    if (viewMode !== 'map' && viewMode !== 'search') return;
-    if (viewMode === 'search') switchToMapView(false, false);
+    if (viewMode !== 'map') return;
 
     const buffer = 0.04;
     const bScale = 1 - 2 * buffer;
@@ -1637,18 +1680,6 @@ function computeAttraction(items) {
     return enhanced;
 }
 
-// Assign angular positions based on UMAP coordinates
-function assignAngularPositions(items) {
-    const centerX = 0.5;
-    const centerY = 0.5;
-    
-    // Loop over all items.
-    for (const item of items) {
-        const dx = item.umap_x - centerX;
-        const dy = item.umap_y - centerY;
-        item.baseAngle = Math.atan2(dy, dx);
-    }
-}
 
 // Get angle from selected to item using direct UMAP positions
 function getRelativeAngle(item, selectedItem) {
@@ -2001,10 +2032,6 @@ function _measureMonadTextOverflow(article) {
         textEl.style.removeProperty('--text-fit-slope');
     }
     textEl.classList.toggle('text-fits-all', fitsAll);
-
-    // The content key is kept: it is what tells a resize re-measure of the SAME item from a genuine change of centre, which the callers below still rely on.
-    const contentKey = textEl.innerHTML.length + ':' + textEl.innerHTML.charCodeAt(0);
-    if (textEl.dataset.contentKey !== contentKey) textEl.dataset.contentKey = contentKey;
 }
 
 
@@ -2014,11 +2041,22 @@ let _monadCenterFront = false;
 /* The element carrying the class, held so it can be released even after the centre has changed: a swap raises the class on one article and would otherwise leave it on another. */
 let _monadFrontArticle = null;
 
+/* Moving off the card sends it back down. The raise is for reading a line with a thumbnail lying across it, so it
+   lasts exactly as long as the pointer is on the card: going outward, towards the ring, is the reader leaving that
+   line, and having to click a second time to undo something they only wanted for a moment is a step too many. The
+   listener lives only while the card is raised, and sits on the article rather than on the text, so crossing from
+   the description to the authors line — or over the gaps between them — is not leaving. A second click on the text
+   still sends it back as well. */
+function _monadFrontRelease() {
+    _setMonadCenterFront(false);
+}
+
 /** Raise or lower the centre. Cleared by anything that changes what the centre is. */
 function _setMonadCenterFront(front) {
     front = !!front;
     if (_monadFrontArticle) {
         _monadFrontArticle.classList.remove('center-front');
+        _monadFrontArticle.removeEventListener('pointerleave', _monadFrontRelease);
         _monadFrontArticle = null;
     }
     _monadCenterFront = front;
@@ -2026,6 +2064,7 @@ function _setMonadCenterFront(front) {
     const art = _centerArticle();
     if (art) {
         art.classList.add('center-front');
+        art.addEventListener('pointerleave', _monadFrontRelease);
         _monadFrontArticle = art;
     }
 }
@@ -2088,7 +2127,7 @@ function updateMapView() {
             const item = items[i];
             const x = (buffer + item._dx * bScale) * sq + panX + offX;
             const y = (buffer + item._dy * bScale) * sq + panY + offY;
-            const article = _ensureArticle(item);
+            const article = getOrCreateArticle(item);
             // Viewport culling (generous margin for rendering)
             const offscreen = x < -margin || x > vw + margin || y < -margin * 2 || y > vh + margin;
             _setArticleTranslate(article, x, y, offscreen);
@@ -2120,7 +2159,7 @@ function updateMapView() {
         const item = items[i];
         const posX = (buffer + item._dx * bScale) * sq + baseOffX;
         const posY = (buffer + item._dy * bScale) * sq + baseOffY;
-        const article = _ensureArticle(item);
+        const article = getOrCreateArticle(item);
         // Viewport culling (generous margin for rendering)
         const offscreen = posX < -margin || posX > vw + margin || posY < -margin * 2 || posY > vh + margin;
         _setArticleTranslate(article, posX, posY, offscreen);
@@ -2169,7 +2208,7 @@ function updateMonadView() {
     const attractionRow = attractionMatrix[selectedMonadId];
 
     // Centre item. The title sits at the middle of the window, the image directly above it, everything else below: one anchor, and the only measurement behind it is the title's own height.
-    const centerArticle = _ensureArticle(selectedItem);
+    const centerArticle = getOrCreateArticle(selectedItem);
     const natW = parseInt(centerArticle.style.getPropertyValue('--nat-w')) || 4;
     const natH = parseInt(centerArticle.style.getPropertyValue('--nat-h')) || 3;
     const imgBox = _monadCenterImgBox(natW, natH, centerArticle.classList.contains('placeholder-img'));
@@ -2231,7 +2270,7 @@ function updateMonadView() {
         const item = items[i];
         if (item.id === selectedMonadId) continue;
 
-        const article = _ensureArticle(item);
+        const article = getOrCreateArticle(item);
         const sim = (attractionRow && attractionRow[item.id]) || 0;
         const radialT = (_pairRadialT && _pairRadialT[selectedMonadId] && _pairRadialT[selectedMonadId][item.id] != null)
             ? _pairRadialT[selectedMonadId][item.id]
@@ -2260,7 +2299,7 @@ function _monadRingMembers(centerId, inPool) {
     let shown = 0;
     for (const c of candidates) {
         if (c.att < MONAD_SIM_CUTOFF) break;
-        if (MONAD_VISIBLE_CAP > 0 && shown >= MONAD_VISIBLE_CAP) break;
+        if (shown >= MONAD_VISIBLE_CAP) break;
         ring.add(c.id);
         shown++;
     }
@@ -2557,7 +2596,7 @@ function updateSearchView() {
     // Constant across the loop: below this zoom no item needs a label stack.
     const _wantLabelStack = zoom > LABEL_STACK_ZOOM;
     for (const item of items) {
-        const article = _ensureArticle(item);
+        const article = getOrCreateArticle(item);
         const match = (searchScores[item.id] || 0) > 0;
         const posX = (buffer + item._dx * bScale) * sq + baseOffX;
         const posY = (buffer + item._dy * bScale) * sq + baseOffY;
@@ -2610,6 +2649,23 @@ function _restoreMapCamera(previousMode, preserveCamera, fitTagSubset) {
     }
 }
 
+/** FLIP invert-and-release: pin every item at the position it held before the switch with no transition, flush,
+ *  then hand the transitions back so the CSS move runs from there. Shared by the map and search entries, which
+ *  arrive from the same places and have to replay the same motion. */
+function _replayFromOldPositions(oldPositions) {
+    for (const it of items) {
+        const article = getOrCreateArticle(it);
+        const old = oldPositions[it.id];
+        if (!old) continue;
+        article.style.transition = 'none';
+        _setArticleTranslate(article, old.x, old.y);
+    }
+    _reflow();
+    for (const it of items) {
+        getOrCreateArticle(it).style.transition = '';
+    }
+}
+
 /* forPanel: the caller is switchToListView or switchToGridView, so the map this leaves behind is covered by an
    opaque view before the next frame and none of it is seen. Everything that TEARS DOWN monad state still runs;
    everything that PRESENTS a map is skipped. */
@@ -2638,7 +2694,6 @@ function switchToMapView(updateHash = true, keepSearchOpen = false, keepCamera =
         _resetAllScrollTops();
     }
 
-    // Stub mode: clear the monad reconcile cache so re-entry re-applies the policy from scratch. _stubLastBelow is deliberately kept: the map heuristic is still meaningful, and the reveal pass below covers items the cleanup loop stubs wrongly.
 
     // Fully stop any CSS-driven zoom animation before changing viewMode, or the zoom-sync rAF keeps calling purgeHighResImages() and downgrades the centre image immediately (a visible snap).
     _stopZoomSync();
@@ -2726,7 +2781,7 @@ function switchToMapView(updateHash = true, keepSearchOpen = false, keepCamera =
         // Loop over all items.
         for (let i = 0, len = items.length; i < len; i++) {
             const it = items[i];
-            const article = _ensureArticle(it);
+            const article = getOrCreateArticle(it);
 
             // Record invisible state before cleanup
             let _hidden = false;
@@ -2904,19 +2959,7 @@ function switchToMapView(updateHash = true, keepSearchOpen = false, keepCamera =
     } else if ((previousMode === 'monad' || previousMode === 'search') && Object.keys(oldPositions).length > 0) {
         _restoreMapCamera(previousMode, preserveCamera, _fitTagSubset);
         // Animate all items from their current positions to map targets
-        for (const it of items) {
-            const article = getOrCreateArticle(it);
-            const old = oldPositions[it.id];
-            if (!old) continue;
-
-            article.style.transition = 'none';
-            _setArticleTranslate(article, old.x, old.y);
-        }
-        _reflow();
-        // Loop over all items.
-        for (const it of items) {
-            getOrCreateArticle(it).style.transition = '';
-        }
+        _replayFromOldPositions(oldPositions);
 
         // No pin release needed for the departing centre here: desktop never pins (it drives size through transform scale), and mobile keeps its pin until the map-exit cleanup.
 
@@ -2986,7 +3029,7 @@ function switchToMapView(updateHash = true, keepSearchOpen = false, keepCamera =
 
         for (let i = 0, len = items.length; i < len; i++) {
             const it = items[i];
-            const article = _ensureArticle(it);
+            const article = getOrCreateArticle(it);
             if (!article) continue;
             if (deferredTagHideIds.includes(it.id)) continue;
             const has = !!(it.tags && it.tags.includes(targetTag));
@@ -3378,6 +3421,14 @@ function switchToMonadView(itemId, updateHash = true, animate = true, _isShuffle
 
     // The monad is a single state at zoom 1. Entering sets it outright, and the FLIP below morphs map positions straight into the ring in one motion; --zoom is then eased from where the map left it, purely to carry the text reveal, and armed just before the update() at the end.
     const _enterMorph = animate && previousMode !== 'monad';
+    /* Where that ease starts, captured before the camera is overwritten below. Coming off the map, the item was
+       already showing every field whose rung the camera had passed, and the centre reads those same rungs: starting
+       the ease at the camera's zoom leaves them on screen to travel with the title and the image, instead of
+       blinking out at the start of the move and reappearing at the end of the ramp. Anywhere else there is no
+       camera to inherit (the panels don't use the rungs) and the reveal starts from the bottom as before. */
+    const _revealFrom = (_enterMorph && (previousMode === 'map' || previousMode === 'search'))
+        ? _clamp01(_cssZoomNow())
+        : MONAD_SWAP_REVEAL_FROM;
     zoom = 1;
     panX = 0;
     panY = 0;
@@ -3452,14 +3503,11 @@ function switchToMonadView(itemId, updateHash = true, animate = true, _isShuffle
     // First: snapshot current computed transforms before class swap.
     const newCenterArticle = getOrCreateArticle(item);
     const newCenterImg = newCenterArticle.querySelector('img');
-    // A new centre starts clean: drop the measured fit and the content key so the next measure runs, and clear any inline transition/max-height and pending transitionend listener left on the previous description.
+    // A new centre starts clean: drop the measured fit so the next measure runs, and clear any inline transition/max-height and pending transitionend listener left on the previous description.
     {
         const _newTextEl = newCenterArticle.querySelector('.detail-fields .text');
         if (_newTextEl) {
             _newTextEl.classList.remove('text-fits-all');
-            if (_newTextEl.dataset) {
-                delete _newTextEl.dataset.contentKey;
-            }
             _newTextEl.style.removeProperty('transition');
             _newTextEl.style.removeProperty('max-height');
             _newTextEl.style.removeProperty('--text-fit-max');
@@ -3564,9 +3612,9 @@ function switchToMonadView(itemId, updateHash = true, animate = true, _isShuffle
 
     if (_armZoomEase) {
         {
-            // Put --zoom at the bottom of the ramp with no transition, and tell the JS side it is there, so the update()
-            // below writes 1 again and the ease has the whole range to travel.
-            const _from = MONAD_SWAP_REVEAL_FROM;
+            // Put --zoom at the start of the ramp with no transition, and tell the JS side it is there, so the update()
+            // below writes 1 again and the ease has the range above it to travel.
+            const _from = _revealFrom;
             const _de = document.documentElement;
             _de.style.transition = 'none';
             _de.style.setProperty('--zoom', _from);
@@ -3668,7 +3716,11 @@ function switchToMonadView(itemId, updateHash = true, animate = true, _isShuffle
     if (updateHash) {
         const _newHash = _viewAddress('map', { i: itemId });
         if (window.location.hash !== _newHash) {
-            history.pushState(null, '', _newHash);
+            /* A shuffle walk is one continuous act, not a hundred separate decisions: each step replaces its
+               address rather than adding to the stack, so the whole run costs one entry and Back leads out of it
+               instead of back through every item it passed. */
+            if (typeof _walkRunning === 'function' && _walkRunning()) history.replaceState(null, '', _newHash);
+            else history.pushState(null, '', _newHash);
         }
     }
     
@@ -3710,7 +3762,6 @@ function switchToMonadView(itemId, updateHash = true, animate = true, _isShuffle
 /** Switch to search view. */
 function switchToSearchView(query, updateHash = true, restoreCamera = null) {
     if (viewMode === 'grid') _exitGridView();
-    // Stub-mode: clear monad cache since we may be leaving monad view.
     const previousMode = viewMode;
     const vh = window.innerHeight;
     // As in switchToMapView: after a list or grid, let the next reconcile apply the stub regime afresh.
@@ -3792,19 +3843,7 @@ function switchToSearchView(query, updateHash = true, restoreCamera = null) {
     // Animate from previous positions
     if ((previousMode === 'map' || previousMode === 'monad') && Object.keys(oldPositions).length > 0) {
         // Set starting positions (no transition) then let CSS animation take over
-        for (const it of items) {
-            const article = getOrCreateArticle(it);
-            const old = oldPositions[it.id];
-            if (!old) continue;
-            article.style.transition = 'none';
-            _setArticleTranslate(article, old.x, old.y);
-        }
-
-        _reflow();
-        // Loop over all items.
-        for (const it of items) {
-            getOrCreateArticle(it).style.transition = '';
-        }
+        _replayFromOldPositions(oldPositions);
 
         triggerAnimation();
         update();
@@ -4047,11 +4086,17 @@ function _flushDeferredMonadGeom() {
 /** Stop an in-flight CSS zoom animation without a visual discontinuity. The naive cancel (drop the root
  *  transition, clear the flag) snaps --zoom to the animation's TARGET for at least one rendered frame, since the
  *  inline property still holds the destination and the corrective write is deferred to the next update(). */
+/** The zoom on screen right now. During a click-zoom the JS `zoom` holds the destination while --zoom is still
+ *  interpolating toward it, so anything that has to agree with what the reader is looking at reads this. */
+function _cssZoomNow() {
+    const cv = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--zoom'));
+    return Number.isFinite(cv) ? cv : zoom;
+}
+
 function _cancelZoomAnimation() {
     if (!_zoomAnimating) return;
     const de = document.documentElement;
-    const cv = parseFloat(getComputedStyle(de).getPropertyValue('--zoom'));
-    const visual = Number.isFinite(cv) ? cv : zoom;
+    const visual = _cssZoomNow();
     de.style.transition = 'none';
     de.style.setProperty('--zoom', visual);
     // Commit the pinned value in its own style pass, before the transition declaration goes away, otherwise removal and new value land together and the engine may render the old target once.
@@ -4073,7 +4118,6 @@ function _cancelZoomAnimation() {
 
 /** Apply a zoom delta around a screen point, keeping the content under it fixed. Shared by the immediate and coalesced entry points, which differ only in whether the repaint happens now or next frame. */
 function _applyZoomDelta(delta, centerX, centerY) {
-    if (isMobile && (viewMode === 'map' || viewMode === 'search')) _tuckForZoom(delta);
     // Cancel any running animated zoom (rAF or CSS-driven)
     _cancel('zoom.animation');
     _cancelZoomAnimation();
@@ -4149,9 +4193,8 @@ function _stopZoomSync() {
     _cancel('zoom.syncFrame');
 }
 /** Start zoom sync. */
-function _startZoomSync(durationMs = 550) {
+function _startZoomSync() {
     _stopZoomSync();
-    const t0 = performance.now();
     const step = () => {
         if (!_zoomAnimating) { _stopZoomSync(); return; }
 
@@ -4182,11 +4225,8 @@ function _startZoomSync(durationMs = 550) {
         updateMonadCenterTiering();
         purgeHighResImages();
 
-        // Stop after the expected duration (plus a small buffer), or once we're effectively stable.
-        const dt = performance.now() - t0;
-        if (dt > durationMs + 120 || zoom === 0 || zoom === 1) {
-            // Allow one last frame after stability
-        }
+        /* Self-rearming with no stopping condition of its own: the loop ends when _zoomAnimating goes false at the
+           top, or when a caller stops it outright (_stopZoomSync). */
         _onFrame('zoom.syncFrame', step);
     };
     _onFrame('zoom.syncFrame', step);
@@ -4302,7 +4342,7 @@ function animateZoomTo(target, anchorX, anchorY, easeOverride) {
     _updateActiveView();
 
     // During CSS zoom transitions, keep JS layout synced to the visual zoom.
-    if (viewMode === 'monad') _startZoomSync(duration + 80);
+    if (viewMode === 'monad') _startZoomSync();
 
 
     const labelsHidden = (viewMode === 'map' || viewMode === 'search') && zoom <= LABEL_REVEAL_ZOOM;
@@ -4419,8 +4459,6 @@ window.addEventListener('touchmove', (e) => {
         panY = dragStartPanY + (e.touches[0].clientY - dragStartY);
         clampPan();
         _scheduleUpdate();
-        // Panning tucks the controls away, except at the widest zoom, where the whole map is already in view.
-        if (zoom > getMinZoom() + 0.002) _setUiTucked(true);
     }
     else if (e.touches.length === 2) {
         // Prevent page scroll/zoom while pinching
@@ -4526,20 +4564,10 @@ document.querySelector('main').addEventListener('click', (e) => {
         const clickedTitle = e.target.closest('h2');
         const clickedSubtitle = e.target.closest('h3');
         const clickedDetailMeta = e.target.closest('.detail-fields .authors, .detail-fields .source');
-        // In the monad, authors and source are selectable text, but an ellipsed one is also the expand affordance for the whole detail block, so a plain click on it opens or closes the set. A click that ends a selection stays a selection.
-        if (clickedDetailMeta && viewMode === 'monad') {
-            const _metaArt = e.target.closest('article');
-            if (_metaArt && _metaArt.classList.contains('monad-center') && !isMobile
-                && document.body.classList.contains('monad-zoomed-in')) {
-                const _sel = window.getSelection && window.getSelection();
-                const _selecting = !!(_sel && !_sel.isCollapsed);
-                if (!_selecting) {
-                    _toggleMonadDetails(_metaArt);
-                    e.stopPropagation();
-                }
-            }
-            return;
-        }
+        /* In the monad, authors and source are text and nothing else: a click into them places a caret and a drag
+           across them selects, as in the list and the grid. They neither close the item nor move the card. The
+           description below them keeps its own click-to-raise (see the .text handler in the item factory). */
+        if (clickedDetailMeta && viewMode === 'monad') return;
         if (!clickedImg && !clickedTitle && !clickedSubtitle && !clickedDetailMeta) return;
         
         const itemId = article.id.replace('i_', '');
@@ -4647,7 +4675,6 @@ function _monadLeaveToOrigin() {
 
 /** Background click outside the monad: clear a search, or reset the map. With a tag filter active, clearing it already resets zoom and pan as part of the staggered fade-out; without one, zoom out and recentre if needed. */
 function _mapBackgroundReset() {
-    _setUiTucked(false);
     if (viewMode === 'search') {
         switchToMapView(true, false, false);
         return;
@@ -4736,3 +4763,142 @@ document.addEventListener('scroll', (e) => {
     if (!t.closest || !t.closest('article.monad-center .detail-fields')) return;
     _syncMonadTextMask(t);
 }, true);
+
+
+/* ══ IDLE WALK ═══════════════════════════════════════════════════════════════
+   Left alone on the map, the atlas shows itself: every few seconds one item lights up as though the pointer were
+   on it, so the labels a reader would otherwise have to go looking for come to them. It is the hover state and
+   nothing else — no camera move, no selection, no address change — so whatever the reader had framed is still
+   there when they come back, and the first thing they do cancels it.
+   `.idle-hover` is a synonym for :hover on an article throughout the stylesheet (see the :is() pairs there), which
+   is what keeps this from having its own idea of what a hovered item looks like. */
+
+const IDLE_QUIET_MS = 5000;    // stillness before the walk starts
+const IDLE_STEP_MS = 5000;     // how long each item is held
+let _idleArticle = null;
+let _idleWalking = false;
+let _idleLastAt = 0;
+
+/** Whether the walk may run at all. Desktop map only, with the window in front and nothing else asking to be read. */
+function _idleEligible() {
+    if (isMobile || viewMode !== 'map') return false;
+    /* A reader who has asked for less motion has asked for exactly this. */
+    if (_prefersReducedMotion()) return false;
+    if (document.visibilityState !== 'visible' || !document.hasFocus()) return false;
+    if (lightboxOpen || document.body.classList.contains('info-open')) return false;
+    /* The welcome card is no reason to hold still: a reader who has read the greeting and not yet moved should see
+       the atlas doing something behind it rather than a field of grey squares. The card's own area is skipped when
+       items are picked, so the walk lights what that reader can actually see. */
+    return true;
+}
+
+/** A random item that is fully on screen, with room under it for the label stack the hover reveals. Filtered-out
+ *  and culled items are skipped, as is the one already lit, so the walk always moves. */
+function _idlePickArticle() {
+    const vw = window.innerWidth, vh = window.innerHeight;
+    // While the greeting is up, the box it occupies is not worth lighting: nothing behind it can be seen.
+    let cover = null;
+    if (typeof _welcomeOpen === 'function' && _welcomeOpen()) {
+        const card = document.getElementById('welcome-card');
+        const cr = card && card.getBoundingClientRect();
+        if (cr && cr.width > 0) cover = cr;
+    }
+    const out = [];
+    for (let i = 0; i < items.length; i++) {
+        const a = items[i]._article;
+        if (!a || a === _idleArticle) continue;
+        const cls = a.classList;
+        if (cls.contains('tag-filtered-out') || cls.contains('map-offscreen') || cls.contains('search-hidden')) continue;
+        const img = _articleImg(a);
+        if (!img) continue;
+        const r = img.getBoundingClientRect();
+        if (r.width <= 0) continue;
+        // Clear of the edges, and clear of the corner controls at the bottom.
+        if (r.top < 48 || r.bottom > vh - 140) continue;
+        if (r.left < 48 || r.right > vw - 48) continue;
+        /* And clear of the greeting, if one is up. The label the hover reveals hangs below the image, so the strip
+           under it counts as covered too — a title sliding out from behind the card reads as a glitch. */
+        if (cover && r.left < cover.right && r.right > cover.left
+            && r.top < cover.bottom && (r.bottom + 40) > cover.top) continue;
+        out.push(a);
+    }
+    return out.length ? out[(Math.random() * out.length) | 0] : null;
+}
+
+/** Whichever item the pointer is genuinely over, if any. The walk can run while a reader's pointer rests on an
+ *  item — that is two lit items, which the map carries fine — but the tag sidebar has only one slot to say what is
+ *  being pointed at, so the walk has to hand it back rather than leave it empty: no pointerover would fire to
+ *  restore it, and that reader would have lost their item's tags by standing still. */
+function _idlePointerArticleId() {
+    const a = document.querySelector('main article:hover');
+    return a ? (_netExtractIdFromTarget(a) || '') : '';
+}
+
+function _idleRelease() {
+    if (!_idleArticle) return;
+    const id = _netExtractIdFromTarget(_idleArticle);
+    _idleArticle.classList.remove('idle-hover');
+    _idleArticle = null;
+    if (id) {
+        _netSetHover(id, false);
+        _stubHoverRelease(id);
+        if (typeof _setItemPeek === 'function') _setItemPeek(_idlePointerArticleId());
+    }
+}
+
+function _idleStop() {
+    _idleWalking = false;
+    _cancel('idle.step');
+    _idleRelease();
+}
+
+/** One hop: light a new item and book the next. */
+function _idleStep() {
+    if (!_idleEligible()) { _idleStop(); return; }
+    const next = _idlePickArticle();
+    _idleRelease();
+    if (next) {
+        next.classList.add('idle-hover');
+        _idleArticle = next;
+        /* The rest of what a real hover does, which the class alone cannot: the map shows an item's average colour
+           until something asks for its picture, the netvis lights the edges leaving the item under the pointer, and
+           the tag sidebar steps back the tags this item does not carry. All three are id-keyed and idempotent, and
+           all three are undone in _idleRelease. */
+        const id = _netExtractIdFromTarget(next);
+        if (id) {
+            _netSetHover(id, true);
+            _stubHoverReveal(id);
+            if (typeof _setItemPeek === 'function') _setItemPeek(id);
+        }
+    }
+    _after('idle.step', _idleStep, IDLE_STEP_MS);
+}
+
+/** The armed timer chases the real quiet time rather than being replaced on every mousemove, which would re-book a
+ *  timer sixty times a second for as long as the pointer moved. */
+function _idleMaybeStart() {
+    const quiet = performance.now() - _idleLastAt;
+    if (quiet < IDLE_QUIET_MS - 50) { _after('idle.arm', _idleMaybeStart, IDLE_QUIET_MS - quiet); return; }
+    if (!_idleEligible()) { _after('idle.arm', _idleMaybeStart, IDLE_QUIET_MS); return; }
+    _idleWalking = true;
+    _idleStep();
+}
+
+/** Any sign of the reader: stop the walk where it stands and start counting again. */
+function _idleNoteActivity() {
+    _idleLastAt = performance.now();
+    if (_idleWalking) _idleStop();
+    if (!_pending('idle.arm')) _after('idle.arm', _idleMaybeStart, IDLE_QUIET_MS);
+}
+
+if (!isMobile) {
+    const _idleOpts = { passive: true, capture: true };
+    ['mousemove', 'mousedown', 'wheel', 'keydown', 'pointerdown', 'touchstart', 'scroll']
+        .forEach((ev) => window.addEventListener(ev, _idleNoteActivity, _idleOpts));
+    /* Leaving the window counts as leaving: the walk should not run behind another app, and coming back is itself
+       activity, so the count starts from the return rather than from whenever the reader last moved. */
+    window.addEventListener('blur', _idleStop);
+    window.addEventListener('focus', _idleNoteActivity);
+    document.addEventListener('visibilitychange', _idleNoteActivity);
+    _idleNoteActivity();
+}

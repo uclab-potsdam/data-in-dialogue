@@ -260,7 +260,7 @@ function _gridPosition(animate, resized) {
         }
         const x = c * (_gridColW + _gridGap);
         a.el.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
-        placed[i] = { id: a.id, el: a.el, y, h: hs[i] };
+        placed[i] = { id: a.id, el: a.el, y, h: hs[i], col: c, span: a.el.classList.contains('selected') ? 2 : 1 };
     }
     if (animate && resized) {
         for (let i = 0; i < resized.length; i++) {
@@ -520,7 +520,7 @@ function _gridSelect(id, opts) {
     }
     _gridRefreshImages(false);
     if (opts.updateHash !== false) _setHashForCurrentState(opts.push !== false);
-    _updateGridTitle();
+    _updateDocTitle();
     _updateCancelButton();
     // After the cards have finished moving, for the same reason a tag click waits: the cloud describes what is in view, the recount reads live rects, and doing it here put a burst of forced layout in the middle of the opening.
     tagVis.updateAfterTransition();
@@ -552,10 +552,6 @@ function _gridStopMoving() {
     if (!_gridInner || !_gridInner.classList.contains('grid-moving')) return;
     _cancel('grid.moving');
     _gridInner.classList.remove('grid-moving');
-}
-
-function _updateGridTitle() {
-    _updateDocTitle();
 }
 
 /** Enter the grid from any view. A monad centre or a list selection is carried: it becomes the grid's selection, centred. */
@@ -627,7 +623,7 @@ function switchToGridView(updateHash = true, push = true, carry = true) {
     _gridRefreshImages(false);
 
     if (updateHash) _setHashForCurrentState(push);
-    _updateGridTitle();
+    _updateDocTitle();
     _updateCancelButton();
     if (q.length > 0) searchBox.classList.add('open');
     purgeHighResImages();
@@ -691,6 +687,27 @@ function _gridStepSelection(dir) {
     _gridSelect(next.id, { push: false });
 }
 
+/** Up and down: the card above or below this one, which in a masonry means the nearest one in the same column
+ *  rather than a fixed number of steps through the order — the columns are filled shortest-first, so the card
+ *  drawn above is not a fixed distance back in the sequence. Columns are compared as ranges, since a selected card
+ *  is drawn across two of them and anything overlapping either one counts as above or below it. */
+function _gridStepSelectionVertical(dir) {
+    if (viewMode !== 'grid' || !gridSelectedId || !_gridPlaced.length) return;
+    const cur = _gridPlaced.find(p => p.id === gridSelectedId);
+    if (!cur) return;
+    const a0 = cur.col, a1 = cur.col + cur.span - 1;
+    let best = null, bestD = Infinity;
+    for (let i = 0; i < _gridPlaced.length; i++) {
+        const p = _gridPlaced[i];
+        if (p.id === cur.id) continue;
+        if ((p.col + p.span - 1) < a0 || p.col > a1) continue;   // nothing of it lies over or under this card
+        const d = (p.y - cur.y) * dir;
+        if (d <= 0) continue;                                     // the wrong way, or level with it
+        if (d < bestD) { bestD = d; best = p; }
+    }
+    if (best) _gridSelect(best.id, { push: false });
+}
+
 
 if (_gridInner) {
     gridView.addEventListener('click', (e) => {
@@ -728,7 +745,7 @@ if (_gridInner) {
                 _gridRefreshImages(false);
                 _gridScrollToCard(to);
                 _setHashForCurrentState(true);
-                _updateGridTitle();
+                _updateDocTitle();
                 _updateCancelButton();
             }
             return;
@@ -742,12 +759,37 @@ if (_gridInner) {
                 openLightboxUnified(card.querySelector('img.grid-thumb'), id);
                 return;
             }
-            // The subtitle is plain text here too, as in the list: it reads as part of the title and no longer closes the card.
-            if (!e.target.closest('.grid-extra, .grid-subtitle')) _gridSelect(null);
+            // A click that ends a highlight was the end of a drag over text, wherever it happens to land.
+            if (_endsTextSelection()) return;
+            /* The subtitle is plain text here too, as in the list: it reads as part of the title and no longer
+               closes the card. So is .grid-meta, the authors and the source, which are there to be read and
+               copied: a click into them places a caret instead of closing the card, as in the list and the monad. */
+            if (!e.target.closest('.grid-extra, .grid-subtitle, .grid-meta')) _gridSelect(null);
             return;
         }
         _gridSelectFromClick(id);
     });
+    /* The grid has no hover state of its own in JS — the card's own :hover does the visual work — so this listener
+       exists only to tell the tag sidebar which card the pointer is on (see _setItemPeek). Delegated, because the
+       cards are rebuilt on every filter and layout change. */
+    if (!isMobile) {
+        gridView.addEventListener('pointerover', (e) => {
+            if (typeof _setItemPeek !== 'function') return;
+            const card = e.target.closest && e.target.closest('.grid-card');
+            const from = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest('.grid-card') : null;
+            if (card === from) return;
+            _setItemPeek(card ? card.getAttribute('data-id') : '');
+        });
+        gridView.addEventListener('pointerout', (e) => {
+            if (typeof _setItemPeek !== 'function') return;
+            const card = e.target.closest && e.target.closest('.grid-card');
+            if (!card) return;
+            const to = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest('.grid-card') : null;
+            if (to === card) return;
+            if (!to) _setItemPeek('');
+        });
+    }
+
     // Keyboard: Enter or Space on a focused card toggles it.
     gridView.addEventListener('keydown', (e) => {
         const card = e.target.closest && e.target.closest('.grid-card');
@@ -756,10 +798,17 @@ if (_gridInner) {
         e.stopPropagation();
         _gridSelectFromClick(card.getAttribute('data-id'));
     });
-    // A click on a card must not focus it: focusing scrolls a partly hidden card into view, which read as the grid jumping on selection. Keyboard focus (Tab) is unaffected, and text in the detail stays selectable.
+    /* A click on a card must not focus it: focusing scrolls a partly hidden card into view, which read as the grid
+       jumping on selection. Keyboard focus (Tab) is unaffected, and text in the detail stays selectable.
+       .grid-meta joins the exemption on an OPEN card only: preventing the default here also cancels the drag that
+       would select the authors or the source, which are text the reader is meant to be able to take away. On a
+       closed card there is nothing to read yet and a click is a click, so the focus suppression still applies. */
     gridView.addEventListener('mousedown', (e) => {
         const card = e.target.closest('.grid-card');
-        if (card && !e.target.closest('.grid-extra, a')) e.preventDefault();
+        if (!card) return;
+        if (e.target.closest('.grid-extra, a')) return;
+        if (card.classList.contains('selected') && e.target.closest('.grid-meta')) return;
+        e.preventDefault();
     });
     const _onGridScroll = () => {
         _scheduleTagCloudUpdate(false);

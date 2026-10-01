@@ -26,8 +26,6 @@ fetch('items.json')
         // Compute attraction matrix for monad view
         attractionMatrix = computeAttraction(items);
 
-        // Assign stable angular positions based on UMAP position
-        assignAngularPositions(items);
 
         // Precompute ALL pairwise cos/sin for monad view (N² values, <2ms for 100 items)
         // This avoids per-frame trig when switching monads
@@ -202,6 +200,9 @@ fetch('items.json')
             document.body.classList.remove('notransition');
             document.body.classList.remove('animated', 'stagger-reveal');
             _setLoading(false);
+            // The greeting, on a first sight of the atlas and nothing else (see _maybeShowWelcome). After the
+            // loading overlay, so it lands on the atlas rather than on top of the spinner.
+            _maybeShowWelcome();
             // Defensive post-boot sweep: booting into a parameterised view (#q:, #tag, #id) puts items into hidden states that can strip src on mobile, and a later return to the unfiltered map can miss some. No-op when healthy.
             _scheduleImageHealthSweep(600);
         });

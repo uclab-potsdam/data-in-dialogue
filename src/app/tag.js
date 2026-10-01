@@ -496,10 +496,10 @@ function _updateTagCloud() {
         // href adapts to current mode (for copy/share); clicks are handled via JS.
         el.href = _formatAddress({ view: _isPanelView() ? viewMode : 'map', t });
 
-        // Opacity rules (animated via CSS).
-        let op = 1;
-        if (_isPanelView() || viewMode === 'monad') { if (selectedTags) op = selectedTags.has(t) ? 1 : 0.33; }
-        if (isActive) op = 1;
+        // Dimmed or not; the stylesheet owns how far (--tag-dim) and eases it.
+        let isDim = false;
+        if (_isPanelView() || viewMode === 'monad') { if (selectedTags) isDim = !selectedTags.has(t); }
+        if (isActive) isDim = false;
 
         const s = includeScale.get(t) || 0;
         const visible = (s > 0);
@@ -509,11 +509,11 @@ function _updateTagCloud() {
 
         if (visible) {
             el.classList.toggle('focus', !isActive && !!isSelItemTag);
-            el.classList.toggle('dim', op < 0.99);
+            el.classList.toggle('dim', isDim);
 
             // Width measurement for sidebar (match the *visual* size).
             if (_tagMeasureEl) {
-                const fw = (isActive || isSelItemTag) ? '550' : '250';
+                const fw = (isActive || isSelItemTag) ? '750' : '250';
                 const sRound = Math.round(s * 100);
                 const cacheKey = t + '|' + sRound + '|' + fw;
                 let wpx = _tagWidthCache.get(cacheKey);
@@ -568,6 +568,10 @@ function _updateTagCloud() {
 
     needW += 26; // padding + breathing room
     _setTagSidebarW(needW);
+    /* The hover peek re-stated against what was just written: a peek held over from a click is released here, in
+       the same task as the .dim and .focus writes above, so the chips step straight from the one state to the
+       other with no frame at full in between. */
+    _syncItemPeek(true);
     // The chips have just been retargeted and are about to ease there, so the curves that land on them have to follow rather than be drawn once against where they used to be.
     _scheduleListLinksSettle();
 }
@@ -580,7 +584,18 @@ if (_tagCloudEl) {
         e.preventDefault();
         const tag = (a.getAttribute('data-tag') || a.textContent || '').trim();
         if (!tag) return;
+        /* The preview carries into the filter instead of being dropped first, so the items it dimmed keep going
+           rather than flinching back to full. It also has to be ended here: the cloud is rebuilt under the
+           pointer, so the mouseout that would otherwise clear it may never arrive. */
+        _commitTagPeek();
         _toggleTagFilter(tag, true);
+    });
+    /* Backstop for the same reason: a pointer that leaves the cloud in one move, or a chip that is rebuilt or
+       hidden while the pointer is on it, can skip the per-chip mouseout. */
+    _tagCloudEl.addEventListener('mouseleave', () => {
+        _listLinkHoverTag = '';
+        _setTagPeek('');
+        _scheduleListLinksDraw();
     });
 }
 
@@ -662,6 +677,7 @@ if (_tagCloudEl) {
         const tag = a ? (a.getAttribute('data-tag') || a.textContent || '').trim() : '';
         if (tag === _listLinkHoverTag) return;
         _listLinkHoverTag = tag;
+        _setTagPeek(tag);
         _scheduleListLinksDraw();
     });
     _tagCloudEl.addEventListener('mouseout', (e) => {
@@ -671,8 +687,131 @@ if (_tagCloudEl) {
         if (e.relatedTarget && a.contains(e.relatedTarget)) return;
         if (!_listLinkHoverTag) return;
         _listLinkHoverTag = '';
+        _setTagPeek('');
         _scheduleListLinksDraw();
     });
+}
+
+/* ── Tag peek ───────────────────────────────────────────────────────────────
+   Pointing at a chip previews what clicking it would keep: the items carrying that tag are marked and the CSS
+   drops everything else in the view to a third (see the tag-peek rules in the stylesheet). Only the view on
+   screen is marked — the other two are not being looked at, and the gesture fires again for every chip the
+   pointer crosses, so this is the difference between touching a few hundred elements and a few thousand. */
+let _tagPeek = '';
+
+/** The element standing for an item in the view currently on screen. The map, search and the detail view all
+ *  draw items as articles; the panels have their own row and card. */
+function _tagPeekElFor(id) {
+    if (viewMode === 'list') return _getListItemEl(id);
+    if (viewMode === 'grid') return (typeof _gridCardById !== 'undefined' && _gridCardById) ? _gridCardById[id] : null;
+    return _articleById(id);
+}
+
+function _clearTagPeekMarks() {
+    const marked = document.querySelectorAll('.tag-peek-match');
+    for (let i = 0; i < marked.length; i++) marked[i].classList.remove('tag-peek-match');
+}
+
+function _setTagPeek(tag) {
+    const t = (tag || '').trim();
+    if (t === _tagPeek) return;
+    const was = _tagPeek;
+    _tagPeek = t;
+
+    // Clear the previous pass wherever it landed: the view may have changed since, so this is not scoped by view.
+    _clearTagPeekMarks();
+
+    /* An empty tag, or a peek at the tag that is already the filter: nothing to preview, since everything still on
+       screen carries it. */
+    if (!t || t === (activeTag || '').trim()) {
+        document.body.classList.remove('tag-peeking');
+        _tagPeekIds = null;
+        /* Hold the gesture's own clock for one transition past the release, so the items come back as quickly as
+           they left. Temporary by construction: the class is dropped as soon as that transition is over. */
+        if (was) {
+            document.body.classList.add('tag-peek-fade');
+            _after('tag.peekFade', () => document.body.classList.remove('tag-peek-fade'), _cssMs('--uiHoverTrans', 188) + 60);
+        }
+        _netRequestDraw(0);
+        return;
+    }
+    const ids = new Set();
+    for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        if (!it.tags || !it.tags.includes(t)) continue;
+        ids.add(it.id);
+        const el = _tagPeekElFor(it.id);
+        if (el) el.classList.add('tag-peek-match');
+    }
+    _tagPeekIds = ids;
+    _cancel('tag.peekFade');
+    document.body.classList.remove('tag-peek-fade');
+    document.body.classList.add('tag-peeking');
+    // The edges answer to the same preview: see the peek gate in the netvis draw.
+    _netRequestDraw(0);
+}
+
+/* ── Item peek ──────────────────────────────────────────────────────────────
+   The same gesture from the item's end: the views call this as the pointer enters and leaves an item, and the
+   chips it does not carry step back. Only the chips are touched — a handful of elements — so this is cheap enough
+   to run on a pointer sweep across a list. */
+let _itemPeekHoverId = '';   // the item the views last reported under the pointer
+let _itemPeekId = '';        // the item the cloud is answering, which is not always the same one
+
+function _setItemPeek(id) {
+    if (!_tagSidebarEnabled()) return;
+    const v = (id || '').trim();
+    if (v === _itemPeekHoverId) return;
+    _itemPeekHoverId = v;
+    /* Leaving the item that has just become the selection is a handover, not a release: the cloud is about to say
+       the same thing in its own cue — .focus on this item's tags, .dim on the rest — and entering the monad holds
+       that update back until the move is over. Letting go here would send every other chip up to full for the
+       length of the transition and then down again. _syncItemPeek takes the marks off instead, in the same task
+       that writes the cue. */
+    if (!v && _itemPeekId && _itemPeekId === _selectedItemId()) return;
+    _syncItemPeek();
+}
+
+/** Bring the marks in line with the pointer and the selection. Called again at the end of every cloud update, so a
+ *  handover is released exactly when the cue replacing it lands, and so the marks survive a rebuild of the chips. */
+function _syncItemPeek(force = false) {
+    if (!_tagSidebarEnabled()) return;
+    /* Pointing at the selected item asks what the cloud is already answering, so it draws no peek of its own. */
+    const want = (_itemPeekHoverId && _itemPeekHoverId !== _selectedItemId()) ? _itemPeekHoverId : '';
+    if (want === _itemPeekId && !force) return;
+    _itemPeekId = want;
+
+    const prev = _tagCloudEl ? _tagCloudEl.querySelectorAll('.item-peek-match') : [];
+    for (let i = 0; i < prev.length; i++) prev[i].classList.remove('item-peek-match');
+
+    const it = want ? _getTagItemById()[want] : null;
+    /* An item with no tags leads with nothing rather than greying the whole cloud, which is the same rule the
+       resting cue for a selected item follows. */
+    if (!it || !it.tags || !it.tags.length) {
+        document.body.classList.remove('item-peeking');
+        return;
+    }
+    for (let i = 0; i < it.tags.length; i++) {
+        const chip = _tagChipByTag.get(it.tags[i]);
+        if (chip) chip.classList.add('item-peek-match');
+    }
+    document.body.classList.add('item-peeking');
+}
+
+/** The click: carry the previewed state into the filter rather than dropping it first. The marks and the commit
+ *  class stay only for the length of the fade the filter runs, then everything written here is taken back. */
+function _commitTagPeek() {
+    if (!_tagPeek) return;
+    _tagPeek = '';
+    _tagPeekIds = null;
+    _cancel('tag.peekFade');
+    document.body.classList.remove('tag-peeking', 'tag-peek-fade');
+    document.body.classList.add('tag-peek-commit');
+    _after('tag.peekCommit', () => {
+        document.body.classList.remove('tag-peek-commit');
+        _clearTagPeekMarks();
+    }, UI_TRANS_MS + 120);
+    _netRequestDraw(0);
 }
 
 /** In list mode, update the tag cloud only once layout has settled after an expand or collapse, so opacity, font-weight and viewport-based frequencies all update in one go. */

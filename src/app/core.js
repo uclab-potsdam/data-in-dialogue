@@ -126,11 +126,6 @@ function _centerArticle() {
     return selectedMonadId ? _articleById(selectedMonadId) : null;
 }
 
-/** An item's article, creating it on first use. */
-function _ensureArticle(item) {
-    return item._article || getOrCreateArticle(item);
-}
-
 /** An article's image: fast path via firstElementChild, query as fallback. */
 function _articleImg(article) {
     return (article.firstElementChild && article.firstElementChild.tagName === 'IMG')
@@ -203,6 +198,19 @@ function _esc(s) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+}
+
+/* Items carrying the tag currently under the pointer in the sidebar, or null when no chip is hovered. Written by
+   tag.js, which is desktop-only, and read by the netvis draw in map.js, which is not — hence declared here, where
+   both can see it in every configuration. */
+let _tagPeekIds = null;
+
+/** Whether the click that is being handled ended a drag over text rather than being a plain click. A selection is
+ *  still live at click time, so anything that would close or navigate away has to stand down: the reader is
+ *  highlighting an author or a source to copy it, not asking for the thing under the pointer. */
+function _endsTextSelection() {
+    const s = window.getSelection && window.getSelection();
+    return !!(s && !s.isCollapsed && String(s).trim());
 }
 
 /** Whether the reader asked for reduced motion. */
@@ -342,13 +350,6 @@ function _setLoading(isLoading) {
     if (!_loadingOverlay) return;
     const _ind = document.getElementById('loading-indicator');
     if (isLoading) {
-        // Clear any exit styles in case loading is shown again, so the CSS
-        // fade-in + pulse can run from scratch.
-        if (_ind) {
-            _ind.style.removeProperty('animation');
-            _ind.style.removeProperty('opacity');
-            _ind.style.removeProperty('transition');
-        }
         _loadingOverlay.classList.remove('hidden');
         _loadingOverlay.setAttribute('aria-busy', 'true');
     } else {
@@ -667,6 +668,15 @@ let _tagItemByIdCache = null;
 let _tagItemByIdCacheN = 0;
 
 
+/** The item the current view has open, whichever view that is: the map's monad, an expanded grid card, an
+ *  expanded list row. Empty when nothing is selected. */
+function _selectedItemId() {
+    if (viewMode === 'monad') return selectedMonadId || '';
+    if (viewMode === 'grid') return gridSelectedId || '';
+    if (viewMode === 'list') return listSelectedId || '';
+    return '';
+}
+
 function _getTagItemById() {
     if (!_tagItemByIdCache || _tagItemByIdCacheN !== (items ? items.length : 0)) {
         _tagItemByIdCache = Object.create(null);
@@ -723,7 +733,7 @@ function _clearTagFilterKeepView(push = true) {
     // Items that were visible stay visible: no leaving items when clearing.
     triggerAnimation();
     for (let i = 0; i < entering.length; i++) {
-        const article = _ensureArticle(items[entering[i]]);
+        const article = getOrCreateArticle(items[entering[i]]);
         article.classList.add('tag-filtered-out');
     }
 
@@ -737,7 +747,7 @@ function _clearTagFilterKeepView(push = true) {
 
         // Re-add tag-filtered-out on entering items (applyTagFilterToMap just removed it)
         for (let i = 0; i < entering.length; i++) {
-            const article = _ensureArticle(items[entering[i]]);
+            const article = getOrCreateArticle(items[entering[i]]);
             article.classList.add('tag-filtered-out');
         }
 
@@ -778,7 +788,7 @@ function _clearTagFilterKeepView(push = true) {
  *  tag cloud refresh and the cancel button's visibility. */
 function _commitFilterChange(push) {
     _setHashForCurrentState(push);
-    _updateTitlesForTagOrSearch();
+    _updateDocTitle();
     // The highlight follows the click immediately; the frequencies follow the view.
     tagVis.setActiveOnly();
     // Order matters: the highlight above has already moved, so the window that follows holds back only the frequencies.
@@ -833,18 +843,6 @@ function _scheduleDeferredTagHide(itemIds, tag) {
             _scheduleTagCloudUpdate(true);
         }, UI_TRANS_MS);
     }, startDelay);
-}
-
-function _updateTitlesForTagOrSearch() {
-    if (viewMode === 'list') {
-        _updateListTitle();
-        return;
-    }
-    if (viewMode === 'grid') {
-        _updateGridTitle();
-        return;
-    }
-    _updateDocTitle();
 }
 
 /** The payload of a #list: or #grid: hash for the current filter and a selection: the filter ("q:<query>", a tag, or nothing), then "/" and the selected id. A selection sits inside a filter rather than replacing it, so both are written. */
@@ -954,7 +952,7 @@ function _setHashForCurrentState(push = false) {
 function _revealTagEntering(item) {
     // Edge grace: lines to this item appear only after its fade-in completes (see _edgeGraceUntil, netvis loop).
     item._edgeGraceUntil = performance.now() + UI_TRANS_MS;
-    const article = _ensureArticle(item);
+    const article = getOrCreateArticle(item);
     const img = article.querySelector('img');
     if (img) img.style.transition = 'opacity var(--uiTrans) var(--uiEase)';
     article.style.transition = 'opacity 0.375s ease';
@@ -997,12 +995,12 @@ function _runStagedTagTransition(oldTag, newTag) {
     // frame and kills the fade.
     triggerAnimation();
     for (let i = 0; i < leaving.length; i++) {
-        const article = _ensureArticle(items[leaving[i]]);
+        const article = getOrCreateArticle(items[leaving[i]]);
         article.classList.remove('tag-filtered-out');
         article.classList.add('tag-transition-hide');
     }
     for (let i = 0; i < entering.length; i++) {
-        const article = _ensureArticle(items[entering[i]]);
+        const article = getOrCreateArticle(items[entering[i]]);
         article.classList.add('tag-filtered-out');
     }
 
@@ -1255,9 +1253,6 @@ function _stubReconcileMonad() {
         if (!_hasRealSrc(img)) _setSmallSrc(img, it.id, { forceReal: true });
     });
 }
-
-// Kept for API compatibility with switchToMapView/switchToSearchView which
-// invalidate this cache; no-op since the reconcile no longer caches.
 
 // Track the currently hovered article so a viewport rebuild doesn't re-stub
 // the image the user is looking at. (_stubHoveredArticle is declared with the image tiers.)
@@ -1694,7 +1689,7 @@ function handleHashChange(isInitialLoad) {
         }
         // A selection the filter hides, or an unknown tag, is corrected in place.
         if ((sel && !selOk) || (_addr.t && !activeTag)) _setHashForCurrentState(false);
-        _updateGridTitle();
+        _updateDocTitle();
         _updateCancelButton();
         _scheduleTagCloudUpdate(true);
         return;
@@ -1746,7 +1741,7 @@ function handleHashChange(isInitialLoad) {
             }
             // A selection the filter hides, or an unknown tag, is corrected in place.
             if ((sel && !selOk) || (_addr.t && !activeTag)) _setHashForCurrentState(false);
-            _updateListTitle();
+            _updateDocTitle();
             _scheduleTagCloudUpdate(true);
             return;
         }
@@ -1767,13 +1762,13 @@ function handleHashChange(isInitialLoad) {
                 // Hash-induced: centre it. A jump the reader did not make with their own scroll has no context to preserve, so the row is put where it can be read rather than pushed to the top band the way a click leaves it.
                 setListSelection(sel, true, animateNav, false, false, animateNav ? 'center' : 'auto');
                 if (isInitialLoad || cameFromOtherMode) {
-                    requestAnimationFrame(() => requestAnimationFrame(() => _pinInitialListSelection(sel, 1200, 'center')));
+                    requestAnimationFrame(() => requestAnimationFrame(() => _pinInitialListSelection(sel, 1200)));
                 }
             });
         } else {
             const el = _getListItemEl(sel);
-            if (el) _scrollListEl(el, false, 'ensure-top10');
-            _updateListTitle();
+            if (el) _scrollListEl(el, 'ensure-top10');
+            _updateDocTitle();
         }
         _updateCancelButton();
         _scheduleTagCloudUpdate(true);
@@ -1828,7 +1823,7 @@ function handleHashChange(isInitialLoad) {
             }
             _scheduleTagCloudUpdate(true);
             _updateCancelButton();
-            _updateTitlesForTagOrSearch();
+            _updateDocTitle();
             return;
         }
         /* No selection, or one that no longer resolves: the filtered map itself, which is a state this writes. Only a dead id is corrected, and then only by dropping it. */
@@ -1842,7 +1837,7 @@ function handleHashChange(isInitialLoad) {
         }
         _scheduleTagCloudUpdate(true);
         _updateCancelButton();
-        _updateTitlesForTagOrSearch();
+        _updateDocTitle();
         return;
     }
 
@@ -1886,10 +1881,9 @@ function handleHashChange(isInitialLoad) {
     } else {
         _runStagedTagTransition(oldTag, activeTag);
 
-        _updateDocTitle();
         _scheduleTagCloudUpdate(true);
         _updateCancelButton();
-        _updateTitlesForTagOrSearch();
+        _updateDocTitle();
         return;
     }
 
@@ -2163,6 +2157,9 @@ function hydrate(data) {
                 // Always a string starting with the 4-digit year; the interface
                 // slices it rather than parsing it.
                 date: src.date ? String(src.date) : '',
+                // The day the entry joined the collection, ISO (YYYY-MM-DD), which is what orders the list and the
+                // grid inside a year. Same fixed shape for every record, so it compares as a string.
+                added: src.added ? String(src.added) : '',
                 text: src.text || '',
                 tags: Array.isArray(src.tags) ? src.tags.slice() : [],
                 links: [],
@@ -2173,8 +2170,8 @@ function hydrate(data) {
                 umap_y: +src.umap_y,
                 // Curated one-directional related keys, closed both ways below.
                 _relatedKeys: Array.isArray(src.links) ? src.links.slice() : [],
-                // Position in the file, which is the collection's own order and the
-                // tiebreak within a year (see _compareItemsByYearAndSource).
+                // Position in the file: the collection's own order, and the last tiebreak when two entries were
+                // added on the same day (see _compareItemsByYearAndSource).
                 _parseIndex: index
             };
             // Sorted here rather than trusted from the file, so display order does
@@ -2231,9 +2228,20 @@ function _compareItemsByYearAndSource(a, b) {
         return Number.isFinite(by) - Number.isFinite(ay);
     }
 
+    /* Within a year, most recently added first, matching the years' own newest-first order: a reader returning to
+       the list meets what has arrived since they last looked at the top of its year. ISO dates of one fixed shape,
+       so a string compare is a date compare. An entry with no date sorts after the dated ones rather than jumping
+       to the top, and two added on the same day fall through to the file's own order. */
+    const aa = (a && a.added) || '';
+    const ba = (b && b.added) || '';
+    if (aa !== ba) {
+        if (!aa || !ba) return aa ? -1 : 1;
+        return ba < aa ? -1 : 1;
+    }
+
     const ai = Number.isFinite(a && a._parseIndex) ? a._parseIndex : 0;
     const bi = Number.isFinite(b && b._parseIndex) ? b._parseIndex : 0;
-    if (ai !== bi) return ai - bi; // preserve items.json order within a year
+    if (ai !== bi) return ai - bi;
 
     return (a.id || '').localeCompare(b.id || '');
 }
@@ -2318,9 +2326,6 @@ function _hasNoImage(id) {
 
 /** Preload tier to avoid visible image swaps. */
 function _preloadTier(id, tier) {
-    // Nothing to fetch for the small tier: it arrived inline with items.json and
-    // is already decoded or a data: URI away from it.
-    if (tier === 's') return Promise.resolve();
     if (_hasNoImage(id)) return Promise.resolve();
     return _preloadImage(_imgUrl(id));
 }
@@ -2352,11 +2357,10 @@ function _isSrcTier(img, tier) {
     if (!img) return false;
     const src = (img.currentSrc || img.getAttribute('src') || img.src) || '';
     if (!src) return false;
-    // Neither tier has a path to match on: the small tier is inlined in items.json and the large one is the single
-    // file in images/. So they are told apart by how they arrive.
-    const isData = src.indexOf('data:') === 0;
-    if (tier === 's') return isData && src !== _STUB_SRC;
-    return !isData;
+    // Only ever asked about the large tier (setImgTier answers 's' before it gets here). The tiers have no path to
+    // match on — the small one is inlined in items.json and the large one is the single file in images/ — so they
+    // are told apart by how they arrive: inline is small, a request is large.
+    return src.indexOf('data:') !== 0;
 }
 /** Set img src. */
 function _setImgSrc(img, url) {
@@ -2383,11 +2387,7 @@ function _resolveSmallSrc(id, opts) {
     const b = _imgBundle[id];
     // No image property means no image exists. There is nothing to reveal and
     // nothing to request: the average-colour stub is the final state.
-    if (!b || !forceReal) {
-        _stubbedIds.add(id);
-        return _STUB_SRC;
-    }
-    _stubbedIds.delete(id);
+    if (!b || !forceReal) return _STUB_SRC;
     // The small tier is inline, so revealing costs a decode and no round trip.
     return b.src;
 }
@@ -2399,7 +2399,6 @@ function _setSmallSrc(img, id, opts) {
     // List-thumbs always get the real small image, even in stub mode: list view
     // shows at most a screenful, so there is nothing to defer.
     if (img && img.classList && img.classList.contains('list-thumb')) {
-        _stubbedIds.delete(id);
         _setImgSrc(img, _smallSrcFor(id));
         return;
     }
@@ -2511,7 +2510,7 @@ function setImgTier(img, tier) {
             _applyImgIntrinsic(img, id, tier);
         }
         if (img._tierPendingTier === tier) return;
-        if (tier !== 's' && _isSrcTier(img, tier)) return;
+        if (_isSrcTier(img, tier)) return;
     }
 
     // New request → bump token and cancel any older completion.
@@ -2627,10 +2626,6 @@ function updateMonadCenterTiering() {
 
 // Per-item average RGB, seeded from items.json by _applyImageBundle. An item with no entry has no image, and _stubFillForId serves --midgray; no colour is ever fabricated.
 const _stubColor = Object.create(null);
-// Items currently showing a stub (so we can flip them back to the real
-// small-tier when the viewport count drops below threshold).
-const _stubbedIds = new Set();
-
 /* ══ SMALL TIER (inline in items.json) ═════════════════════════════════════
    The entire small tier travels with the data: every item that has an image
    carries an image object: w, h, the average colour its stub is painted in,
@@ -2868,10 +2863,9 @@ function getOrCreateArticle(item) {
                 }
             }
 
-            // A real bitmap is now on screen, so the stub bookkeeping may not survive it: a reveal that was superseded, re-stubbed and later retried can arrive with _wantReal and _stubbedIds still in place. Cleared here, where the load is a fact rather than an intention.
+            // A real bitmap is now on screen, so the reveal intent may not survive it: a reveal that was superseded, re-stubbed and later retried can arrive with _wantReal still set. Cleared here, where the load is a fact rather than an intention.
             // (Stub loads returned at the top.)
             delete this.dataset._wantReal;
-            _stubbedIds.delete(item.id);
 
             // Mark that we've successfully loaded at least once.
             if (this.dataset) {
@@ -3064,7 +3058,7 @@ function _ensureDetailContent(item) {
     if (!item) return;
 // The article may not exist yet: a cold load straight into a detail runs this before the map's DOM is built, so
     // the centre is created here rather than looked up.
-    const article = _ensureArticle(item);
+    const article = getOrCreateArticle(item);
     if (!article) return;
     // The stack comes and goes with the map zoom, and .detail-fields is where
     // this content lands: a selection from the overview finds none.
@@ -3106,8 +3100,7 @@ function _ensureDetailContent(item) {
                 if (!document.body.classList.contains('monad-zoomed-in')) return;
                 // What the click does (expand, close, or simply bring the card in front of the ring) is the shared toggle's decision, not this handler's.
                 // A click that ends a text selection is a selection, not an expand.
-                const sel = window.getSelection && window.getSelection();
-                if (sel && !sel.isCollapsed) return;
+                if (_endsTextSelection()) return;
                 _toggleMonadDetails(article);
                 e.stopPropagation();
             });
@@ -3316,11 +3309,9 @@ function _installBodyScrollProxy(el, viewClass) {
         configurable: true
     });
 
-    /* scrollTo / scrollBy */
+    /* scrollTo */
     const _origScrollTo = el.scrollTo.bind(el);
-    const _origScrollBy = el.scrollBy.bind(el);
     el.scrollTo = function() { (isScroller() ? window : { scrollTo: _origScrollTo }).scrollTo(...arguments); };
-    el.scrollBy = function() { (isScroller() ? window : { scrollBy: _origScrollBy }).scrollBy(...arguments); };
 
     /* getBoundingClientRect: return viewport rect when body scrolls */
     const _origBCR = el.getBoundingClientRect.bind(el);
@@ -3377,6 +3368,9 @@ function _docTitleView() {
 
 /** The page title for the list or grid: the filter (the query, or #tag) and the selected item's title, whichever are present ("Data in Dialogue: #tag - Title", ": query - Title", ": Title", ": #tag") or the plain title. */
 function _composeDocTitle() {
+    /* Behind the welcome card the reader has not arrived at a view yet, so the tab carries the page's own name,
+       whole, rather than naming a map they are not looking at. _hideWelcome writes the real title on its way out. */
+    if (typeof _welcomeOpen === 'function' && _welcomeOpen()) return originalTitle;
     const selId = (viewMode === 'list') ? listSelectedId
         : (viewMode === 'grid') ? gridSelectedId
         : selectedMonadId;
@@ -3430,75 +3424,10 @@ function _currentViewSeg() {
     return (viewMode === 'list' || viewMode === 'grid') ? viewMode : 'map';
 }
 
-/* ── Tucking the controls away on a phone ───────────────────────────────────
-   Scrolling down the list, the grid or a detail slides the top controls up out of the window and the bottom ones
-   down out of it; they come back at either end of the page or on a brisk flick upward, not on a gentle drift. On
-   the map, zooming in or panning tucks them; zooming out brings them back only when it is quick, at the widest
-   zoom, or on a tap of the background. */
-const _TUCK_FLICK_PX_PER_MS = 1.2;       // an upward scroll at least this fast brings the controls back in a detail
-const _TUCK_FLICK_PX_PER_MS_PANEL = 0.5; // and in the list and the grid, where a scroll up is more often a way back
-const _TUCK_ZOOM_OUT_PER_MS = 0.001;     // a zoom-out at least this fast does the same on the map: the map's scale
-                                         // shrinking by this share per ms (0.001 halves it in about 0.7 s)
-function _setUiTucked(on) {
-    if (!isMobile) return;
-    const b = document.body.classList;
-    if (on === b.contains('ui-tucked')) return;
-    // The transition is on only for the move (see body.ui-tuck-moving in the stylesheet).
-    b.add('ui-tuck-moving');
-    b.toggle('ui-tucked', on);
-    _after('ui.tuckMoving', () => b.remove('ui-tuck-moving'), 380);
-}
-let _tuckScrollY = 0;
-// Downward distance since the scroll last went up: any scroll down tucks once it adds up to a few px, however slowly
-// it comes, where a per-event threshold let a slow scroll through without ever tucking.
-let _tuckDownPx = 0;
-// The upward speed is taken over the last 150 ms of scrolling rather than between two events: the first event of a
-// swipe comes long after the one before it, and read on its own it made every swipe start as a crawl.
-const _tuckSamples = [];
-window.addEventListener('scroll', (e) => {
-    if (!isMobile || !(_isPanelView() || viewMode === 'monad')) return;
-    const el = (e.target === document || e.target === document.documentElement) ? document.scrollingElement : e.target;
-    if (el !== document.scrollingElement && el !== document.body) return;   // only the page, not a block scrolling inside it
-    const y = el.scrollTop, now = performance.now();
-    const dy = y - _tuckScrollY;
-    _tuckScrollY = y;
-    _tuckSamples.push([now, y]);
-    while (_tuckSamples.length > 1 && now - _tuckSamples[0][0] > 150) _tuckSamples.shift();
-    const upSpeed = (_tuckSamples[0][1] - y) / Math.max(16, now - _tuckSamples[0][0]);
-    const flick = _isPanelView() ? _TUCK_FLICK_PX_PER_MS_PANEL : _TUCK_FLICK_PX_PER_MS;
-    _tuckDownPx = (dy > 0) ? _tuckDownPx + dy : 0;
-    if (y <= 8 || y >= el.scrollHeight - el.clientHeight - 4) _setUiTucked(false);
-    else if (_tuckDownPx >= 10) _setUiTucked(true);
-    else if (dy < 0 && upSpeed >= flick) _setUiTucked(false);
-}, { capture: true, passive: true });
-// The zoom-out speed is taken over the last 150 ms of zooming, as the scroll speed is above, and as a share of the
-// map's scale rather than in zoom units: the scale grows with (1 + range * zoom), so the same pinch moves the zoom
-// value much further near full zoom, and in zoom units a slow pinch out from there read as a fast one.
-const _tuckZoomSamples = [];
-function _tuckForZoom(delta) {
-    const now = performance.now();
-    if (delta > 0) {
-        _tuckZoomSamples.length = 0;
-        _setUiTucked(true);
-        return;
-    }
-    if (zoom + delta <= getMinZoom() + 0.002) { _setUiTucked(false); return; }
-    if (delta === 0) return;
-    _tuckZoomSamples.push([now, -delta * _MAP_ZOOM_RANGE / (1 + _MAP_ZOOM_RANGE * zoom)]);
-    while (_tuckZoomSamples.length > 1 && now - _tuckZoomSamples[0][0] > 150) _tuckZoomSamples.shift();
-    // Steps within a few ms of each other say nothing about speed yet: wait for 40 ms of gesture.
-    const span = now - _tuckZoomSamples[0][0];
-    if (span < 40) return;
-    let out = 0;
-    for (const [, d] of _tuckZoomSamples) out += d;
-    if (out / span >= _TUCK_ZOOM_OUT_PER_MS) _setUiTucked(false);
-}
-
 /** Every change of view goes through here: the switcher shows it, and the bounce correction, which only the list
  *  and the grid use, is cleared rather than left offsetting the corner buttons in the next view. */
 function _setViewMode(mode) {
     viewMode = mode;
-    _setUiTucked(false);
     _syncViewSwitcher();
     _measureOverscroll();
 }
@@ -3532,7 +3461,7 @@ function _imageRectFor(id) {
  *  update, and force layout again so the rect read next is the settled one. */
 function _settleMonadCentre() {
     if (viewMode !== 'monad' || !_selectedMonadItem) return;
-    const a = _ensureArticle(_selectedMonadItem);
+    const a = getOrCreateArticle(_selectedMonadItem);
     if (!a) return;
     void a.offsetHeight;
     _measureMonadTextGeometry(a);
@@ -3679,9 +3608,6 @@ const _SB_GATHER_MS = Math.round(_SB_MOVE_MS * 0.4);   // leg 1: source → colu
 const _SB_DISPERSE_MS = _SB_MOVE_MS - _SB_GATHER_MS;   // leg 2: column → target
 const _SB_RESOLVE_CAP_MS = 900;   // max stall absorbed by re-anchoring the legs
 const _SB_EDGE_MARGIN = 140;   // "onscreen" tolerance band beyond the viewport
-const _SB_PEAK_ALPHA = 1;   // fully opaque: the final frame hands off to the
-                            // identical stub beneath with zero alpha jump
-
 let _stubBridgeActive = false;
 let _stubBridgeResolveTargets = null;   // set by _stubBridgeAnimate; fed at t=375
 let _stubSwitchPendingMid = null;   // deferred doSwitch: must ALWAYS run
@@ -3876,8 +3802,8 @@ function _stubBridgeAnimate(sources, opts) {
         const _it = _getTagItemById()[id];
         const sp = {
             color: _stubFillForId(id),
-            // Items without an image travel as the grey diamond the views draw them as (see the placeholder rule in the CSS).
-            diamond: !!(_it && _it._isPlaceholderImg),
+            // Items without an image travel as the grey square the views draw them as (see the placeholder rule in the CSS).
+            placeholder: !!(_it && _it._isPlaceholderImg),
             imgRef,
             c0x: clampCX(src.x + src.w / 2), c0y: clampCY(src.y + src.h / 2),
             w0, h0,
@@ -3889,7 +3815,6 @@ function _stubBridgeAnimate(sources, opts) {
             listH: src.h,
             // Prefer the main-side rect for aspect: map and monad images always carry the real ratio, while deep list rows may wear the uniform fallback box. For to-list the source is the main side; for to-main the resolver refines it.
             aspect: src.w / Math.max(1, src.h),
-            peak: imgRef ? 1 : _SB_PEAK_ALPHA,
             enter: !srcOn,   // fades in while gathering into the column
             exit: false,     // set by the resolver (offscreen target)
             fadeOnly: false, // set by the resolver (no counterpart)
@@ -4047,19 +3972,21 @@ function _stubBridgeAnimate(sources, opts) {
             const sp = sprites[i];
 
             // Phase alpha.
+            /* Every sprite peaks fully opaque: the final frame hands off to the identical stub beneath it with no
+               alpha jump. */
             let alpha;
             if (t >= travelEnd) {
-                alpha = (sp.exit || sp.fadeOnly) ? 0 : sp.peak;
+                alpha = (sp.exit || sp.fadeOnly) ? 0 : 1;
             } else if (t < _SB_STAGE_MS) {
-                alpha = sp.enter ? 0 : sp.peak * easeOut(t / _SB_STAGE_MS);
+                alpha = sp.enter ? 0 : easeOut(t / _SB_STAGE_MS);
             } else {
-                alpha = sp.peak;
+                alpha = 1;
             }
             // Offscreen-source rects fade in while gathering into the column;
             // offscreen-target rects fade out while dispersing toward the edge.
-            if (sp.enter) alpha = Math.min(alpha, sp.peak * Math.min(1, t1 / 0.5));
-            if (sp.exit) alpha = Math.min(alpha, sp.peak * _clamp01((1 - t2) / 0.4));
-            if (sp.fadeOnly) alpha = Math.min(alpha, sp.peak * (1 - e1));
+            if (sp.enter) alpha = Math.min(alpha, Math.min(1, t1 / 0.5));
+            if (sp.exit) alpha = Math.min(alpha, _clamp01((1 - t2) / 0.4));
+            if (sp.fadeOnly) alpha = Math.min(alpha, 1 - e1);
 
             let cx, cy, w, h;
             if (sp.fadeOnly || !sp.hasTarget) {
@@ -4087,16 +4014,10 @@ function _stubBridgeAnimate(sources, opts) {
             ctx.globalAlpha = alpha;
             // The carried selection travels as its own picture (opts.image), so it never turns into a colour field; everything else is its stub colour.
             const im = sp.imgRef ? sp.imgRef.el : null;
-            if (sp.diamond) {
-                // No border, as in the views: the diamond inscribed in the item's box.
+            if (sp.placeholder) {
+                // No border, as in the views: the item's box, filled.
                 ctx.fillStyle = sp.color;
-                ctx.beginPath();
-                ctx.moveTo(cx, cy - h / 2);
-                ctx.lineTo(cx + w / 2, cy);
-                ctx.lineTo(cx, cy + h / 2);
-                ctx.lineTo(cx - w / 2, cy);
-                ctx.closePath();
-                ctx.fill();
+                ctx.fillRect(cx - w / 2, cy - h / 2, w, h);
                 continue;
             }
             if (im && im.complete && im.naturalWidth > 0) {
@@ -4498,7 +4419,7 @@ function _openSearchShortcut() {
     if (activeTag) {
         _clearTagFilterState();
         _setHashForCurrentState(false);
-        _updateTitlesForTagOrSearch();
+        _updateDocTitle();
         _scheduleTagCloudUpdate(true);
         // Clear "#tag" text from search input before opening
         if (searchInput && searchInput.value.trim().startsWith('#')) {
@@ -4517,7 +4438,7 @@ function _openSearchShortcut() {
         renderGrid(true);
         _gridScrollToTop();
         _setHashForCurrentState(false);
-        _updateTitlesForTagOrSearch();
+        _updateDocTitle();
         _updateCancelButton();
     }
 
@@ -4536,6 +4457,24 @@ function _openSearchShortcut() {
 }
 
 window.addEventListener('keydown', (e) => {
+    /* A key pressed over the welcome card is the reader getting on with it, so the card steps aside and the
+       shortcut runs on the atlas behind in the same press: reaching for a view or the search should not cost a
+       dismissal first. Two exceptions: Tab, which belongs to the card's own two buttons, and Escape, which has
+       nothing to reset on the parameterless address the card appears on, so dismissing is all it means there. */
+    if (typeof _welcomeOpen === 'function' && _welcomeOpen()) {
+        if (e.key === 'Tab') return;
+        _hideWelcome();
+        if (e.key === 'Escape') { e.preventDefault(); return; }
+    }
+
+    /* A key is a decision, so a running shuffle walk ends here — before the branches below, so the key it ends on
+       still does its own work: Escape resets, a digit switches view, and the walk simply is not running any more.
+       Shift+R is its own toggle and is handled below; a bare modifier is nobody pressing anything. */
+    if (typeof _walkRunning === 'function' && _walkRunning() && e.key !== 'R'
+        && e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Meta') {
+        _walkStop();
+    }
+
     // Cmd+F / Ctrl+F opens search (override browser find, exits monad first)
     if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
         _netMarkInteraction(260);
@@ -4589,6 +4528,13 @@ window.addEventListener('keydown', (e) => {
         _doShuffle();
         return;
     }
+    if (e.key === 'R') { // Shift+R: the same jump, repeated, until something stops it. See the shuffle walk.
+        _netMarkInteraction(260);
+        e.preventDefault();
+        _flashButton('shuffle-btn');
+        if (typeof _walkToggle === 'function') _walkToggle();
+        return;
+    }
     if (e.key === 'f') { // open search (plain-letter twin of Cmd/Ctrl+F)
         _netMarkInteraction(260);
         e.preventDefault();
@@ -4618,12 +4564,13 @@ window.addEventListener('keydown', (e) => {
     }
 
     // Enter opens the current monad's link in a new tab
+    /* Enter opens the source of whatever entry is open, in any of the three views: the keyboard twin of clicking
+       its title. With nothing open it does nothing, rather than guessing at one. */
     if (e.key === 'Enter') {
-        if (viewMode === 'monad' && selectedMonadId) {
-            const monadItem = _getTagItemById()[selectedMonadId];
-            if (monadItem && monadItem.url) {
-                window.open(monadItem.url, '_blank', 'noopener');
-            }
+        const openId = _selectedItemId();
+        const openItem = openId ? _getTagItemById()[openId] : null;
+        if (openItem && openItem.url) {
+            window.open(openItem.url, '_blank', 'noopener');
         }
         return;
     }
@@ -4664,7 +4611,7 @@ window.addEventListener('keydown', (e) => {
 
             _updateCancelButton();
             _writeAddress({ view: 'list' }, false);
-            _updateListTitle();
+            _updateDocTitle();
             _scheduleTagCloudUpdate(true);
             return;
         }
@@ -4696,7 +4643,7 @@ window.addEventListener('keydown', (e) => {
             if (hadSearch) closeSearch();
             _clearTagFilterKeepView(false);
             _setHashForCurrentState(false);
-            _updateTitlesForTagOrSearch();
+            _updateDocTitle();
             _scheduleTagCloudUpdate(true);
             return;
         }
@@ -4705,7 +4652,7 @@ window.addEventListener('keydown', (e) => {
 
         // Ensure the URL hash/title reflect the cleared tag/search (Escape should fully cancel filters).
         _setHashForCurrentState(false);
-        _updateTitlesForTagOrSearch();
+        _updateDocTitle();
 
         // Animate back to centered map
         triggerAnimation();
@@ -4724,13 +4671,17 @@ window.addEventListener('keydown', (e) => {
     }
 
 
-    // In the grid, left and right step the selection to the previous or next card in the list's order, among the cards shown. Only with a selection; without one the keys do nothing here.
-    if (viewMode === 'grid' && gridSelectedId && !lightboxOpen && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+    /* In the grid the arrows walk the selection in the direction they point: left and right to the previous or
+       next card in the list's order, up and down to the card drawn above or below this one. Only with a selection;
+       without one they fall through to the scrolling below, as the list's do. */
+    if (viewMode === 'grid' && gridSelectedId && !lightboxOpen
+        && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
         const ae = document.activeElement;
         const tag = ae ? ae.tagName : '';
         if (!(ae && (tag === 'INPUT' || tag === 'TEXTAREA' || ae.isContentEditable))) {
             e.preventDefault();
-            _gridStepSelection(e.key === 'ArrowRight' ? 1 : -1);
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') _gridStepSelection(e.key === 'ArrowRight' ? 1 : -1);
+            else _gridStepSelectionVertical(e.key === 'ArrowDown' ? 1 : -1);
             return;
         }
     }
@@ -4741,19 +4692,22 @@ window.addEventListener('keydown', (e) => {
         return;
     }
 
-    // In list mode, arrow keys step through the list order when an item is selected, and scroll normally when nothing is.
-    if (viewMode === 'list' && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+    /* In list mode, arrow keys step through the list order when an item is selected, and scroll normally when
+       nothing is. Left and right go with down and up: the list is one column, so there is no second direction for
+       them to mean, and a reader who reaches for them should not find nothing there. */
+    if (viewMode === 'list' && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
         if (lightboxOpen) { e.preventDefault(); closeLightbox(); return; }
         if (!listView) return;
 
-        // If nothing is selected, don't hijack arrows for selection: scroll instead.
+        // If nothing is selected, don't hijack arrows for selection: scroll instead. Sideways there is nothing to
+        // scroll, so those two are left alone rather than scrolling the page by a line.
         if (!listSelectedId) {
-            _panelScrollKey(e);
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') _panelScrollKey(e);
             return;
         }
 
         e.preventDefault();
-        _stepListSelectionVisible(e.key === 'ArrowDown' ? 1 : -1);
+        _stepListSelectionVisible((e.key === 'ArrowDown' || e.key === 'ArrowRight') ? 1 : -1);
         return;
     }
     // In the list, the page keys scroll it, as in the grid.

@@ -1,6 +1,6 @@
 /* FOUNDATIONS ------------------------------------------------------------------ */
 
-/* Registered custom properties, so CSS transitions can interpolate them: --zoom (monad detail, 0 overview to 1 full), --wght (tag-chip font weight 250-550), --item-scale (map/monad thumbnail scale), --subset-label-boost (label size multiplier while a subset is active). */
+/* Registered custom properties, so CSS transitions can interpolate them: --zoom (monad detail, 0 overview to 1 full), --wght (tag-chip font weight 250-750), --item-scale (map/monad thumbnail scale), --subset-label-boost (label size multiplier while a subset is active). */
 /* The info panel's clock. Named because the panel is no longer just a panel sliding: the content it insets, the controls that ride the inset and the map's re-centre all have to run on the same one, or the gesture comes apart into three. */
 @property --main-inset {
     syntax: "<length>";
@@ -116,8 +116,12 @@
     /* Tag sidebar geometry. The pane sits on the LEFT; the name says edge rather than a side so it doesn't have to be revisited if that ever changes again. */
     --tagEdgeGap: var(--edge);
     /* How far the tag pane's backdrop reaches, which is wider than the pane itself. Both the gradient and the mask
-       over it fade out across this width, so the part that reads as solid is roughly its first 40%. */
-    --tagBackdropW: max(10vw, calc(3 * var(--ui-btn-w) / 0.4));
+       over it fade out across this width, so the part that reads as solid is roughly its first 60%. The numerator
+       is the solid part — three button widths, which is what covers the chips — and the divisor is the fraction of
+       the total that stays solid, so the two together set how long the tail is. It was 0.4, which put two thirds of
+       the backdrop into the fade; 0.6 keeps the same cover under the tags and the same falloff shape, over a
+       shorter run. */
+    --tagBackdropW: max(10vw, calc(3 * var(--ui-btn-w) / 0.6));
 
     /* Zoom / item sizing */
     --item-scale: 0.03;
@@ -170,6 +174,30 @@
     --map-rung-authors: 0.45;
     --map-rung-source: 0.65;
 
+    /* Knock-out behind a hovered item's label, in the page's own colour. Repeated radii rather than larger ones:
+       each pass compounds the same colour, so close to the strokes it goes near-opaque while the widest one trails
+       off with no visible edge. Passes, not alpha, are the density knob here — n of them reach 1-(1-a)^n, so the
+       count doubles the thin outer reach while the core, already near solid, barely moves. Declared once because
+       two places use it: the map's four label lines, and a ring item's title in the detail view, which can land
+       over the selected item's image. */
+    --label-knockout:
+        0 0 .12em var(--bg),
+        0 0 .12em var(--bg),
+        0 0 .12em var(--bg),
+        0 0 .12em var(--bg),
+        0 0 .12em var(--bg),
+        0 0 .12em var(--bg),
+        0 0 .3em var(--bg),
+        0 0 .3em var(--bg),
+        0 0 .3em var(--bg),
+        0 0 .3em var(--bg),
+        0 0 .3em var(--bg),
+        0 0 .3em var(--bg),
+        0 0 .55em var(--bg),
+        0 0 .55em var(--bg),
+        0 0 1em var(--bg),
+        0 0 1em var(--bg);
+
     /* Per-subsystem timing (aliased so they can be overridden independently) */
     --listTrans: var(--uiTrans);
     --listEase: var(--uiEase);
@@ -179,6 +207,9 @@
     --tagTrans: var(--uiTrans);
     --tagEase: var(--uiEase);
     --tagOpacityTrans: var(--uiHoverTrans);
+    /* How far a chip steps back when it is not part of what is being asked about. The same figure either way
+       round: the tags a selected item does not carry, and the tags a hovered item does not carry. */
+    --tag-dim: 0.25;
 }
 
 /* Desktop runs the measure 10% narrower than the phone's: the three views all show the description beside other
@@ -229,10 +260,6 @@ body {
     background-color: var(--fg2, var(--fg));
     color: var(--bg2);
 }
-::-moz-selection {
-    background-color: var(--fg2, var(--fg));
-    color: var(--bg2);
-}
 
 main {
     /* Articles are position: absolute inside this box, so moving its left edge moves the whole map with it; __mainVW takes the same inset off the width the layout is computed against, which re-centres the map in what is left. */
@@ -255,7 +282,7 @@ body.is-mobile main {
                 width var(--infoTrans) var(--uiEase);
 }
 
-b, strong { font-weight: 550; }
+b, strong { font-weight: 750; }
 p, blockquote { font-weight: 250; }
 
 /* Global hide: article markup carries description and tag elements that should appear only in specific contexts (monad detail at high zoom, list expanded, info overlay), which re-enable them via scoped selectors. */
@@ -421,9 +448,6 @@ body.has-tag-sidebar.list-view:not(.mode-xfade) #list-links {
     object-fit: contain;
 }
 
-#lightbox-img.lb-at-max {
-    cursor: zoom-out;
-}
 
 /* When the image exceeds the viewport, show grab cursor (pannable) */
 #lightbox-img:not(.fits) {
@@ -625,7 +649,7 @@ body.animated.monad-view article.monad-center .detail-fields {
 
 /* :not(.stagger-reveal); the tail phase of a monad/search exit keeps body.animated so returning items can fade in on its clock, but it runs after the move has settled, where forcing the slow clock on hover just made hover feel stuck. */
 @media (any-hover: hover) {
-    body.animated:not(.stagger-reveal) article:not(.monad-center):hover img,
+    body.animated:not(.stagger-reveal) article:not(.monad-center):is(:hover, .idle-hover) img,
     body.animated:not(.stagger-reveal) article.monad-center img {
         transition: transform var(--uiTrans) var(--uiEase), opacity var(--uiTrans) var(--uiEase), border-color var(--uiTrans) var(--uiEase) !important;
     }
@@ -749,6 +773,19 @@ body.zoom-animating main article:not(.exit-hover-hold) img {
 /* Held active state, persisting ~500ms after a tap so the user sees the action register. Mirrors :active. */
 .ui-btn.recent-press { background: var(--fg); transition: none; }
 .ui-btn.recent-press svg { stroke: var(--bg); transition: none; }
+
+/* And held for as long as a shuffle walk runs, which is the same inversion with no timer on it: the press has not
+   finished, because what it started has not. id + class outranks the timed twin above; dropping the class puts the
+   base .ui-btn transition back in charge, so it fades out rather than snapping. */
+body.walk-running #shuffle-btn { background: var(--fg); transition: none; }
+body.walk-running #shuffle-btn svg { stroke: var(--bg); transition: none; }
+/* One turn per item. --walk-step is written by _walkStart from the same constant that books the next step, so the
+   glyph arriving back where it started is the item being due, not an ornament running at its own pace. */
+body.walk-running #shuffle-btn svg { animation: walkSpin var(--walk-step, 10s) linear infinite; }
+@keyframes walkSpin { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) {
+    body.walk-running #shuffle-btn svg { animation: none; }
+}
 
 /* Individual button positions */
 /* The three controls in the left-hand corners ride the panel's edge: same distance, same --infoTrans clock, so they arrive beside the panel as it lands. transform rather than left, to stay off the layout path. */
@@ -1142,11 +1179,6 @@ article.monad-low {
     display: none !important;
 }
 
-/* Same hide, keyed on body.is-mobile rather than the query above so it matches the JS detection that assigns the class. */
-body.is-mobile article.monad-zero,
-body.is-mobile article.monad-low {
-    display: none !important;
-}
 article.monad-zero img,
 article.monad-low img {
     --scale: 0 !important;
@@ -1162,12 +1194,14 @@ article.monad-low .detail-fields {
     visibility: hidden !important;
 }
 
-/* The label stack picks up taps as well as the image. An item's click handler is on the article, so anything
-   inside it that takes pointer events is a way in, and the subtitle and the author lines were both
-   `pointer-events: none`, so a tap landing on them fell through to the map behind and did nothing. */
-body:not(.monad-view):not(.list-view) main article h3,
-body:not(.monad-view):not(.list-view) main article .detail-fields {
-    pointer-events: auto;
+/* The label stack below the title takes no pointer events at all. Each line appears at its own rung of the zoom
+   (--map-rung-sub / -authors / -source) as a 0/1 opacity step, but it keeps its box either way, so a line that is
+   still invisible would otherwise sit there as a hit target and hover the item under a pointer that is over
+   nothing. There is no portable way to gate pointer-events on that step — it is a calc(), and pointer-events takes
+   no calc — so the stack is inert and the title, which the labels-hidden rule hides with `visibility` and so
+   cannot be hit while invisible, stays the label you can click. */
+body:not(.monad-view):not(.list-view) main article h3 {
+    pointer-events: none;
 }
 
 /* Stagger hide: lightweight opacity-only hide for phased monad/map transitions */
@@ -1230,7 +1264,6 @@ body img {
     --scale: var(--item-scale);
     width: var(--w, 16vmin);
     height: calc(var(--w, 16vmin) * var(--nat-h, 3) / var(--nat-w, 4));
-    user-drag: none;
     -webkit-user-drag: none;
     transition: transform var(--uiHoverTrans) var(--uiEase), opacity var(--uiHoverTrans) var(--uiEase);
     z-index: 10;
@@ -1284,18 +1317,27 @@ body.monad-view main article.monad-center img {
 
 @media (any-hover: hover) {
     /* Hover highlight DARKENS the border (brightening in dark mode via --fg) and never thickens it: the resting rule's counter-scaled width stays in effect, so rendered thickness is constant across zoom. Monad peripherals keep their own hover widths below. */
-    body:not(.list-view) main article:not(.monad-center):hover img {
+    body:not(.list-view) main article:not(.monad-center):is(:hover, .idle-hover) img {
+        border-color: var(--fg);
+    }
+
+    /* And the items on the other end of its edges take the same border. The lines out of a hovered item already
+       draw brighter; an edge arriving at something still at --midgray points at nothing in particular, and the
+       pair reads as one figure once both ends match. Only the border: these are not what the pointer is on, so
+       they neither grow nor show a label. The class is written by _setLinkLit, off the same edge list the canvas
+       draws from. */
+    body:not(.list-view) main article.link-lit img {
         border-color: var(--fg);
     }
     /* In monad view, keep border width tied to zoom (hover only changes color). */
-    body.monad-view main article:hover img {
+    body.monad-view main article:is(:hover, .idle-hover) img {
         border-width: clamp(0.1rem, calc(0.5rem - 0.4rem * var(--zoom)), 0.5rem);
     }
-    body.monad-view main article.monad-center:hover img {
+    body.monad-view main article.monad-center:is(:hover, .idle-hover) img {
         border-width: clamp(0.06rem, calc(0.12rem - 0.06rem * var(--zoom)), 0.12rem);
     }
     /* All visible peripherals: at zoom 0 these sit at a very small --scale (~0.02-0.05), and since the border scales with the image's transform a fixed-rem border renders as a sub-pixel hairline; thinner still under the hover enlargement. */
-    body.monad-view main article:not(.monad-center):not(.monad-low):not(.monad-zero):hover img {
+    body.monad-view main article:not(.monad-center):not(.monad-low):not(.monad-zero):is(:hover, .idle-hover) img {
         border-width: clamp(0.5rem, calc(var(--item-scale-base) / var(--scale) * 2rem), 4rem);
     }
 }
@@ -1305,6 +1347,10 @@ body.monad-view main article.monad-center img {
     box-sizing: border-box;
     border: 1px solid var(--midgray);
     max-width: 100%;
+    /* Deliberately no transition here. This is the only id-level rule on the thumb, so a shorthand written here
+       outranks every class-level one below and, being a shorthand, replaces their whole list rather than adding
+       to it: a border-colour transition put here took the width and height easing off the selection. The edge
+       colour is eased in those rules instead, alongside what they already carry. */
 }
 
 
@@ -1315,7 +1361,7 @@ article h2 {
     top: 100%;
     left: 50%;
     font-size: 2rem; /* Fixed reference size: all sizing via transform --h2-scale */
-    font-weight: 550;
+    font-weight: 750;
     text-align: center;
     --h2-scale: calc(0.25 * var(--subset-label-boost));
     transform: translateX(-50%) scale(var(--h2-scale));
@@ -1329,6 +1375,7 @@ article h2 {
     max-width: 35ch;
     /* Default is single-line truncation; on hover, linked-hover and monad-center max-height animates up and white-space switches to normal so the title reflows in sync with the image scale transition. */
     white-space: nowrap;
+    /* Clipped to the padding box, which is where the halo's room comes from: see the padding block near the end. */
     overflow: hidden;
     text-overflow: ellipsis;
     max-height: 1.25em;
@@ -1341,7 +1388,7 @@ body.labels-hidden article h2 {
 }
 
 @media (any-hover: hover) {
-    body.labels-hidden article:hover h2 {
+    body.labels-hidden article:is(:hover, .idle-hover) h2 {
         visibility: visible;
         transition: transform 0.15s ease, opacity 0.15s ease, max-height 0.15s ease, visibility 0s 0s;
         text-wrap: balance;
@@ -1389,16 +1436,16 @@ article h3 {
 
 @media (any-hover: hover) {
 
-    article:hover {
+    article:is(:hover, .idle-hover) {
         overflow: visible;
         z-index: 100;
     }
 
-    article:hover img,
-    article:hover h2 {
+    article:is(:hover, .idle-hover) img,
+    article:is(:hover, .idle-hover) h2 {
         cursor: pointer;
     }
-    article:hover h2,
+    article:is(:hover, .idle-hover) h2,
     article.select-hover-hold h2 {
         /* Hover label bump, reduced proportionally as images grow */
         --h2-scale: calc((0.25 + 0.1125 * var(--item-scale-base) / var(--item-scale)) * var(--subset-label-boost));
@@ -1416,7 +1463,7 @@ article h3 {
         text-wrap: balance;
     }
 
-    article:not(.monad-center):hover img {
+    article:not(.monad-center):is(:hover, .idle-hover) img {
         /* Hover bump for peripherals in map view, and the default for monad peripherals (overridden below). */
         --hover-amount: max(0.05, calc(0.70 * var(--item-scale-base) / var(--item-scale) - 0.06));
         transform: scale(calc(var(--item-scale) * (1 + var(--hover-amount)) * var(--placeholder-scale-factor, 1)));
@@ -1426,18 +1473,18 @@ article h3 {
     }
 
     /* Map placeholders are --scale-capped at rest (min(--item-scale, 0.11), see the cap rule below), but the shared hover transform uses the raw uncapped --item-scale, so hovering a placeholder at high zoom uncapped it and it leapt past the regular images. */
-    body:not(.monad-view):not(.list-view):not(.search-view) article.placeholder-img:not(.monad-center):hover img {
+    body:not(.monad-view):not(.list-view):not(.search-view) article.placeholder-img:not(.monad-center):is(:hover, .idle-hover) img {
         transform: scale(calc(var(--scale) * (1 + var(--hover-amount)) * var(--placeholder-scale-factor, 1)));
         margin-top: calc(-100% * (1 - var(--scale) * (1 + var(--hover-amount)) * var(--placeholder-scale-factor, 1)));
     }
 
     /* Monad peripheral hover: 0.25x the map bump. Related items sit close to the focused centre, and the map's bump is calibrated for items spread across the whole viewport, not a tight cluster: 0.25x keeps the feedback from competing with the centre. */
-    body.monad-view article:not(.monad-center):hover img {
+    body.monad-view article:not(.monad-center):is(:hover, .idle-hover) img {
         --hover-amount: max(0, calc((0.70 * var(--item-scale-base) / var(--item-scale) - 0.06) * 0.25));
     }
 
     /* Monad peripheral hover for PLACEHOLDERS: 0.125x the map bump, half the regular-image monad value. */
-    body.monad-view article.placeholder-img:not(.monad-center):hover img {
+    body.monad-view article.placeholder-img:not(.monad-center):is(:hover, .idle-hover) img {
         --hover-amount: max(0, calc((0.70 * var(--item-scale-base) / var(--item-scale) - 0.06) * 0.125));
     }
 
@@ -1445,7 +1492,7 @@ article h3 {
 
 /* Desktop: slightly larger hover labels to match monad-scale proportion */
 @media (any-hover: hover) and (min-width: 768px) {
-    article:hover h2,
+    article:is(:hover, .idle-hover) h2,
     article.select-hover-hold h2 {
         --h2-scale: calc((0.25 + 0.1125 * var(--item-scale-base) / var(--item-scale)) * 1.15 * var(--subset-label-boost));
     }
@@ -1456,7 +1503,7 @@ body.monad-view article:not(.monad-center) {
 }
 
 /* Monad hover: lift the hovered PERIPHERAL well above the z-index: 80 that the rule above pins all peripherals to. */
-body.monad-view article:not(.monad-center):hover {
+body.monad-view article:not(.monad-center):is(:hover, .idle-hover) {
     z-index: 1000;
 }
 
@@ -1479,14 +1526,14 @@ body.animated.monad-view:not(.list-view) main article.has-sub:not(.monad-center)
     --map-sub-h: 2.9rem;
 }
 @media (any-hover: hover) {
-    body:not(.monad-view):not(.list-view) main article:hover,
+    body:not(.monad-view):not(.list-view) main article:is(:hover, .idle-hover),
     body:not(.monad-view):not(.list-view) main article.select-hover-hold {
         /* Hover bump, slight and zoom-dependent. The h2 reads this same variable (rule below), so title and stack bump together. */
         --map-label-scale: calc((0.25 + 0.1125 * var(--item-scale-base) / var(--item-scale)) * var(--subset-label-boost));
     }
 }
 @media (any-hover: hover) and (min-width: 768px) {
-    body:not(.monad-view):not(.list-view) main article:hover,
+    body:not(.monad-view):not(.list-view) main article:is(:hover, .idle-hover),
     body:not(.monad-view):not(.list-view) main article.select-hover-hold {
         /* Desktop variant (extra 1.15 factor), shared by title and stack. */
         --map-label-scale: calc((0.25 + 0.1125 * var(--item-scale-base) / var(--item-scale)) * 1.15 * var(--subset-label-boost));
@@ -1505,12 +1552,17 @@ body.animated.monad-view:not(.list-view) main article:not(.monad-center) h3 {
     padding: 0.15em 0 0 0; /* matches monad-center h3 padding-top */
     font-size: 2rem;
     font-weight: 250; /* matches monad-center h3, so the map→monad handoff doesn't jump weight */
+    /* No halo at rest, as for the title and the two meta lines. Overridden here rather than on the base `article h3`
+       rule, which the monad centre's subtitle shares and which keeps its own. The hover rule further down is where
+       this gains one, for the one item the reader is reading. */
+    text-shadow: none;
     line-height: 1.3;
     transform: translateX(-50%) scale(var(--map-label-scale));
     transform-origin: top center;
     width: max-content;
     max-width: 40ch;
     white-space: nowrap;
+    /* Clipped to the padding box, which is where the halo's room comes from: see the padding block near the end. */
     overflow: hidden;
     text-overflow: ellipsis;
     /* One line as a length, for the same reason as the authors and source below: see that rule. */
@@ -1533,6 +1585,8 @@ body.animated.monad-view:not(.list-view) main article:not(.monad-center) .detail
     transform-origin: top center;
     width: max-content;
     text-align: center;
+    /* The ring labels of the second selector travel across the screen during a monad transition and should not
+       catch a click on the way; the map's own stack is inert for the reason given with the h3 above. */
     pointer-events: none;
     opacity: 1;
     line-height: 1.3;
@@ -1557,10 +1611,13 @@ body.animated.monad-view:not(.list-view) main article:not(.monad-center) .detail
     font-size: 1.5rem;
     font-weight: 250;
     color: var(--midgray);
-    text-shadow: 0 0 .15em var(--bg), 0 0 .35em var(--bg);
+    /* No halo at rest, as for the title and the subtitle: the resting map is read as a whole, and a knock-out
+       behind every author line thickens it. The hover rule further down is where these gain one, for the one item
+       the reader is actually reading. */
     width: max-content;
     max-width: 45ch;
     white-space: nowrap;
+    /* Clipped to the padding box, which is where the halo's room comes from: see the padding block near the end. */
     overflow: hidden;
     text-overflow: ellipsis;
     /* One line, stated as a length. These are nowrap here and wrap to two in the centre, and a box that gains a line has nothing to interpolate unless both ends are lengths: max-height: none to 2.5em is a jump, 1.3em to 2.5em unrolls. */
@@ -1593,7 +1650,7 @@ body.labels-hidden main article .detail-fields {
 }
 @media (any-hover: hover) {
     /* Keep the title on one line while the stack below it can show, since the deterministic offsets assume a single title line. In the labels-hidden overview the multi-line hover expansion still applies. */
-    body:not(.monad-view):not(.list-view):not(.labels-hidden) main article:hover h2,
+    body:not(.monad-view):not(.list-view):not(.labels-hidden) main article:is(:hover, .idle-hover) h2,
     body:not(.monad-view):not(.list-view):not(.labels-hidden) main article.select-hover-hold h2 {
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -1601,26 +1658,55 @@ body.labels-hidden main article .detail-fields {
     }
 
     /* Hover ladder: each line at full opacity, gated one rung earlier than its rest ramp. --label-opacity is 0 or 0.7, so /0.7 is a 0|1 gate on "title visible at rest". */
-    body:not(.monad-view):not(.list-view) main article:hover h3,
+    body:not(.monad-view):not(.list-view) main article:is(:hover, .idle-hover) h3,
     body:not(.monad-view):not(.list-view) main article.select-hover-hold h3 {
         opacity: calc(var(--label-opacity, 0) / 0.7);
     }
-    body:not(.monad-view):not(.list-view) main article:hover .detail-fields .authors,
+    body:not(.monad-view):not(.list-view) main article:is(:hover, .idle-hover) .detail-fields .authors,
     body:not(.monad-view):not(.list-view) main article.select-hover-hold .detail-fields .authors {
         opacity: calc(var(--label-opacity, 0) / 0.7 * clamp(0, (var(--zoom) - var(--map-rung-sub)) * 1000, 1));
     }
-    body:not(.monad-view):not(.list-view) main article:hover .detail-fields .source,
+    body:not(.monad-view):not(.list-view) main article:is(:hover, .idle-hover) .detail-fields .source,
     body:not(.monad-view):not(.list-view) main article.select-hover-hold .detail-fields .source {
         opacity: calc(var(--label-opacity, 0) / 0.7 * clamp(0, (var(--zoom) - var(--map-rung-authors)) * 1000, 1));
     }
     /* No subtitle: authors and source each move up one rung. */
-    body:not(.monad-view):not(.list-view) main article:not(.has-sub):hover .detail-fields .authors,
+    body:not(.monad-view):not(.list-view) main article:not(.has-sub):is(:hover, .idle-hover) .detail-fields .authors,
     body:not(.monad-view):not(.list-view) main article:not(.has-sub).select-hover-hold .detail-fields .authors {
         opacity: calc(var(--label-opacity, 0) / 0.7);
     }
-    body:not(.monad-view):not(.list-view) main article:not(.has-sub):hover .detail-fields .source,
+    body:not(.monad-view):not(.list-view) main article:not(.has-sub):is(:hover, .idle-hover) .detail-fields .source,
     body:not(.monad-view):not(.list-view) main article:not(.has-sub).select-hover-hold .detail-fields .source {
         opacity: calc(var(--label-opacity, 0) / 0.7 * clamp(0, (var(--zoom) - var(--map-rung-sub)) * 1000, 1));
+    }
+
+    /* All four lines are bare at rest, so the resting map reads as a whole. The hovered item's text, though, is
+       read against whatever the map has underneath it, and on a dense patch a line lands across a thumbnail or a
+       netvis edge. It gets a knock-out in the page's own colour rather than a plate behind it: the shadow follows
+       the glyphs, so there is no box to square off, no edge to soften and no padding to paint — the title's own
+       0.5em of top padding would otherwise show as a block of ground above the letters. Repeated radii rather than
+       larger ones: each pass compounds the same colour, so close to the strokes it goes near-opaque while the
+       widest one trails off with no visible edge. A line still below its rung is at opacity 0 and takes its shadow
+       with it, so nothing appears behind text that is not drawn. The article's own z-index: 100 on hover already
+       lifts the whole stack over its neighbours, and (any-hover: hover) keeps all of this off a phone. */
+    body:not(.monad-view):not(.list-view) main article:is(:hover, .idle-hover) h2,
+    body:not(.monad-view):not(.list-view) main article:is(:hover, .idle-hover) h3,
+    body:not(.monad-view):not(.list-view) main article:is(:hover, .idle-hover) .detail-fields .authors,
+    body:not(.monad-view):not(.list-view) main article:is(:hover, .idle-hover) .detail-fields .source,
+    body:not(.monad-view):not(.list-view) main article.select-hover-hold h2,
+    body:not(.monad-view):not(.list-view) main article.select-hover-hold h3,
+    body:not(.monad-view):not(.list-view) main article.select-hover-hold .detail-fields .authors,
+    body:not(.monad-view):not(.list-view) main article.select-hover-hold .detail-fields .source {
+        text-shadow: var(--label-knockout);
+    }
+
+    /* The detail view's ring: a title is drawn wherever its thumbnail sits on the ring, and the ring is laid over
+       the selected item's image rather than over open background — so this is not only the hovered one's problem.
+       Every label the ring carries takes the knock-out, at rest as well, which is where the map differs: there a
+       resting label sits on the background and only the one being read needs it. The centre is excluded either
+       way: its own title has the card to itself. */
+    body.monad-view main article:not(.monad-center) h2 {
+        text-shadow: var(--label-knockout);
     }
 }
 
@@ -1705,7 +1791,7 @@ body.monad-view article.monad-show-label h2 {
 }
 
 @media (any-hover: hover) {
-    body.monad-view article:not(.monad-center):hover h2,
+    body.monad-view article:not(.monad-center):is(:hover, .idle-hover) h2,
     body.monad-view article:not(.monad-center).select-hover-hold h2 {
         visibility: visible;
         opacity: 1;
@@ -1718,12 +1804,12 @@ body.monad-view article.monad-show-label h2 {
     /* A hovered item that is only similar reads at exactly the size a linked one carries at rest: hovering promotes
        it into the labelled tier rather than nudging it up from its own. Flat, without the zoom term above, so the
        two match at every zoom. */
-    body.monad-view article:not(.monad-center):not(.monad-linked):hover h2,
+    body.monad-view article:not(.monad-center):not(.monad-linked):is(:hover, .idle-hover) h2,
     body.monad-view article:not(.monad-center):not(.monad-linked).select-hover-hold h2 {
         --h2-scale: var(--monadLabelScaleLinked, 0.55);
     }
 
-    body.monad-view article:not(.monad-center):hover img,
+    body.monad-view article:not(.monad-center):is(:hover, .idle-hover) img,
     body.monad-view article:not(.monad-center).select-hover-hold img {
         opacity: 1;
         /* Include --placeholder-scale-factor so placeholders keep their reduced area on hover; without it, hovering dropped the factor and the placeholder leapt to full image size. */
@@ -1751,7 +1837,7 @@ body:where(.is-mobile).monad-view article:not(.monad-center) h3 {
         overflow: hidden;
     }
     /* On hover, let a linked item's title expand to multiple lines in sync with the other hover transitions. */
-    body.monad-view article.monad-linked:hover h2,
+    body.monad-view article.monad-linked:is(:hover, .idle-hover) h2,
     body.monad-view article.monad-linked.select-hover-hold h2 {
         white-space: normal;
         text-overflow: clip;
@@ -1814,7 +1900,7 @@ body.monad-view article.monad-center img {
 
 body.monad-view article.monad-center h2 {
     opacity: 1;
-    font-weight: 550;
+    font-weight: 750;
     --h2-scale: var(--monad-scale);
     cursor: pointer;
     padding-top: 0.75em;
@@ -2017,6 +2103,18 @@ body.monad-view article.monad-center .detail-fields .source {
                 opacity 0.33s ease;
 }
 
+/* No subtitle: authors and source each move up one rung, exactly as they do on the map (see the matching pair
+   there). Without this the centre read the item against rungs the map had not used for it, so an item with no h3
+   showed its source under the camera it was clicked at and then lost it the moment it became the centre. */
+body.monad-view article.monad-center:not(.has-sub) .detail-fields .authors {
+    opacity: clamp(0, (var(--zoom) - var(--map-rung-sub)) * 1000, 1);
+    max-height: calc(clamp(0, (var(--zoom) - var(--map-rung-sub)) * 8, 1) * 2.5em);
+}
+body.monad-view article.monad-center:not(.has-sub) .detail-fields .source {
+    opacity: clamp(0, (var(--zoom) - var(--map-rung-authors)) * 1000, 1);
+    max-height: calc(clamp(0, (var(--zoom) - var(--map-rung-authors)) * 8, 1) * 2.5em);
+}
+
 /* Registered so the two fade depths interpolate. An unregistered custom property is a token, and a token substituted into a gradient changes in one frame: the fades would blink in and out at the moment of crossing. */
 @property --text-mask-top {
     syntax: '<length>';
@@ -2028,10 +2126,6 @@ body.monad-view article.monad-center .detail-fields .source {
     inherits: false;
     initial-value: 0px;
 }
-body.monad-view article.monad-center .detail-fields .text {
-    transition: --text-mask-top 160ms ease, --text-mask-bot 160ms ease;
-}
-
 /* The description is a scroller, so the cursor names the axis rather than a direction: it is not a fold with an up and a down, it is a column that moves both ways. */
 body.monad-view article.monad-center .detail-fields .text::-webkit-scrollbar {
     width: 0;
@@ -2089,9 +2183,16 @@ body.monad-view article.monad-center .detail-fields .text {
        The width is not in the list: the measure is the same in every state, so there is nothing for it to travel. */
     background-color: transparent;
     box-shadow: 0 0 0 0.4em transparent;
+    /* One list for the whole element, because a shorthand replaces rather than extends: the reveal's opacity leg
+       (shared with the other four fields above) and the two registered mask depths (@property, registered so the
+       fades interpolate rather than blink) were both declared elsewhere on this same selector and silently
+       dropped here. */
     transition: max-height var(--uiTrans) var(--uiEase),
                 background-color var(--uiTrans) var(--uiEase),
-                box-shadow var(--uiTrans) var(--uiEase);
+                box-shadow var(--uiTrans) var(--uiEase),
+                opacity 0.33s ease,
+                --text-mask-top 160ms ease,
+                --text-mask-bot 160ms ease;
     cursor: default;
 }
 
@@ -2176,12 +2277,6 @@ body.monad-view article.monad-center .detail-fields .tags {
     gap: 0;
 }
 
-/* Mobile: cap authors & source width */
-/* mobile (was @media (max-width: 1000px) and (hover: none) and (pointer: coarse)) */
-body:where(.is-mobile).monad-view article.monad-center .detail-fields .authors,
-body:where(.is-mobile).monad-view article.monad-center .detail-fields .source {
-    max-width: min(calc(35ch + var(--zoom) * 40ch), 90vw);
-}
 
 
 /* Mobile: tags wrap and stay within viewport */
@@ -2300,7 +2395,7 @@ body:where(:not(.is-mobile)).monad-view article.monad-center h2 .title-link:hove
     text-decoration: underline;
     text-decoration-thickness: from-font;
     text-underline-offset: 0.12em;
-    /* The descenders of a 550-weight title at this size cross a solid rule; skipping them keeps the letterforms readable. */
+    /* The descenders of a 750-weight title at this size cross a solid rule; skipping them keeps the letterforms readable. */
     text-decoration-skip-ink: auto;
 }
 /* Pointing at either half underlines both. Title and subtitle are one link to one place, so answering on only
@@ -2356,7 +2451,7 @@ body.monad-view article.monad-center .detail-fields .seealso-link:visited {
     position: relative;
     /* Room for the arrow below, which is positioned absolutely and so takes no width of its own. */
     padding-left: 1.05em;
-    font-weight: 550;
+    font-weight: 750;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2366,7 +2461,7 @@ body.monad-view article.monad-center .detail-fields .seealso-link:visited {
 }
 
 /* See-also arrow: a 24-unit viewBox drawn as a 0.85em box through a mask, at stroke-width 2.5. It leads a
-   550-weight title, and a two-stroke arrow shows less ink than a multi-part glyph, so a lighter stroke read thin
+   750-weight title, and a two-stroke arrow shows less ink than a multi-part glyph, so a lighter stroke read thin
    beside it. */
 body.monad-view article.monad-center .detail-fields .seealso-link::before,
 #list-view .list-seealso a::before,
@@ -2438,7 +2533,7 @@ body.search-view article h2 {
 }
 
 @media (any-hover: hover) {
-    body.search-view article:hover h2 {
+    body.search-view article:is(:hover, .idle-hover) h2 {
         visibility: visible;
         opacity: 1;
         transition: transform 0.15s ease, opacity 0.15s ease, max-height 0.15s ease, visibility 0s 0s;
@@ -2508,9 +2603,12 @@ body.search-view article.search-hidden .detail-fields {
     /* No right inset: the pane keeps overflow: visible, so the backdrop reaches past the pane's own width. */
     top: 0; bottom: 0; left: 0;
     width: var(--tagBackdropW);
-    background: linear-gradient(to right, var(--bg) 40%, rgba(0,0,0,0) 100%);
-    -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%);
-    mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%);
+    /* The mask holds on a quarter of the way into the gradient's own fade and then takes it the rest of the way
+       down, so the two multiply into a longer, softer tail than either draws alone. The stops move with the solid
+       fraction above (0.6 here) to keep that shape when the width changes: 60% and 60 + 0.25 x 40. */
+    background: linear-gradient(to right, var(--bg) 60%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%);
     pointer-events: none;
     opacity: 1;
     transition: opacity var(--uiTrans) var(--uiEase);
@@ -2587,7 +2685,7 @@ body.map-interacting #tag-cloud .tag-chip {
     transition: none;
 }
 
-#tag-cloud .tag-chip.dim { opacity: 0.33; }
+#tag-cloud .tag-chip.dim { opacity: var(--tag-dim); }
 
 #tag-cloud .tag-chip.hidden {
     opacity: 0;
@@ -2607,7 +2705,7 @@ body.map-interacting #tag-cloud .tag-chip {
 #tag-cloud .tag-chip.active:hover { text-decoration: line-through; }
 
 #tag-cloud .tag-chip.active {
-    --wght: 550;
+    --wght: 750;
     line-height: 1em;
     color: var(--bg);
     background-color: var(--fg);
@@ -2616,7 +2714,7 @@ body.map-interacting #tag-cloud .tag-chip {
 }
 
 #tag-cloud .tag-chip.focus {
-    --wght: 550;
+    --wght: 750;
 }
 
 /* Off-screen element for measuring tag chip width in JS */
@@ -2626,7 +2724,7 @@ body.map-interacting #tag-cloud .tag-chip {
     left: -9999px;
     visibility: hidden;
     font-size: 2rem;
-    font-weight: 550;
+    font-weight: 750;
     line-height: 1.33em;
     white-space: nowrap;
 }
@@ -2881,7 +2979,7 @@ body.has-tag-sidebar #grid-view {
 }
 .grid-title {
     font-size: 1.2rem;
-    font-weight: 550;
+    font-weight: 750;
     line-height: 1.2;
     text-wrap: balance;
     overflow-wrap: break-word;
@@ -3123,7 +3221,7 @@ body.is-mobile .grid-inner .grid-card * {
     margin-top: 0.45rem;
     padding-left: 1.05em;
     color: var(--fg);
-    font-weight: 550;
+    font-weight: 750;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3271,9 +3369,8 @@ body.list-view #list-view img {
        a phone was ~1.8s of rendering after a close and killed the renderer outright. */
     content-visibility: auto;
     contain-intrinsic-size: auto 6rem;
-    /* transform on the FAST hover clock, everything else slow: a shifted neighbour releases its shift through this
-       rule once its .list-shift-* class goes, and on the slow clock it drifted for 750ms after becoming the hovered
-       row. */
+    /* transform on the FAST hover clock, everything else slow, so a row's own hover response lands at hover speed
+       rather than drifting for 750ms on the selection clock. */
     transition: transform var(--uiHoverTrans) var(--listEase),
                 background-color var(--listTrans) var(--listEase),
                 padding-top var(--listTrans) var(--listEase),
@@ -3327,8 +3424,8 @@ body.list-view #list-view img {
     padding: 3.9rem 0.6rem 1.5rem;
     font-size: 1.4rem;
     line-height: 1.2;
-    /* Matches the titles' 550: the year carries the same weight as the things it heads, and is set apart by colour and space instead. */
-    font-weight: 550;
+    /* Matches the titles' 750: the year carries the same weight as the things it heads, and is set apart by colour and space instead. */
+    font-weight: 750;
     color: var(--midgray);
     letter-spacing: 0.02em;
     user-select: none;
@@ -3649,32 +3746,23 @@ body:where(:not(.is-mobile)).list-view #list-view .list-item:not(.selected).row-
     height: auto;
     position: relative;
     z-index: 1;
-    /* Transitions only for selection toggles to prevent resize jitter */
-    transition: none;
+    /* Transitions only for selection toggles to prevent resize jitter. The edge colour is the exception, and
+       cannot cause any: the tag preview lifts it to --fg and back, and in one frame that reads as a flicker. */
+    transition: border-color var(--uiHoverTrans) var(--uiEase);
     will-change: width, height;
 }
 
 .list-item.selected .list-thumb,
 .list-item.animating .list-thumb {
     transition: width var(--listTrans) var(--listEase),
-                height var(--listTrans) var(--listEase);
+                height var(--listTrans) var(--listEase),
+                border-color var(--uiHoverTrans) var(--uiEase);
 }
 
 /* Lightbox affordance: zoom-in cursor on list thumbnails (desktop) */
 body.list-view .list-item.selected .list-thumb { cursor: zoom-in; }
 /* Placeholder images (solid-color): no zoom-in affordance */
 body.list-view .list-item.placeholder-img.selected .list-thumb { cursor: default; }
-
-/* Items without an image are a grey square turned 45°, in every view: the map, the detail, the list, the grid and
-   the image bridge between views. Drawn as a clip to the diamond inscribed in the square rather than a rotation,
-   so it stays inside the square's own box: each view scales and anchors these from a different origin (bottom
-   centre on the map, a corner in the list and the grid), and a rotation would pivot about that origin and drift. */
-article.placeholder-img img,
-.list-item.placeholder-img .list-thumb,
-#grid-view .grid-card.placeholder-img .grid-thumb,
-.bridge-img.bridge-img-placeholder {
-    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-}
 
 /* Placeholder images are treated as regular images at every layout level but rendered at a fraction of the visual size via --placeholder-scale-factor. */
 article.placeholder-img img {
@@ -3725,7 +3813,7 @@ body:not(.monad-view):not(.list-view) article.placeholder-img img {
 /* No state-dependent line-height: 1.2 to 1.25 on selection snapped the text block's height in one frame. Title and subtitle grow by transform rather than font-size, so their layout height is constant and one value serves both. */
 
 .list-title {
-    font-weight: 550;
+    font-weight: 750;
     color: var(--fg);
     text-wrap: balance;
     font-size: inherit;
@@ -3944,7 +4032,7 @@ body.is-mobile .list-item:not(.selected) .list-extra {
     box-sizing: border-box;
     margin-top: 0.45rem;
     color: var(--fg);
-    font-weight: 550;
+    font-weight: 750;
     position: relative;
     text-decoration: none;
     white-space: nowrap;
@@ -3969,7 +4057,9 @@ body.is-mobile .list-item:not(.selected) .list-extra {
     left: 0;
     height: 100%;
     width: var(--info-width);
-    z-index: 2000;
+    /* Above the welcome card (4000), so "Learn More" slides the panel OVER it rather than out from behind it —
+       which is the whole gesture on a phone, where the panel is the full width. Still below the loading overlay. */
+    z-index: 4100;
     background: var(--bg2);
     color: var(--fg);
     overflow-y: auto;
@@ -3994,15 +4084,15 @@ body.info-open {
 }
 
 #info-overlay h1, #info-overlay h2 { font-size: 3rem; line-height: 1.25em; }
-#info-overlay h1 { font-weight: 600; margin: 0; }
-#info-overlay h2 { font-weight: 300; margin: 0em 0 1em 0; text-wrap: balance; }
-#info-overlay h3 { font-size: 2rem; font-weight: 550; margin: 1.5em 0 0.5em; }
+#info-overlay h1 { font-weight: 750; margin: 0; }
+#info-overlay h2 { font-weight: 250; margin: 0em 0 1em 0; text-wrap: balance; }
+#info-overlay h3 { font-size: 2rem; font-weight: 750; margin: 1.5em 0 0.5em; }
 #info-overlay p { margin: 0 0 1em; line-height: 1.5em; }
 #info-overlay a {
     color: var(--midgray);
     text-decoration: underline;
     transition: color 0.225s ease;
-    font-weight: 400;
+    font-weight: 500;
 }
 #info-overlay a:hover {
     color: var(--fg);
@@ -4019,7 +4109,8 @@ body.info-open {
     top: var(--edge);
     /* Inset the button's RIGHT edge by --edge from the panel's right edge, matching its --edge inset from the top. */
     left: calc(var(--info-width) - var(--edge) - var(--ui-btn-size));
-    z-index: 2001;
+    /* One above the panel it closes, as before. */
+    z-index: 4101;
     opacity: 0;
     pointer-events: none;
     /* Travel exactly the sidebar's width so the button slides in lockstep with the panel: same distance, duration and easing. -100vw made the button traverse the whole viewport while the panel moved only --info-width, so on desktop it lagged and caught up only at the end. --info-width is in viewport units, so it resolves against the viewport here rather than the button's own width. */
@@ -4257,7 +4348,6 @@ html:where(.is-mobile) {
 
 /* .ui-btn goes to fixed rem here rather than scaling --ui-btn-size, so the mirror has to follow by hand. */
     --ui-btn-w: 4rem;
-    --ui-tuck-by: calc(var(--edge) + var(--ui-btn-w) + 12px);
 }
 
 /* Larger touch targets for UI buttons */
@@ -4424,11 +4514,6 @@ body:where(.is-mobile).monad-view.monad-zoomed-in main {
     /* padding-bottom set dynamically by updateMobileItemDetailScrollSpace() */
 }
 
-/* Limit title and subtitle width, matched so they share a visual column. */
-body:where(.is-mobile).monad-view article.monad-center h2,
-body:where(.is-mobile).monad-view article.monad-center h3 {
-    max-width: min(40ch, 100vw);
-}
 
 /* Do not fade surrounding items in map view; they leave the viewport by motion only */
 body:where(.is-mobile):not(.monad-view) article:not(.monad-center) {
@@ -4544,32 +4629,6 @@ body:where(.is-mobile).monad-view article.monad-center .detail-fields .seealso-l
     font-size: calc(3rem / 1.1);
 }
 
-/* Tucking the controls away on a phone (see _setUiTucked). The transition only runs during the move, because the
-   same property carries the bounce correction (--overscroll-y), which has to stay instant. */
-/* mobile (was @media (max-width: 1000px) and (hover: none) and (pointer: coarse)) */
-:where(body.is-mobile) #info-btn,
-:where(body.is-mobile) #search-box,
-:where(body.is-mobile) #search-cancel-btn,
-:where(body.is-mobile) #share-btn,
-:where(body.is-mobile) #shuffle-btn,
-:where(body.is-mobile) #mode-btn {
-    will-change: translate;
-}
-body:where(.is-mobile).ui-tucked #info-btn,
-body:where(.is-mobile).ui-tucked #search-box,
-body:where(.is-mobile).ui-tucked #search-cancel-btn {
-    translate: 0 calc(-1 * var(--ui-tuck-by));
-}
-body:where(.is-mobile).ui-tucked #shuffle-btn,
-body:where(.is-mobile).ui-tucked #share-btn,
-body:where(.is-mobile).ui-tucked #mode-btn {
-    /* Further than the top ones: by the height of the browser's own bottom bar as well (100lvh - 100svh, the
-       difference it makes to the window when shown). The bar slides away as the page scrolls down and the window
-       grows by that much, which brought controls that had only just cleared the old bottom edge back into view.
-       The first line is for browsers without those units. */
-    translate: 0 calc(var(--ui-tuck-by) + 80px);
-    translate: 0 calc(var(--ui-tuck-by) + 100lvh - 100svh);
-}
 /* On a phone the share button takes the view switcher's corner: it only shows in the item detail, where the
    switcher steps away (body.is-mobile.monad-view #mode-btn), and down there it sits with shuffle rather than
    crowding the × at the top. */
@@ -4579,45 +4638,295 @@ body:where(.is-mobile).ui-tucked #mode-btn {
     bottom: var(--edge);
     left: var(--edge);
 }
-/* Each control's own list, with the translate added. */
-body:where(.is-mobile).ui-tuck-moving #search-cancel-btn,
-body:where(.is-mobile).ui-tuck-moving #share-btn,
-body:where(.is-mobile).ui-tuck-moving #shuffle-btn {
-    transition: opacity var(--uiHoverTrans) var(--uiEase),
-                background var(--uiHoverTrans) var(--uiEase),
-                color var(--uiHoverTrans) var(--uiEase),
-                translate 0.32s var(--uiEase);
-}
-body:where(.is-mobile).ui-tuck-moving #info-btn {
-    transition: opacity var(--uiHoverTrans) var(--uiEase),
-                background var(--uiHoverTrans) var(--uiEase),
-                color var(--uiHoverTrans) var(--uiEase),
-                transform var(--infoTrans) var(--uiEase),
-                translate 0.32s var(--uiEase);
-}
-body:where(.is-mobile).ui-tuck-moving #search-box {
-    transition: width var(--uiTrans) var(--uiEase),
-                opacity var(--uiTrans) var(--uiEase),
-                transform var(--uiTrans) var(--uiEase),
-                background var(--uiHoverTrans) var(--uiEase),
-                translate 0.32s var(--uiEase);
-}
-body:where(.is-mobile).ui-tuck-moving #mode-btn {
-    transition: translate 0.32s var(--uiEase);
-}
-/* The open box with a query in it carries its own list (#search-box.open.search-fit, the short width clock for
-   typing), which outranked the one above and left translate out: the box jumped out of view and back while the ×
-   beside it slid. Restated here with the translate added. */
-body:where(.is-mobile).ui-tuck-moving #search-box.open.search-fit {
-    transition: width 0.15s var(--uiEase),
-                opacity var(--uiTrans) var(--uiEase),
-                transform var(--uiTrans) var(--uiEase),
-                background var(--uiHoverTrans) var(--uiEase),
-                translate 0.32s var(--uiEase);
-}
 /* An item without an image: a quarter smaller than elsewhere, next to a phone's two narrow columns. */
 :where(body.is-mobile) #grid-view .grid-card.placeholder-img:not(.selected) .grid-thumb {
     width: calc(var(--ui-btn-w) * 0.34);
 }
 
 
+
+/* ── WELCOME POPOVER ────────────────────────────────────────────────────────
+   A greeting over the loaded atlas, shown only on an address that named nothing (see components.js). It is a
+   modal: the scrim takes pointer events so the map underneath cannot be panned or clicked by accident, which is
+   also what makes "Start Exploring" the only thing the reader has to do to get on with it. */
+#welcome {
+    position: fixed;
+    inset: 0;
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--edge);
+    box-sizing: border-box;
+    /* The page's own background, thinned: the atlas stays legible behind the card as a hint of where the reader
+       has landed, rather than being blanked out. */
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    opacity: 0;
+    transition: opacity var(--infoTrans) var(--uiEase);
+    pointer-events: auto;
+}
+#welcome[hidden] { display: none; }
+#welcome.visible { opacity: 1; }
+
+#welcome-card {
+    /* Centred: the card is a short greeting rather than something to read down, and the three bubbles above the
+       text are a symmetrical drawing that a ragged-right column sat awkwardly beside. */
+    text-align: center;
+    /* Wide enough that the heading holds one line at its 2.5rem: it measures ~33.5rem, and the card's own 2rem
+       sides take 4rem, so anything under 37.5rem broke "Welcome to Data in Dialogue" in two. Both terms are in rem,
+       so the fit holds at any window width. The 100% is what binds on a phone, where it wraps and should. */
+    width: min(39rem, 100%);
+    max-height: calc(100% - 2 * var(--edge));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-sizing: border-box;
+    padding: 2rem;
+    background: var(--bg2);
+    color: var(--fg);
+    /* Square corners, and no shadow or glow: nothing else here is a raised surface, and the card separates from
+       the map by the scrim and by its own --bg2 fill alone. */
+    font-size: 1.5rem;
+    line-height: 1.4;
+    /* The card does not travel, in either direction: it fades in where it will sit and fades out from there. The
+       scrim's own opacity (see #welcome) is the whole of the transition. */
+}
+
+#welcome-figure {
+    margin: 0 0 1.5rem;
+    /* No filter, in either scheme: the bubbles are drawn with their own white fill, so the shapes read against a
+       dark background as they do against a light one. An inversion was tried and dropped: it was unreliable in
+       Safari on iOS, and the drawing does not need it. */
+}
+/* Undoes the map item rule that `body img` applies to every image on the page (the --item-scale transform would
+   render this one at 3% of its size), exactly as #info-overlay img does for the same drawing in the panel. */
+#welcome-figure img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    transform: none;
+    filter: none;
+    transition: none;
+    border: none;
+    z-index: auto;
+}
+
+#welcome-card h1 {
+    display: block;
+    margin: 0 0 0.75rem;
+    /* Against the card's own 1.5rem body: a clear step up, so the greeting reads as a heading rather than as a
+       first line set in bold. */
+    font-size: 2.5rem;
+    font-weight: 750;
+    line-height: 1.25;
+    text-wrap: balance;
+}
+#welcome-card p {
+    display: block;
+    margin: 0 0 1.75rem;
+    font-weight: 250;
+    /* No orphan: the paragraph is short enough that one word alone on the last line is the first thing the eye
+       lands on. pretty rather than balance, which browsers cap at a few lines and skip on a block this tall. */
+    text-wrap: pretty;
+}
+
+#welcome-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+}
+.welcome-btn {
+    font: inherit;
+    font-size: 1.4rem;
+    font-weight: 750;
+    color: var(--midgray);
+    background: transparent;
+    border: 1.5px solid var(--gray);
+    border-radius: 2em;
+    padding: 0.5em 1.1em;
+    /* One line each: wrapped, the two pills end up different heights and the row reads as a mistake. */
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background var(--uiHoverTrans) var(--uiEase),
+                border-color var(--uiHoverTrans) var(--uiEase),
+                color var(--uiHoverTrans) var(--uiEase);
+}
+/* The one the reader is most likely to want, so it carries a fill and the other stays an outline. Listed after
+   the base rule, which is what lets its colour and its hover win at equal specificity. */
+.welcome-btn-go {
+    background: var(--gray);
+    border-color: var(--gray);
+    color: var(--fg);
+}
+/* Hover only where there is a pointer to hover with: on a phone the :hover state sticks after a tap. Both step up
+   in weight: the outline comes forward to full --fg text and edge over the page's own --bg, and the filled one
+   goes all the way to --fg with the card's background as its text. */
+@media (any-hover: hover) {
+    .welcome-btn:hover {
+        background: var(--bg);
+        border-color: var(--fg);
+        color: var(--fg);
+    }
+    .welcome-btn-go:hover {
+        background: var(--fg);
+        border-color: var(--fg);
+        color: var(--bg2);
+    }
+}
+/* A phone never reaches the block above, so the press answers for the hover: the same two appearances, driven by
+   the .recent-press class the corner buttons already use (pointerdown, held 750ms). Not bare :active, which iOS
+   withholds from a <button> unless something has unlocked it, and which would be gone before the card has faded.
+   Listed after the hover rules, and -go after the plain one, so the press wins at equal specificity.
+   transition: none on the way in, as on .ui-btn: the press lands at once and only the release fades back. */
+.welcome-btn.recent-press {
+    background: var(--bg);
+    border-color: var(--fg);
+    color: var(--fg);
+    transition: none;
+}
+.welcome-btn-go.recent-press {
+    background: var(--fg);
+    border-color: var(--fg);
+    color: var(--bg2);
+    transition: none;
+}
+.welcome-btn:focus-visible { outline: 2px solid var(--midgray); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+    #welcome { transition: none; }
+}
+
+/* Phone: the card takes the width it can get, and the buttons sit side by side at full stretch so both are an
+   easy thumb target. */
+:where(body.is-mobile) #welcome-card {
+    padding: 1.5rem;
+    font-size: 1.6rem;
+}
+/* The phone sets the body a touch larger (1.6rem), so the heading follows it up to keep the same step. */
+:where(body.is-mobile) #welcome-card h1 { font-size: 2.3rem; }
+:where(body.is-mobile) .welcome-btn {
+    flex: 1 1 0;
+    text-align: center;
+    /* Narrower sides, since the two share one phone-width row and both stay on one line. */
+    padding: 0.55em 0.5em;
+}
+
+
+/* ── TAG PEEK ───────────────────────────────────────────────────────────────
+   Pointing at a tag previews the filter it would apply: everything that does not carry it drops to a third, so the
+   set the tag names separates out before the click commits to it. The matching items are the ones marked
+   (.tag-peek-match, written by tag.js for whichever view is on screen), and everything else in that view dims, bar the one being read —
+   fewer elements to touch on a gesture that fires as the pointer sweeps the cloud.
+   Desktop only: the tag sidebar is desktop-only to begin with, and this is a hover state.
+   Opacity is the same axis the committed filter uses on the map (article.tag-filtered-out is opacity 0), so the
+   preview lands where the click takes it. Items the filter has ALREADY removed are excluded: this rule outranks
+   their own hide, and without the guard a peek would fade them back in at a third. */
+@media (any-hover: hover) {
+    /* The clock for the preview, in both directions. It has to be declared on a selector that is still true while
+       the preview is being dropped, which is what .tag-peek-fade is for: tag.js holds it for one transition past
+       the release, so coming back is as quick as going out rather than falling to the map's own 750ms.
+       Deliberately NOT extended to .tag-peek-commit: a transition shorthand replaces the element's whole list, and
+       once the click lands it is the filter's own move — transform on the map, transform and width in the grid —
+       that has to keep its clock. The commit only needs the opacity to carry on downward, which the element's own
+       750ms does. */
+    body:is(.tag-peeking, .tag-peek-fade) main article,
+    body:is(.tag-peeking, .tag-peek-fade) #list-view .list-item,
+    body:is(.tag-peeking, .tag-peek-fade) #grid-view .grid-card {
+        transition: opacity var(--uiHoverTrans) var(--uiEase);
+    }
+
+    /* The selected item is exempt: it is what the view is currently about, and a question asked of the tags around
+       it is not a reason for it to step back. Its own tags are already marked in the cloud, so a tag it does not
+       carry is plainly not one of them without the item having to fade. */
+    body.tag-peeking:not(.list-view):not(.grid-view) main article:not(.tag-peek-match):not(.monad-center):not(.tag-filtered-out):not(.tag-transition-hide),
+    body.tag-peeking #list-view .list-item:not(.tag-peek-match):not(.selected):not(.list-out),
+    body.tag-peeking #grid-view .grid-card:not(.tag-peek-match):not(.selected):not(.grid-out) {
+        opacity: 0.15;
+    }
+
+    /* The click commits what the preview showed. Without this the marks come off first and the items being removed
+       climb back to full before the filter fades them, which reads as a flinch; here they carry straight on from
+       the little they were already at down to nothing. Held only for the length of that fade — see _commitTagPeek.
+       The selected item is exempt here too, for the same reason it is above: it never dimmed, so it has nothing to
+       carry on from, and pulling it to nothing and letting it come back once this class drops would be the flinch
+       this rule exists to prevent. Whether it goes or stays is the filter's own call (.tag-filtered-out, .list-out,
+       .grid-out), and that hide is what removes it. */
+    body.tag-peek-commit:not(.list-view):not(.grid-view) main article:not(.tag-peek-match):not(.monad-center),
+    body.tag-peek-commit #list-view .list-item:not(.tag-peek-match):not(.selected),
+    body.tag-peek-commit #grid-view .grid-card:not(.tag-peek-match):not(.selected) {
+        opacity: 0;
+    }
+
+    /* The matching items come forward as the rest steps back, wearing the mark the pointer makes on one of them:
+       the edge of the image at --fg instead of --midgray. Nothing grows — the bump belongs to the pointer, and a
+       whole set of items jumping at once would be a different gesture. A placeholder's square has no border
+       (border: none), so this passes over it. */
+    body.tag-peeking:not(.list-view):not(.grid-view) main article.tag-peek-match img,
+    body.tag-peeking #list-view .list-item.tag-peek-match .list-thumb,
+    body.tag-peeking #grid-view .grid-card.tag-peek-match .grid-thumb {
+        border-color: var(--fg);
+    }
+
+    /* And the text at full strength rather than the 0.7 all three views rest at (--label-opacity, --listTextOpacity,
+       --gridTextOpacity), which is what reads as the title being in --fg rather than a grey step off it. The map
+       keeps its own gate: --label-opacity is 0 or 0.7, so dividing by 0.7 lifts a title that is showing and leaves
+       one below the zoom threshold hidden, exactly as the hover rules do. Not the open item's own title, though:
+       that one is not on the map's label ladder at all, it is the heading of what is being read, and running it
+       through a gate that is 0 for the whole of monad view put it out altogether. */
+    body.tag-peeking:not(.list-view):not(.grid-view) main article.tag-peek-match:not(.monad-center) h2 {
+        opacity: calc(var(--label-opacity, 0) / 0.7);
+    }
+    body.tag-peeking #list-view .list-item.tag-peek-match:not(.selected):not(.animating) .list-main {
+        opacity: 1;
+    }
+    body.tag-peeking #grid-view .grid-card.tag-peek-match .grid-text {
+        opacity: 1;
+    }
+}
+
+
+/* ── ITEM PEEK ──────────────────────────────────────────────────────────────
+   The tag peek answered from the other side: pointing at an item steps back the tags it does not carry, so what is
+   left standing is what that item is about. One class more specific than .dim, the resting cue for a selected
+   item's tags, so it wins wherever the two meet. The chips already transition opacity on --tagOpacityTrans, which
+   is the hover clock, so nothing here needs to restate the timing. */
+@media (any-hover: hover) {
+    /* Neither the tag doing the filtering nor a chip that is out of the picture altogether: the first is the state
+       of the collection rather than a remark about one item, and the second is already at nothing. */
+    body.item-peeking #tag-cloud .tag-chip:not(.item-peek-match):not(.active):not(.hidden) {
+        opacity: var(--tag-dim);
+    }
+
+    /* And the other way round: a tag the pointed-at item does carry stands at full even where the selected item's
+       own cue has it dimmed, since the question being answered is what this item is about, not the other one. One
+       class more than .dim, so it wins wherever the two meet. */
+    body.item-peeking #tag-cloud .tag-chip.item-peek-match:not(.active):not(.hidden) {
+        opacity: 1;
+        color: var(--fg);
+    }
+}
+
+
+/* ── ROOM FOR THE LABEL HALO ─────────────────────────────────────────────────
+   Every label box is exactly as wide as its own text (width: max-content) and clips to it, so the knock-out was cut
+   flush with the first and last letter: a straight edge down either side, and a fainter one under the last line.
+   Padding is the room it needs. The boxes are content-box, so this widens what they clip to without touching
+   max-height or max-width — the single-line clamp, its animation to 6em and the ch measures all still mean what
+   they did — and each label is centred, by a transform for the two headings and by the stack's align-items for the
+   meta lines, so growing it symmetrically moves nothing.
+   Sideways only for the meta lines: those are flex items, and vertical padding on one would push the next down. The
+   two headings are absolutely positioned with nothing laid out after them, so their bottom is free.
+   The monad centre is left out throughout, and must be: its own title carries no halo, and its height is measured
+   (h2El.scrollHeight, which counts padding) to place the detail stack under it. */
+body:not(.list-view):not(.grid-view) main article:not(.monad-center) h2,
+body:not(.list-view):not(.grid-view) main article:not(.monad-center) h3,
+body:not(.list-view):not(.grid-view) main article:not(.monad-center) .detail-fields .authors,
+body:not(.list-view):not(.grid-view) main article:not(.monad-center) .detail-fields .source {
+    padding-left: 1.15em;
+    padding-right: 1.15em;
+}
+body:not(.list-view):not(.grid-view) main article:not(.monad-center) h2,
+body:not(.list-view):not(.grid-view) main article:not(.monad-center) h3 {
+    padding-bottom: 1.15em;
+}

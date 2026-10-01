@@ -106,7 +106,6 @@ function _setInfoOpen(open) {
 
 /** Show the info panel, adding #about to the address unless updateHash is false. */
 function showInfo(updateHash, animate = true) {
-    _setUiTucked(false);
     _setInfoOpen(true);
     // Ensure initial render before animating
     if (animate) {
@@ -197,6 +196,84 @@ if (!isMobile) {
         hideInfo(true);
     }, { passive: true });
 }
+
+/* ══ WELCOME POPOVER ═════════════════════════════════════════════════════════
+   A greeting over the loaded atlas, on a first sight of it and nothing else: an address that named an item, a tag,
+   a query, a view or the about panel is either a reader who knows where they are going or a link someone shared,
+   and a card in front of what they asked for is in the way. */
+
+const _welcomeEl = document.getElementById('welcome');
+/* Read at load, before the boot's own handleHashChange can rewrite the address: by the time the atlas is ready to
+   show this, the hash may already say what the router made of it. */
+const _welcomeAddressWasEmpty = !(window.location.hash || '').replace(/^#/, '')
+    && !(window.location.search || '');
+
+/** Whether the card is on screen. */
+function _welcomeOpen() {
+    return !!_welcomeEl && !_welcomeEl.hidden;
+}
+
+/** Take the card away. Nothing is remembered: the greeting belongs to an address with nothing in it, and asking
+ *  for that address again is asking for it again. */
+function _hideWelcome() {
+    if (!_welcomeOpen()) return;
+    _welcomeEl.classList.remove('visible');
+    const done = () => {
+        if (!_welcomeEl) return;
+        _welcomeEl.hidden = true;
+        // The card is off screen, so the title can name the view again.
+        _updateDocTitle();
+    };
+    if (_prefersReducedMotion()) done();
+    else _after('welcome.hide', done, _cssMs('--infoTrans', 450) + 40);
+}
+
+/** Show the card, if this load earned one. Called once, after the atlas has finished loading: over the loading
+ *  overlay it would be a greeting on top of a spinner, and the reader would meet the atlas through it rather
+ *  than beside it. */
+function _maybeShowWelcome() {
+    if (!_welcomeEl || !_welcomeAddressWasEmpty) return;
+    // A reader who has already started (a tag, a search, an item, the panel) is past being welcomed.
+    if ((window.location.hash || '').replace(/^#/, '')) return;
+
+    /* Bind the last two words of each paragraph. text-wrap: pretty and balance are both capped at a few lines by
+       the engines and measurably do nothing on a block this tall (seven lines on a phone, identical under either),
+       so the orphan is prevented outright rather than asked for. \s matches the bound space too, so this is
+       idempotent. */
+    _welcomeEl.querySelectorAll('#welcome-card p').forEach((p) => {
+        p.textContent = p.textContent.replace(/\s+(\S+)\s*$/, ' $1');
+    });
+
+    _welcomeEl.hidden = false;
+    /* The boot wrote the view into the title a moment ago; behind the card that view is not what the reader is
+       looking at yet, so the tab keeps the page's own name until they have come through (see _composeDocTitle). */
+    _updateDocTitle();
+    // Next frame, so the opacity has a state to travel from.
+    requestAnimationFrame(() => {
+        if (_welcomeOpen()) _welcomeEl.classList.add('visible');
+    });
+    /* Deliberately nothing is focused: focusing the primary action drew a focus ring around it the moment the card
+       appeared, which read as a glow on the one button. Escape is caught at the window, and Tab still reaches both
+       buttons, where the ring belongs. */
+}
+
+if (_welcomeEl) {
+    const more = document.getElementById('welcome-more');
+    const start = document.getElementById('welcome-start');
+    // "Learn More" hands the reader to the panel that holds the long version, and takes the card away behind it.
+    if (more) more.addEventListener('click', () => { _hideWelcome(); showInfo(); });
+    if (start) start.addEventListener('click', _hideWelcome);
+    /* A press on the scrim says the same thing as "Start Exploring". Only on the scrim itself: a press that lands
+       on the card is a press on the card, including the drag that selects a line of it. */
+    _welcomeEl.addEventListener('click', (e) => {
+        if (e.target === _welcomeEl) _hideWelcome();
+    });
+    // The card is over the map: keep its own wheel and drag off the camera underneath.
+    _welcomeEl.addEventListener('wheel', (e) => e.stopPropagation(), { passive: false });
+    _welcomeEl.addEventListener('mousedown', (e) => e.stopPropagation());
+    _welcomeEl.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+}
+
 
 /* ══ SEARCH BOX ══════════════════════════════════════════════════════════════
    The box itself, its tag mirroring, and the reset/cancel button beside it. */
@@ -367,7 +444,7 @@ function closeSearch() {
 
     if (viewMode === 'grid') {
         _setHashForCurrentState(true);
-        _updateTitlesForTagOrSearch();
+        _updateDocTitle();
         renderGrid(true);
         return;
     }
@@ -376,7 +453,7 @@ function closeSearch() {
         switchToMapView();
         // Clear hash (or keep tag if it exists)
         _writeAddress(activeTag ? { t: activeTag } : {}, false);
-        _updateTitlesForTagOrSearch();
+        _updateDocTitle();
         _scheduleTagCloudUpdate(true);
         return;
     }
@@ -384,7 +461,7 @@ function closeSearch() {
     // Map view: if we just cleared a mobile tag filter, also clear the URL hash/title.
     if (viewMode === 'map' && hadMobileTag && !activeTag) {
         history.replaceState(null, '', window.location.pathname + window.location.search);
-        _updateTitlesForTagOrSearch();
+        _updateDocTitle();
         _scheduleTagCloudUpdate(true);
     }
 }
@@ -456,7 +533,7 @@ searchInput.addEventListener('input', (e) => {
             renderGrid(true);
             _gridScrollToTop();
             _setHashForCurrentState(false);
-            _updateTitlesForTagOrSearch();
+            _updateDocTitle();
         } else if (tag) {
             _writeAddress({ t: tag }, false);
             _updateDocTitle();
@@ -525,7 +602,7 @@ searchInput.addEventListener('input', (e) => {
             renderGrid(true);
             _gridScrollToTop();
             _setHashForCurrentState(false);
-            _updateTitlesForTagOrSearch();
+            _updateDocTitle();
             searchBox.classList.add('open');
             return;
         }
@@ -558,7 +635,6 @@ searchInput.addEventListener('input', (e) => {
 
 // Open the search box when the input receives focus (e.g. via Tab)
 searchInput.addEventListener('focus', () => {
-    _setUiTucked(false);
     if (!searchBox.classList.contains('open')) {
         openSearch();
     }
@@ -670,7 +746,7 @@ function _runSearchCancel(e) {
         if (activeTag) _clearTagFilterState();
         _animateListFilterDeselecting();
         _updateListHash(true, true);
-        _updateListTitle();
+        _updateDocTitle();
         _updateCancelButton();
         _scheduleTagCloudUpdate(true);
         return;
@@ -702,7 +778,7 @@ function _runSearchCancel(e) {
     if (viewMode === 'list' && hadTag) {
         _animateListFilter();
         _updateListHash(true, true);
-        _updateListTitle();
+        _updateDocTitle();
     }
     // (The grid re-renders inside closeSearch and _clearTagFilterKeepView; its selection closed at the top. With nothing else to clear, record the closed selection.)
     if (_gridHadSel && viewMode === 'grid' && !activeTag && !(searchQuery || '').trim()) _setHashForCurrentState(true);
@@ -812,7 +888,85 @@ function _doShuffle() {
     }
     switchToMonadView(randomItem.id, true, true, true);
 }
-document.getElementById('shuffle-btn').addEventListener('click', _doShuffle);
+/* ══ SHUFFLE WALK ════════════════════════════════════════════════════════════
+   The shuffle held down rather than pressed once: a new item opens every few seconds and the atlas reads itself
+   out to someone who is not driving it. Shift+R, or a shift-click on the shuffle button, and the button stays
+   inverted for the length of it, because the thing the press started has not ended.
+   Map side only. The list and the grid reach a selection by moving the reader's own scroll position, which is not
+   something to do to them every few seconds unasked; the map simply opens an item where it stands.
+   It ends on Escape, on the button again, and on any other press anywhere in the interface. The pointer moving,
+   an item answering a hover, the text being scrolled: none of those is a decision, so none of them ends it. */
+
+const SHUFFLE_WALK_STEP_MS = 10000;  // how long each item is held: long enough to read what opened
+/* What the button says while Shift is down, so the modifier announces the walk rather than the reader having to
+   know it is there. */
+const SHUFFLE_TITLE = 'Random item (R)';
+const SHUFFLE_WALK_TITLE = 'Random item walk (⇧ R)';
+let _walkOn = false;
+
+/** Readable by map.js, which asks before writing the address: see the pushState in switchToMonadView. */
+function _walkRunning() { return _walkOn; }
+
+/** The map and its two states. A panel view is not one, and switching into one ends the walk. */
+function _walkEligible() {
+    return viewMode === 'map' || viewMode === 'monad' || viewMode === 'search';
+}
+
+function _walkStep() {
+    if (!_walkOn) return;
+    if (!_walkEligible()) { _walkStop(); return; }
+    _doShuffle();
+    _after('walk.step', _walkStep, SHUFFLE_WALK_STEP_MS);
+}
+
+function _walkStart() {
+    if (_walkOn || !_walkEligible()) return;
+    _walkOn = true;
+    /* The button turns once per item, and the two start together: one figure drives both, so the glyph coming back
+       round is the cue that the next item is due rather than a decoration that happens to be nearby. */
+    document.documentElement.style.setProperty('--walk-step', (SHUFFLE_WALK_STEP_MS / 1000) + 's');
+    document.body.classList.add('walk-running');
+    _walkStep();   // the first item at once, so the shortcut answers in the same press
+}
+
+function _walkStop() {
+    if (!_walkOn) return;
+    _walkOn = false;
+    _cancel('walk.step');
+    document.body.classList.remove('walk-running');
+}
+
+function _walkToggle() { if (_walkOn) _walkStop(); else _walkStart(); }
+
+/* Shift held is the walk offered: the button says so while the modifier is down, and says what it normally does
+   the moment it comes up. Read off the event rather than tracked, so a Shift released over another window, or a
+   press that never reached us, cannot leave the wrong label behind; the blur is the same guard for a window that
+   goes away mid-press. */
+function _walkSyncShuffleTitle(down) {
+    const el = document.getElementById('shuffle-btn');
+    if (!el) return;
+    const want = down ? SHUFFLE_WALK_TITLE : SHUFFLE_TITLE;
+    if (el.getAttribute('title') !== want) el.setAttribute('title', want);
+}
+window.addEventListener('keydown', (e) => _walkSyncShuffleTitle(!!e.shiftKey));
+window.addEventListener('keyup', (e) => _walkSyncShuffleTitle(!!e.shiftKey));
+window.addEventListener('blur', () => _walkSyncShuffleTitle(false));
+
+/* Any press ends it, wherever it lands — including the one that is about to do something else, which still does it.
+   Capture, so a handler that stops propagation cannot keep the walk running behind its own click. The shuffle
+   button is exempt because its own handler decides: while the walk runs, a press there is the stop. */
+document.addEventListener('pointerdown', (e) => {
+    if (!_walkOn) return;
+    const t = e.target;
+    if (t && t.closest && t.closest('#shuffle-btn')) return;
+    _walkStop();
+}, true);
+
+document.getElementById('shuffle-btn').addEventListener('click', (e) => {
+    if (_walkOn) { _walkStop(); return; }
+    if (e.shiftKey) { _walkStart(); return; }
+    _doShuffle();
+});
 
 /* ══ VIEW SWITCHER ═══════════════════════════════════════════════════════════ */
 /** Mark the view switcher's current segment (active class and aria-pressed). */
@@ -1093,7 +1247,6 @@ function _lbZoomToward(px, py, newZoom, clone) {
     _lbCommitZoom(newZoom, clone);
     // Keep the at-max class in sync with the zoom level. The cursor is zoom-out by default now, so this class no longer drives it and is retained only as a state hook for the zoomed-in level.
     if (clone) {
-        clone.classList.toggle('lb-at-max', newZoom > _lbMinZoom * 1.05);
     }
 }
 
@@ -1814,7 +1967,7 @@ const _RECENT_PRESS_MS = 750;
 /* Not the search box: the press that opens it is answered by the box itself growing into the open field, and an
    inverted loupe held over that read as lagging behind the box it had just opened. */
 const _recentPressTargets =
-    '.ui-btn, .view-seg';
+    '.ui-btn, .view-seg, .welcome-btn';
 // Core feedback: identical for pointer presses and programmatic triggers
 // (keyboard shortcuts light up the equivalent button via _flashButton).
 function _pressFeedback(el) {

@@ -5,12 +5,354 @@
   <link>https://infovis.fh-potsdam.de/atlas/</link>
   <description>An Interactive Atlas of Critical Data Visualization</description>
   <atom:link href="https://infovis.fh-potsdam.de/atlas/feed.xml" rel="self" type="application/rss+xml" />
-  <lastBuildDate>Wed, 23 Sep 2026 10:53:24 GMT</lastBuildDate>
+  <lastBuildDate>Thu, 01 Oct 2026 10:34:26 GMT</lastBuildDate>
   <image>
     <url>https://infovis.fh-potsdam.de/atlas/favicon.png</url>
     <title>Data in Dialogue</title>
     <link>https://infovis.fh-potsdam.de/atlas/</link>
   </image>
+
+<item>
+  <title>Disclose to Tell: a Data Design Framework for Alternative Narratives</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:briones-rojas2021disclose</link>
+  <pubDate>Wed, 30 Sep 2026 07:02:34 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:briones-rojas2021disclose</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:briones-rojas2021disclose"><img src="https://infovis.fh-potsdam.de/atlas/images/briones-rojas2021disclose.webp" alt="Disclose to Tell: a Data Design Framework for Alternative Narratives"/></a></p>
+<p>María de los Ángeles Briones Rojas</p>
+<p>Computer Supported Cooperative Work (CSCW), 30(5–6), 785–809, 2021</p>
+<blockquote>Data visualization for alternative narratives is a powerful adversarial tool that seeks to inquire about the existing conditions of conflicts. Nowadays, data visualization is widely used in activist communication to offer data-driven counternarratives to those with dominant power. However, a study of 64 cases shows that most visualizations are far from following the open-source ethos that data activism advocates. If visualizations for alternative narratives do not open up their processes and communicate how the meaning of data is shaped and translated visually, they risk turning into black-box devices that crystallize biased representations of conflict rather than investigating them. This paper…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:advocacy">#advocacy</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:data">#data</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:politics">#politics</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:storytelling">#storytelling</a></p>
+<p><strong><a href="https://doi.org/10.1007/s10606-021-09416-1">https://doi.org/10.1007/s10606-021-09416-1</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/briones-rojas2021disclose.webp" length="28862" type="image/webp"/>
+  <dc:creator>María de los Ángeles Briones Rojas</dc:creator>
+  <category>advocacy</category><category>data</category><category>politics</category><category>storytelling</category>
+</item>
+
+<item>
+  <title>Alternative narratives visualization archive</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:angeles-briones2019alternative</link>
+  <pubDate>Wed, 30 Sep 2026 07:01:21 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:angeles-briones2019alternative</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:angeles-briones2019alternative"><img src="https://infovis.fh-potsdam.de/atlas/images/angeles-briones2019alternative.webp" alt="Alternative narratives visualization archive"/></a></p>
+<p>María de los Ángeles Briones</p>
+<p>2019</p>
+<blockquote>This archive brings together digital online projects which use data visualization to support alternative narratives to the ones from dominant power. It aims to raise knowledge and gather the design expertise on the relevant task of portraying evidence to not-visible or alternative social issues that aren’t been told by the main power institutions. At the same time, the archive aims to bring to the fore discussion and awareness on the political role of designers when they design with data. Visualizations for alternative narratives should have and should promote a critical approach to data.</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:advocacy">#advocacy</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:politics">#politics</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:storytelling">#storytelling</a></p>
+<p><strong><a href="https://alternative-narratives-vis-archive.com">https://alternative-narratives-vis-archive.com</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/angeles-briones2019alternative.webp" length="75296" type="image/webp"/>
+  <dc:creator>María de los Ángeles Briones</dc:creator>
+  <category>advocacy</category><category>politics</category><category>storytelling</category>
+</item>
+
+<item>
+  <title>Visualizing Complexity: Modular Information Design Handbook</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:hil2022visualizing</link>
+  <pubDate>Wed, 30 Sep 2026 06:58:11 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:hil2022visualizing</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:hil2022visualizing"><img src="https://infovis.fh-potsdam.de/atlas/images/hil2022visualizing.webp" alt="Visualizing Complexity: Modular Information Design Handbook"/></a></p>
+<p>Darjan Hil, Nicole Lachenmeier</p>
+<p>Birkhäuser, 2022</p>
+<blockquote>Design system for information design explained step by step. How can you turn dry statistics into attractive and informative graphs? How can you present complex data sets in an easily understandable way? How can you create narrative diagrams from unstructured data? This handbook of information design answers these questions. Nicole Lachenmeier and Darjan Hil condense their extensive professional experience into an illustrated guide that offers a modular design system comprised of 80 elements. Their systematic design methodology makes it possible for anyone to visualize complex data attractively and using different perspectives. At the intersection of design, journalism, communication and data…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:complexity">#complexity</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:education">#education</a></p>
+<p><strong><a href="https://www.superdot.studio/visualizing-complexity-modular-information-design-handbook">https://www.superdot.studio/visualizing-complexity-modular-information-design-handbook</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/hil2022visualizing.webp" length="13028" type="image/webp"/>
+  <dc:creator>Darjan Hil, Nicole Lachenmeier</dc:creator>
+  <category>complexity</category><category>design</category><category>education</category>
+</item>
+
+<item>
+  <title>The conventions and politics of migration data visualizations</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:allen2021conventions</link>
+  <pubDate>Wed, 30 Sep 2026 06:54:15 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:allen2021conventions</guid>
+  <description><![CDATA[<p>William L Allen</p>
+<p>New Media &amp; Society, 146144482110193, 2021</p>
+<blockquote>What visual features characterize online migration data visualizations, and what do they suggest for the politics of representing migration and informing public attitudes? Audiences increasingly encounter quantitative information through visualization, especially in digital environments. Yet visualizations have political dimensions that manifest themselves through “conventions,” or shared symbols and practices conveying meaning. Using content analysis, I identify patterns of representation in a sample of 277 migration data visualizations scraped from Google Images. I find evidence of several conventions including appeals to objectivity and traceability as well as perspectives and units of analysis centered on states—particularly higher income migrant destinations. Then, by…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:media">#media</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:migration">#migration</a></p>
+<p><strong><a href="https://doi.org/10.1177/14614448211019300">https://doi.org/10.1177/14614448211019300</a></strong></p>]]></description>
+  <dc:creator>William L Allen</dc:creator>
+  <category>media</category><category>migration</category>
+</item>
+
+<item>
+  <title>Criteria for Rigor in Visualization Design Study</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:meyer2019criteria</link>
+  <pubDate>Wed, 30 Sep 2026 06:53:18 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:meyer2019criteria</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:meyer2019criteria"><img src="https://infovis.fh-potsdam.de/atlas/images/meyer2019criteria.webp" alt="Criteria for Rigor in Visualization Design Study"/></a></p>
+<p>Miriah Meyer, Jason Dykes</p>
+<p>IEEE transactions on visualization and computer graphics, 26(1), 87–97, 2019</p>
+<blockquote>We develop a new perspective on research conducted through visualization design study that emphasizes design as a method of inquiry and the broad range of knowledge-contributions achieved through it as multiple, subjective, and socially constructed. From this interpretivist position we explore the nature of visualization design study and develop six criteria for rigor. We propose that rigor is established and judged according to the extent to which visualization design study research and its reporting are INFORMED, REFLEXIVE, ABUNDANT, PLAUSIBLE, RESONANT, and TRANSPARENT. This perspective and the criteria were constructed through a four-year engagement with the discourse around rigor and the…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:epistemology">#epistemology</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:interpretation">#interpretation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:methods">#methods</a></p>
+<p><strong><a href="https://arxiv.org/pdf/1907.08495.pdf">https://arxiv.org/pdf/1907.08495.pdf</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/meyer2019criteria.webp" length="31016" type="image/webp"/>
+  <dc:creator>Miriah Meyer, Jason Dykes</dc:creator>
+  <category>design</category><category>epistemology</category><category>interpretation</category><category>methods</category>
+</item>
+
+<item>
+  <title>Observable: The modern data visualization platform</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:bostock2020observable</link>
+  <pubDate>Tue, 29 Sep 2026 11:37:57 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:bostock2020observable</guid>
+  <description><![CDATA[<p>Mike Bostock, Melody Meckfessel, others</p>
+<p>2020</p>
+<blockquote>Discover the all-in-one platform for data analysis, visualization, and cross-functional collaboration.</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:collaboration">#collaboration</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:data">#data</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:notebooks">#notebooks</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:programming">#programming</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:tool">#tool</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:www">#www</a></p>
+<p><strong><a href="https://observablehq.com">https://observablehq.com</a></strong></p>]]></description>
+  <dc:creator>Mike Bostock, Melody Meckfessel, others</dc:creator>
+  <category>collaboration</category><category>data</category><category>notebooks</category><category>programming</category><category>tool</category><category>www</category>
+</item>
+
+<item>
+  <title>Design Study Methodology: Reflections from the Trenches and the Stacks</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:sedlmair2012design</link>
+  <pubDate>Tue, 29 Sep 2026 11:37:57 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:sedlmair2012design</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:sedlmair2012design"><img src="https://infovis.fh-potsdam.de/atlas/images/sedlmair2012design.webp" alt="Design Study Methodology: Reflections from the Trenches and the Stacks"/></a></p>
+<p>Michael Sedlmair, Miriah Meyer, Tamara Munzner</p>
+<p>IEEE Transactions on Visualization and Computer Graphics, 18(12), 2431–2440, 2012</p>
+<blockquote>Design studies are an increasingly popular form of problem-driven visualization research, yet there is little guidance available about how to do them effectively. In this paper we reflect on our combined experience of conducting twenty-one design studies, as well as reading and reviewing many more, and on an extensive literature review of other field work methods and methodologies. Based on this foundation we provide definitions, propose a methodological framework, and provide practical guidance for conducting design studies. We define a design study as a project in which visualization researchers analyze a specific real-world problem faced by domain experts, design a…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:evaluation">#evaluation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:methods">#methods</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:theory">#theory</a></p>
+<p><strong><a href="https://miriah.github.io/publications/dsm12.pdf">https://miriah.github.io/publications/dsm12.pdf</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/sedlmair2012design.webp" length="27538" type="image/webp"/>
+  <dc:creator>Michael Sedlmair, Miriah Meyer, Tamara Munzner</dc:creator>
+  <category>design</category><category>evaluation</category><category>methods</category><category>theory</category>
+</item>
+
+<item>
+  <title>Leaflet</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:agafonkin2011leaflet</link>
+  <pubDate>Tue, 29 Sep 2026 11:37:57 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:agafonkin2011leaflet</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:agafonkin2011leaflet"><img src="https://infovis.fh-potsdam.de/atlas/images/agafonkin2011leaflet.webp" alt="Leaflet"/></a></p>
+<p>Volodymyr Agafonkin</p>
+<p>2011</p>
+<blockquote>Leaflet is the leading open-source JavaScript library for mobile-friendly interactive maps. Weighing just about 42 KB of JS, it has all the mapping features most developers ever need. Leaflet is designed with simplicity, performance and usability in mind. It works efficiently across all major desktop and mobile platforms, can be extended with lots of plugins, has a beautiful, easy to use and well-documented API and a simple, readable source code that is a joy to contribute to.</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:mapping">#mapping</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:opensource">#opensource</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:programming">#programming</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:tool">#tool</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:www">#www</a></p>
+<p><strong><a href="https://leafletjs.com">https://leafletjs.com</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/agafonkin2011leaflet.webp" length="122454" type="image/webp"/>
+  <dc:creator>Volodymyr Agafonkin</dc:creator>
+  <category>mapping</category><category>opensource</category><category>programming</category><category>tool</category><category>www</category>
+</item>
+
+<item>
+  <title>D3: Data-Driven Documents</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:bostock2011d3</link>
+  <pubDate>Tue, 29 Sep 2026 11:37:57 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:bostock2011d3</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:bostock2011d3"><img src="https://infovis.fh-potsdam.de/atlas/images/bostock2011d3.webp" alt="D3: Data-Driven Documents"/></a></p>
+<p>Michael Bostock, Vadim Ogievetsky, Jeffrey Heer</p>
+<p>IEEE Transactions on Visualization and Computer Graphics, 17(6), 2301–2309, 2011</p>
+<blockquote>Data-Driven Documents (D3) is a novel representation-transparent approach to visualization for the web. Rather than hide the underlying scenegraph within a toolkit-specific abstraction, D3 enables direct inspection and manipulation of a native representation: the standard document object model (DOM). With D3, designers selectively bind input data to arbitrary document elements, applying dynamic transforms to both generate and modify content. We show how representational transparency improves expressiveness and better integrates with developer tools than prior approaches, while offering comparable notational efficiency and retaining powerful declarative components. Immediate evaluation of operators further simplifies debugging and allows iterative development. Additionally, we demonstrate how…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:data">#data</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:opensource">#opensource</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:programming">#programming</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:tool">#tool</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:www">#www</a></p>
+<p><strong><a href="https://d3js.org">https://d3js.org</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/bostock2011d3.webp" length="81220" type="image/webp"/>
+  <dc:creator>Michael Bostock, Vadim Ogievetsky, Jeffrey Heer</dc:creator>
+  <category>data</category><category>opensource</category><category>programming</category><category>tool</category><category>www</category>
+</item>
+
+<item>
+  <title>A Nested Model for Visualization Design and Validation</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:munzner2009nested</link>
+  <pubDate>Tue, 29 Sep 2026 11:37:57 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:munzner2009nested</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:munzner2009nested"><img src="https://infovis.fh-potsdam.de/atlas/images/munzner2009nested.webp" alt="A Nested Model for Visualization Design and Validation"/></a></p>
+<p>Tamara Munzner</p>
+<p>IEEE Transactions on Visualization and Computer Graphics, 15(6), 921–928, 2009</p>
+<blockquote>We present a nested model for the visualization design and validation with four layers: characterize the task and data in the vocabulary of the problem domain, abstract into operations and data types, design visual encoding and interaction techniques, and create algorithms to execute techniques efficiently. The output from a level above is input to the level below, bringing attention to the design challenge that an upstream error inevitably cascades to all downstream levels. This model provides prescriptive guidance for determining appropriate evaluation approaches by identifying threats to validity unique to each level. We also provide three recommendations motivated by this…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:evaluation">#evaluation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:methods">#methods</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:science">#science</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:theory">#theory</a></p>
+<p><strong><a href="https://www.cs.ubc.ca/labs/imager/tr/2009/NestedModel/NestedModel.pdf">https://www.cs.ubc.ca/labs/imager/tr/2009/NestedModel/NestedModel.pdf</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/munzner2009nested.webp" length="88894" type="image/webp"/>
+  <dc:creator>Tamara Munzner</dc:creator>
+  <category>design</category><category>evaluation</category><category>methods</category><category>science</category><category>theory</category>
+</item>
+
+<item>
+  <title>The Eyes Have It: A Task by Data Type Taxonomy for Information Visualizations</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:shneiderman1996eyes</link>
+  <pubDate>Tue, 29 Sep 2026 11:37:57 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:shneiderman1996eyes</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:shneiderman1996eyes"><img src="https://infovis.fh-potsdam.de/atlas/images/shneiderman1996eyes.webp" alt="The Eyes Have It: A Task by Data Type Taxonomy for Information Visualizations"/></a></p>
+<p>Ben Shneiderman</p>
+<p>Proceedings of the IEEE Symposium on Visual Languages, 336–343, 1996</p>
+<blockquote>A useful starting point for designing advanced graphical user interfaces is the Visual Information- Seeking Mantra: Overview first, zoom and filter, then details-on-demand. But this is only a starting point in trying to understand the rich and varied set of information visualizations that have been proposed in recent years. This paper offers a task by data type taxonomy with seven data types (1-, 2-, 3-dimensional data, temporal and multi-dimensional data, and tree and network data) and seven tasks (overview, zoom, filter, details-on-demand, relate, history, and extract).</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:data">#data</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:education">#education</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:interaction">#interaction</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:theory">#theory</a></p>
+<p><strong><a href="https://www.cs.umd.edu/~ben/papers/Shneiderman1996eyes.pdf">https://www.cs.umd.edu/~ben/papers/Shneiderman1996eyes.pdf</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/shneiderman1996eyes.webp" length="84972" type="image/webp"/>
+  <dc:creator>Ben Shneiderman</dc:creator>
+  <category>data</category><category>design</category><category>education</category><category>interaction</category><category>theory</category>
+</item>
+
+<item>
+  <title>Queering the Map</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:larochelle2017queering</link>
+  <pubDate>Mon, 28 Sep 2026 19:25:13 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:larochelle2017queering</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:larochelle2017queering"><img src="https://infovis.fh-potsdam.de/atlas/images/larochelle2017queering.webp" alt="Queering the Map"/></a></p>
+<p>Lucas LaRochelle, others</p>
+<p>2017</p>
+<blockquote>Queering the Map is a community generated counter-mapping platform for digitally archiving LGBTQ2IA+ experience in relation to physical space.<br/>The platform provides an interface to collaboratively record the cartography of queer life—from park benches to the middle of the ocean—in order to preserve our histories and unfolding realities, which continue to be invalidated, contested, and erased. From collective action to stories of coming out, encounters with violence to moments of rapturous love, Queering the Map functions as a living archive of queer life.<br/>Through mapping LGBTQ2IA+ experience in its intersectional permutations, the project works to generate affinities across difference and…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:cities">#cities</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:inclusion">#inclusion</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:mapping">#mapping</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:personal">#personal</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:storytelling">#storytelling</a></p>
+<p><strong><a href="https://www.queeringthemap.com">https://www.queeringthemap.com</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/larochelle2017queering.webp" length="80938" type="image/webp"/>
+  <dc:creator>Lucas LaRochelle, others</dc:creator>
+  <category>cities</category><category>inclusion</category><category>mapping</category><category>personal</category><category>storytelling</category>
+</item>
+
+<item>
+  <title>Queering the Map: Stories of love, loss and (be) longing within a digital cartographic archive</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:kirby2021queering</link>
+  <pubDate>Mon, 28 Sep 2026 19:17:08 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:kirby2021queering</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:kirby2021queering"><img src="https://infovis.fh-potsdam.de/atlas/images/kirby2021queering.webp" alt="Queering the Map: Stories of love, loss and (be) longing within a digital cartographic archive"/></a></p>
+<p>Emma Kirby, Ash Watson, Brendan Churchill, Brady Robards, Lucas LaRochelle</p>
+<p>Media, Culture &amp; Society, 43(6), 1043–1060, 2021</p>
+<blockquote>The rise of crowdsourced and participatory digital platforms which aim to make visible the experiences of otherwise marginalised people are significant within the broader landscape of digitally mediated community spaces. One example of such media is Queering the Map, a digital storymapping platform where users anonymously pin ‘queer moments’ and memories to places. While the mediation of affect and intimacy in digital spaces among queer people is increasingly attended to in scholarly work, the cartographic and archival remains hitherto underexplored. Drawing on an analysis of almost 2000 micro-stories geolocated to Australia, in this article we explore various aspects of story…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:cities">#cities</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:inclusion">#inclusion</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:mapping">#mapping</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:media">#media</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:personal">#personal</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:storytelling">#storytelling</a></p>
+<p><strong><a href="https://doi.org/10.1177/0163443720986005">https://doi.org/10.1177/0163443720986005</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/kirby2021queering.webp" length="25110" type="image/webp"/>
+  <dc:creator>Emma Kirby, Ash Watson, Brendan Churchill, Brady Robards, Lucas LaRochelle</dc:creator>
+  <category>cities</category><category>inclusion</category><category>mapping</category><category>media</category><category>personal</category><category>storytelling</category>
+</item>
+
+<item>
+  <title>The notion of overview in information visualization</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:hornbaek2011notion</link>
+  <pubDate>Mon, 28 Sep 2026 04:20:36 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:hornbaek2011notion</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:hornbaek2011notion"><img src="https://infovis.fh-potsdam.de/atlas/images/hornbaek2011notion.webp" alt="The notion of overview in information visualization"/></a></p>
+<p>Kasper Hornbæk, Morten Hertzum</p>
+<p>International Journal of Human-Computer Studies, 69(7-8), 509 - 525, 2011</p>
+<blockquote>Overview is a frequently used notion and design goal in information-visualization research and practice. However, it is difficult to find a consensus on what an overview is and to appreciate its relation to how users understand and navigate an information space. We review papers that use the notion of overview and develop a model. The model highlights the awareness that makes up an overview, the process by which users acquire it, the usefulness of overviews, and the role of user-interface components in developing an overview. We discuss the model in relation to classic readings in information visualization and use it…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:cognition">#cognition</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:evaluation">#evaluation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:perception">#perception</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:science">#science</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:theory">#theory</a></p>
+<p><strong><a href="https://mortenhertzum.dk/publ/IJHCS2011.pdf">https://mortenhertzum.dk/publ/IJHCS2011.pdf</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/hornbaek2011notion.webp" length="36338" type="image/webp"/>
+  <dc:creator>Kasper Hornbæk, Morten Hertzum</dc:creator>
+  <category>cognition</category><category>evaluation</category><category>perception</category><category>science</category><category>theory</category>
+</item>
+
+<item>
+  <title>On the art of representation: notes on the politics of visualisation</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:law1988picturing</link>
+  <pubDate>Sun, 27 Sep 2026 12:05:15 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:law1988picturing</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:law1988picturing"><img src="https://infovis.fh-potsdam.de/atlas/images/law1988picturing.webp" alt="On the art of representation: notes on the politics of visualisation"/></a></p>
+<p>John Law, Gordon Fyfe</p>
+<p>Picturing Power: Visual Depictions and Social Relations, 160–183, Routledge, 1988</p>
+<blockquote>This paper considers how technologies of representation are used by writers about acid rain research to re-present that research to non-scientists. The processes by which such technologies suppress what they purport to represent and replace it with novel and more docile elements which are often visual is described. Visual technologies for combining and further simplifying these elements are considered. Finally, the analogy between political and visual representation is drawn out, though the specificity of visual technologies is emphasised.</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:communication">#communication</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:environment">#environment</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:politics">#politics</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:power">#power</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:science">#science</a></p>
+<p><strong><a href="https://doi.org/10.1111/j.1467-954X.1987.tb00086.x">https://doi.org/10.1111/j.1467-954X.1987.tb00086.x</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/law1988picturing.webp" length="21196" type="image/webp"/>
+  <dc:creator>John Law, Gordon Fyfe</dc:creator>
+  <category>communication</category><category>environment</category><category>politics</category><category>power</category><category>science</category>
+</item>
+
+<item>
+  <title>Known Unknowns: Representing Uncertainty in Historical Time</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:krautli2013known</link>
+  <pubDate>Sun, 27 Sep 2026 11:41:36 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:krautli2013known</guid>
+  <description><![CDATA[<p>Florian Kräutli, Stephen Boyd Davis</p>
+<p>Electronic Visualisation and the Arts, 2013</p>
+<blockquote>Historic time is inherently uncertain, with missing, disputed, doubtful or ill-defined dates for objects and events. Yet digital timeline visualisations tend to represent it as exact and of undisputed confidence. This is partly due to a lack of awareness, partly due to a lack of support for ambiguities in digital data types and modes of representation. We outline some of the issues around uncertainty in timeline visualisation and ways of addressing them.</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:absence">#absence</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:history">#history</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:time">#time</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:uncertainty">#uncertainty</a></p>
+<p><strong><a href="https://doi.org/10.14236/ewic/EVA2013.16">https://doi.org/10.14236/ewic/EVA2013.16</a></strong></p>]]></description>
+  <dc:creator>Florian Kräutli, Stephen Boyd Davis</dc:creator>
+  <category>absence</category><category>history</category><category>time</category><category>uncertainty</category>
+</item>
+
+<item>
+  <title>Speculative Practices: Utilizing InfoVis to Explore Untapped Literary Collections</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:hinrichs2016speculative</link>
+  <pubDate>Sun, 27 Sep 2026 11:35:31 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:hinrichs2016speculative</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:hinrichs2016speculative"><img src="https://infovis.fh-potsdam.de/atlas/images/hinrichs2016speculative.webp" alt="Speculative Practices: Utilizing InfoVis to Explore Untapped Literary Collections"/></a></p>
+<p>Uta Hinrichs, Stefania Forlini, Bridget Moynihan</p>
+<p>IEEE Transactions on Visualization and Computer Graphics, 22(1), 429–438, 2016</p>
+<blockquote>In this paper we exemplify how information visualization supports speculative thinking, hypotheses testing, and preliminary interpretation processes as part of literary research. While InfoVis has become a buzz topic in the digital humanities, skepticism remains about how effectively it integrates into and expands on traditional humanities research approaches. From an InfoVis perspective, we lack case studies that show the specific design challenges that make literary studies and humanities research at large a unique application area for information visualization. We examine these questions through our case study of the Speculative W@nderverse, a visualization tool that was designed to enable the analysis…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:collections">#collections</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:culture">#culture</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:humanities">#humanities</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:literature">#literature</a></p>
+<p><strong><a href="https://doi.org/10.1109/tvcg.2015.2467452">https://doi.org/10.1109/tvcg.2015.2467452</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/hinrichs2016speculative.webp" length="109074" type="image/webp"/>
+  <dc:creator>Uta Hinrichs, Stefania Forlini, Bridget Moynihan</dc:creator>
+  <category>collections</category><category>culture</category><category>design</category><category>humanities</category><category>literature</category>
+</item>
+
+<item>
+  <title>Narrating Networks: Exploring the affordances of networks as storytelling devices in journalism</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:bounegru2016narrating</link>
+  <pubDate>Sun, 27 Sep 2026 11:20:12 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:bounegru2016narrating</guid>
+  <description><![CDATA[<p>Liliana Bounegru, Tommaso Venturini, Jonathan Gray, Mathieu Jacomy</p>
+<p>Digital Journalism, 1-32, 2016</p>
+<blockquote>Networks have become the de facto diagram of the Big Data age (try searching Google Images for [big data AND visualisation] and see). The concept of networks has become central to many fields of human inquiry and is said to revolutionise everything from medicine to markets to military intelligence. While the mathematical and analytical capabilities of networks have been extensively studied over the years, in this article we argue that the storytelling affordances of networks have been comparatively neglected. In order to address this we use multimodal analysis to examine the stories that networks evoke in a series of journalism…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:data">#data</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:journalism">#journalism</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:networks">#networks</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:storytelling">#storytelling</a></p>
+<p><strong><a href="https://doi.org/10.1080/21670811.2016.1186497">https://doi.org/10.1080/21670811.2016.1186497</a></strong></p>]]></description>
+  <dc:creator>Liliana Bounegru, Tommaso Venturini, Jonathan Gray, Mathieu Jacomy</dc:creator>
+  <category>data</category><category>journalism</category><category>networks</category><category>storytelling</category>
+</item>
+
+<item>
+  <title>Creative Data Literacy: A Constructionist Approach to Teaching Information Visualization</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:dignazio2018creative</link>
+  <pubDate>Sun, 27 Sep 2026 11:16:13 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:dignazio2018creative</guid>
+  <description><![CDATA[<p>Catherine D'Ignazio, Rahul Bhargava</p>
+<p>DHQ: Digital Humanities Quarterly, 12(4), 2018</p>
+<blockquote>Data visualization has rapidly become a standard approach to interrogating and understanding the world around us in domains that extend beyond the technical and scientific to arts, communications and services. In business settings the Data Scientist has become a recognized and valued role [Davenport and Patil 2012]. Journalism has re-oriented itself around data-driven storytelling as a potential saviour for an industry in peril [Howard 2014]. Governments are moving to more data-driven decision making, publishing open data portals and pondering visualization as an opportunity for citizen participation [Gurstein 2011]. This journal itself has numerous examples that use visualization tools and techniques…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:education">#education</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:literacy">#literacy</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:storytelling">#storytelling</a></p>
+<p><strong><a href="https://doi.org/10.63744/fcx6v7pngj22">https://doi.org/10.63744/fcx6v7pngj22</a></strong></p>]]></description>
+  <dc:creator>Catherine D&apos;Ignazio, Rahul Bhargava</dc:creator>
+  <category>education</category><category>literacy</category><category>storytelling</category>
+</item>
+
+<item>
+  <title>A survey on visualization-based storytelling in digital humanities and cultural heritage</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:kusnick2026survey</link>
+  <pubDate>Sun, 27 Sep 2026 00:00:00 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:kusnick2026survey</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:kusnick2026survey"><img src="https://infovis.fh-potsdam.de/atlas/images/kusnick2026survey.webp" alt="A survey on visualization-based storytelling in digital humanities and cultural heritage"/></a></p>
+<p>Jakob Kusnick, Nicklas Sindlev Andersen, Johannes Liem, Eva Mayr, Samuel Beck, Steffen Koch, Carina Doppler, Kasra Seirafi, Stefan Jänicke, Florian Windhager</p>
+<p>Visual Informatics, 100312, 2026</p>
+<blockquote>In digital humanities (DH) and cultural heritage (CH), visualization-based storytelling (VBS) has become an important approach for structuring, interpreting, and communicating cultural data and research results. These domains differ markedly from other VBS application areas through their focus on historical phenomena; their reliance on heterogeneous and semantically ambiguous sources; their engagement with both fictional and factual constellations; their use of qualitative, interpretive, and critical perspectives; and their long-standing expertise in narrative practice and theory. As a result, DH and CH offer particularly rich opportunities for VBS, yet relevant work remains dispersed across humanities scholarship, DH and CH venues, visualization research,…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:culture">#culture</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:humanities">#humanities</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:storytelling">#storytelling</a></p>
+<p><strong><a href="https://doi.org/10.1016/j.visinf.2026.100312">https://doi.org/10.1016/j.visinf.2026.100312</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/kusnick2026survey.webp" length="64454" type="image/webp"/>
+  <dc:creator>Jakob Kusnick, Nicklas Sindlev Andersen, Johannes Liem, Eva Mayr, Samuel Beck, Steffen Koch, Carina Doppler, Kasra Seirafi, Stefan Jänicke, Florian Windhager</dc:creator>
+  <category>culture</category><category>humanities</category><category>storytelling</category>
+</item>
+
+<item>
+  <title>Heterochronologies: a platform for correlation and research in temporal graphics</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:drucker2022heterochronologies</link>
+  <pubDate>Sun, 27 Sep 2026 00:00:00 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:drucker2022heterochronologies</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:drucker2022heterochronologies"><img src="https://infovis.fh-potsdam.de/atlas/images/drucker2022heterochronologies.webp" alt="Heterochronologies: a platform for correlation and research in temporal graphics"/></a></p>
+<p>Johanna Drucker, Peter Polack, Pietro Santachiara</p>
+<p>DHQ: digital humanities quarterly, 16(3), 2022</p>
+<blockquote>The difficulty of integrating the data, metadata, and classification schemes produced across a wide geographic, historical, and cultural variety of institutional sites and practices was a major impetus for the creation of Linked Data (LD). The promise was to make diverse sets of data interoperable through subscription to an array of standardizations while leaving the original data intact. These operational requirements enable interoperability at the expense of specificity, and require considerable resources for implementation. While LD supports connection and access across disparate data sets, it is not focused on the intellectual issues that have to do with enabling the correlation…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:data">#data</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:epistemology">#epistemology</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:history">#history</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:humanities">#humanities</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:time">#time</a></p>
+<p><strong><a href="https://doi.org/https://doi.org/10.63744/fbef4kdhtdq8">https://doi.org/https://doi.org/10.63744/fbef4kdhtdq8</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/drucker2022heterochronologies.webp" length="85108" type="image/webp"/>
+  <dc:creator>Johanna Drucker, Peter Polack, Pietro Santachiara</dc:creator>
+  <category>data</category><category>epistemology</category><category>history</category><category>humanities</category><category>time</category>
+</item>
+
+<item>
+  <title>Design Study &quot;Lite&quot; Methodology: Expediting Design Studies and Enabling the Synergy of Visualization Pedagogy and Social Good</title>
+  <link>https://infovis.fh-potsdam.de/atlas/#i:syeda2020design</link>
+  <pubDate>Sun, 27 Sep 2026 00:00:00 GMT</pubDate>
+  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:syeda2020design</guid>
+  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:syeda2020design"><img src="https://infovis.fh-potsdam.de/atlas/images/syeda2020design.webp" alt="Design Study "Lite" Methodology: Expediting Design Studies and Enabling the Synergy of Visualization Pedagogy and Social Good"/></a></p>
+<p>Uzma H Syeda, Prasanth Murali, Lisa Roe, Becca Berkey, Michelle Borkin</p>
+<p>Proceedings of the 2020 CHI Conference on Human Factors in Computing Systems, 2020</p>
+<blockquote>Design studies are frequently used to conduct problem-driven visualization research by working with real-world domain experts. In visualization pedagogy, design studies are often introduced but rarely practiced due to their large time requirements. This limits students to a classroom curriculum, often involving projects that may not have implications beyond the classroom. Thus we present the Design Study "Lite" Methodology, a novel framework for implementing design studies with novice students in 14 weeks. We utilized the Design Study "Lite" Methodology in conjunction with Service-Learning to teach five Data Visualization courses and demonstrate that it benefits not only the students but also…</blockquote>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:education">#education</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:methods">#methods</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:theory">#theory</a></p>
+<p><strong><a href="https://doi.org/10.1145/3313831.3376829">https://doi.org/10.1145/3313831.3376829</a></strong></p>]]></description>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/syeda2020design.webp" length="129344" type="image/webp"/>
+  <dc:creator>Uzma H Syeda, Prasanth Murali, Lisa Roe, Becca Berkey, Michelle Borkin</dc:creator>
+  <category>design</category><category>education</category><category>methods</category><category>theory</category>
+</item>
 
 <item>
   <title>Why Authors Don’t Visualize Uncertainty</title>
@@ -131,7 +473,7 @@
 <blockquote>Over the last decades, the pervasiveness of data and the rate at which they are produced have propelled the rapid growth of Visual Analytics (VA) methods for interactive analysis and decision-making. This foundation is now shifting as computers increasingly not only process data, but also produce them through generative models. Revisiting the notion of synthetic data, we oppose data to capta (observational inscriptions) and introduce ficta: model-produced outputs that enter VA sessions as an analytic substrate with their own means of interactive production. In ficta-driven workflows, the substrate of analysis is no longer a static representation from which knowledge can…</blockquote>
 <p><a href="https://infovis.fh-potsdam.de/atlas/#t:ai">#ai</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:analytics">#analytics</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:epistemology">#epistemology</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:theory">#theory</a></p>
 <p><strong><a href="https://doi.org/10.2312/EUROVA.20261008">https://doi.org/10.2312/EUROVA.20261008</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/perez-messina2026from.webp" length="17652" type="image/webp"/>
+  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/perez-messina2026from.webp" length="16230" type="image/webp"/>
   <dc:creator>Ignacio Pérez-Messina, Silvia Miksch, Christian Tominski</dc:creator>
   <category>ai</category><category>analytics</category><category>epistemology</category><category>theory</category>
 </item>
@@ -1244,356 +1586,6 @@
   <enclosure url="https://infovis.fh-potsdam.de/atlas/images/bach2023challenges.webp" length="57994" type="image/webp"/>
   <dc:creator>Benjamin Bach, Mandy Keck, Fateme Rajabiyazdi, Tatiana Losev, Isabel Meirelles, Jason Dykes, Robert S. Laramee, Mashael AlKadi, Christina Stoiber, Samuel Huron, Charles Perin, Luiz Morais, Wolfgang Aigner, Doris Kosminsky, Magdalena Boucher, Søren Knudsen, Areti Manataki, Jan Aerts, Uta Hinrichs, Jonathan C. Roberts, Sheelagh Carpendale</dc:creator>
   <category>community</category><category>design</category><category>education</category>
-</item>
-
-<item>
-  <title>Seeing what is not shown: Combining visualization critique and design to surface the limitations in data</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:hengesbach2022seeing</link>
-  <pubDate>Fri, 27 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:hengesbach2022seeing</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:hengesbach2022seeing"><img src="https://infovis.fh-potsdam.de/atlas/images/hengesbach2022seeing.webp" alt="Seeing what is not shown: Combining visualization critique and design to surface the limitations in data"/></a></p>
-<p>Nicole Hengesbach, Greg J. McInerny, João Porto de Albuquerque</p>
-<p>Information Design Journal, 27(1), 64–75, 2022</p>
-<blockquote>Critical studies of data visualization often highlight how the reductive nature of visualization methods excludes data limitations and qualities that are crucial to understanding those data. This case study explores how a data visualization could express contingent, situated, and contextual facets of data. We examine how such data limitations might be surfaced and represented within visualizations through an interplay between the critique of an existing data visualization and the development of alternative designs. Based on a case study of urban tree data, we interrogate data limitations in relation to four different types of missingness: Incompleteness, Emptiness, Absence, and Nothingness. Our…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:absence">#absence</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:cities">#cities</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:data">#data</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:mapping">#mapping</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:uncertainty">#uncertainty</a></p>
-<p><strong><a href="https://doi.org/10.1075/idj.22006.hen">https://doi.org/10.1075/idj.22006.hen</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/hengesbach2022seeing.webp" length="56484" type="image/webp"/>
-  <dc:creator>Nicole Hengesbach, Greg J. McInerny, João Porto de Albuquerque</dc:creator>
-  <category>absence</category><category>cities</category><category>data</category><category>mapping</category><category>uncertainty</category>
-</item>
-
-<item>
-  <title>Visualizing Urban Accessibility: Investigating Multi-Stakeholder Perspectives through a Map-based Design Probe Study</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:saha2022visualizing</link>
-  <pubDate>Fri, 27 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:saha2022visualizing</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:saha2022visualizing"><img src="https://infovis.fh-potsdam.de/atlas/images/saha2022visualizing.webp" alt="Visualizing Urban Accessibility: Investigating Multi-Stakeholder Perspectives through a Map-based Design Probe Study"/></a></p>
-<p>Manaswi Saha, Siddhant Patil, Emily Cho, Evie Yu-Yen Cheng, Chris Horng, Devanshi Chauhan, Rachel Kangas, Richard McGovern, Anthony Li, Jeffrey Heer, Jon E. Froehlich</p>
-<p>CHI Conference on Human Factors in Computing Systems, 1–14, ACM, 2022</p>
-<blockquote>Urban accessibility assessments are challenging: they involve varied stakeholders across decision-making contexts while serving a diverse population of people with disabilities. To better support urban accessibility assessment using data visualizations, we conducted a three-part interview study with 25 participants across five stakeholder groups using map visualization probes. We present a multi-stakeholder analysis of visualization needs and sensemaking processes to explore how interactive visualizations can support stakeholder decision making. In particular, we elaborate how stakeholders’ varying levels of familiarity with accessibility, geospatial analysis, and specific geographic locations influences their sensemaking needs. We then contribute 10 design considerations for geovisual analytic tools…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:advocacy">#advocacy</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:cities">#cities</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:collaboration">#collaboration</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:mapping">#mapping</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:planning">#planning</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:politics">#politics</a></p>
-<p><strong><a href="https://doi.org/10.1145/3491102.3517460">https://doi.org/10.1145/3491102.3517460</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/saha2022visualizing.webp" length="86356" type="image/webp"/>
-  <dc:creator>Manaswi Saha, Siddhant Patil, Emily Cho, Evie Yu-Yen Cheng, Chris Horng, Devanshi Chauhan, Rachel Kangas, Richard McGovern, Anthony Li, Jeffrey Heer, Jon E. Froehlich</dc:creator>
-  <category>advocacy</category><category>cities</category><category>collaboration</category><category>mapping</category><category>planning</category><category>politics</category>
-</item>
-
-<item>
-  <title>alt.VIS</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:adams2021alt.vis</link>
-  <pubDate>Fri, 27 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:adams2021alt.vis</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:adams2021alt.vis"><img src="https://infovis.fh-potsdam.de/atlas/images/adams2021alt.vis.webp" alt="alt.VIS"/></a></p>
-<p>Jane Adams, Lonni Besançon, Michael Correll, R. Jordan Crouser, Charles Perin, Paul Rosen, others</p>
-<p>2021</p>
-<blockquote>Not all work that moves the field forward fits into the model of a standard conference paper or conference talk. The memorability or intellectual impact of work is often inextricably linked to this non-conventional form, whether it is a reflection, provocation, critique, satire, artistic statement, or manifesto. Successful venues like ACM CHI’s alt.chi (“a forum for controversial, risk-taking, and boundary pushing research at CHI”) and various “unconferences” have emerged in the past years as a way of providing an outlet for this sort of unconventional work.<br/>Visualization, and IEEE VIS specifically, which incorporates perspectives in the intersection between art and…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:community">#community</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:event">#event</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:science">#science</a></p>
-<p><strong><a href="https://altvis.github.io">https://altvis.github.io</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/adams2021alt.vis.webp" length="42488" type="image/webp"/>
-  <dc:creator>Jane Adams, Lonni Besançon, Michael Correll, R. Jordan Crouser, Charles Perin, Paul Rosen, others</dc:creator>
-  <category>community</category><category>event</category><category>science</category>
-</item>
-
-<item>
-  <title>Interpretive Impacts of Text Visualization: Mitigating Political Framing Effects</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:baumer2018interpretive</link>
-  <pubDate>Fri, 27 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:baumer2018interpretive</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:baumer2018interpretive"><img src="https://infovis.fh-potsdam.de/atlas/images/baumer2018interpretive.webp" alt="Interpretive Impacts of Text Visualization: Mitigating Political Framing Effects"/></a></p>
-<p>Eric P. S. Baumer, Jaime Snyder, Geri K. Gay</p>
-<p>ACM Transactions on Computer-Human Interaction, 25(4), 1–26, 2018</p>
-<blockquote>Information visualizations are often evaluated as a tool in terms of their ability to support performance of a specific task. This article argues that value can be gained by instead evaluating visualizations from a communicative perspective. Specifically, it explores how text visualization can influence the impacts that framing has on the perception of political issues. Using data from a controlled laboratory study, the results presented here demonstrate that exposure to a text visualization can mitigate framing effects. Furthermore, it also shows a transfer effect, where participants who saw the visualization remained uninfluenced by framing in subsequent texts, even when the…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:framing">#framing</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:health">#health</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:interpretation">#interpretation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:text">#text</a></p>
-<p><strong><a href="https://doi.org/10.1145/3214353">https://doi.org/10.1145/3214353</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/baumer2018interpretive.webp" length="61780" type="image/webp"/>
-  <dc:creator>Eric P. S. Baumer, Jaime Snyder, Geri K. Gay</dc:creator>
-  <category>framing</category><category>health</category><category>interpretation</category><category>text</category>
-</item>
-
-<item>
-  <title>Conveying a civic issue through data via spatially distributed public visualization and polling displays</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:claes2018conveying</link>
-  <pubDate>Fri, 27 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:claes2018conveying</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:claes2018conveying"><img src="https://infovis.fh-potsdam.de/atlas/images/claes2018conveying.webp" alt="Conveying a civic issue through data via spatially distributed public visualization and polling displays"/></a></p>
-<p>Sandy Claes, Jorgos Coenen, Andrew Vande Moere</p>
-<p>Proceedings of the 10th Nordic Conference on Human-Computer Interaction, 597–608, ACM, 2018</p>
-<blockquote>The proliferation of Internet-of-Things devices in urban environments empower citizens to appropriate data for civic purposes. Simultaneously, public visualization has shown to engage a wide audience with data by situating its graphical representation within the actual environment of its measurements. We thus propose a public visualization and polling system that enables residents to co-author a civically-motivated data-driven narrative and distribute it over multiple wireless displays located at different physical locations. Through an in-the-wild study, we studied how passers-by and residents engaged with the system by applying a user engagement evaluation model that maps the social and spatio-temporal context into interactions…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:cities">#cities</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:community">#community</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:participation">#participation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:storytelling">#storytelling</a></p>
-<p><strong><a href="https://doi.org/10.1145/3240167.3240206">https://doi.org/10.1145/3240167.3240206</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/claes2018conveying.webp" length="19784" type="image/webp"/>
-  <dc:creator>Sandy Claes, Jorgos Coenen, Andrew Vande Moere</dc:creator>
-  <category>cities</category><category>community</category><category>participation</category><category>storytelling</category>
-</item>
-
-<item>
-  <title>A Mental Models Perspective on Designing Information Visualizations for Political Communication</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:schreder2016mental</link>
-  <pubDate>Fri, 27 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:schreder2016mental</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:schreder2016mental"><img src="https://infovis.fh-potsdam.de/atlas/images/schreder2016mental.webp" alt="A Mental Models Perspective on Designing Information Visualizations for Political Communication"/></a></p>
-<p>Guenther Schreder, Florian Windhager, Michael Smuc, Eva Mayr</p>
-<p>JeDEM - eJournal of eDemocracy and Open Government, 8(3), 80–99, 2016</p>
-<blockquote>Information visualizations (InfoVis) in the context of political communication are designed to convey a broad understanding of socio-political data and their multitude of intricately connected variables to the public. A cognitive framework to explain and empirically study how users acquire and organize their internal representations gained from InfoVis systems with multiple perspectives is still missing. In this paper we discuss the theory of mental models and its consequences for the design and research of InfoVis interfaces. Especially for multidimensional data, it is a challenge to design accessible and conceptually consistent InfoVis interfaces to support the local and global coherence of…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:cognition">#cognition</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:communication">#communication</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:politics">#politics</a></p>
-<p><strong><a href="https://doi.org/10.29379/jedem.v8i3.443">https://doi.org/10.29379/jedem.v8i3.443</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/schreder2016mental.webp" length="37918" type="image/webp"/>
-  <dc:creator>Guenther Schreder, Florian Windhager, Michael Smuc, Eva Mayr</dc:creator>
-  <category>cognition</category><category>communication</category><category>politics</category>
-</item>
-
-<item>
-  <title>Trust in Information Visualization</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:mayr2019trust</link>
-  <pubDate>Thu, 26 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:mayr2019trust</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:mayr2019trust"><img src="https://infovis.fh-potsdam.de/atlas/images/mayr2019trust.webp" alt="Trust in Information Visualization"/></a></p>
-<p>Eva Mayr, Nicole Hynek, Saminu Salisu, Florian Windhager</p>
-<p>EuroVis Workshop on Trustworthy Visualization (TrustVis), 2019</p>
-<blockquote>Trust is an important factor that mediates whether a user will rely and build on the information displayed in a visualization. Research in other fields shows that there are different mechanisms of trust building: Users might elaborate the information deeply and gain a good understanding of the uncertainties in the data and quality of the information. But they might also use superficial cues as indicators for trust. Which processes are activated depends on the trustworthiness on the side of the visualization and on the trust perception by the users. We lay out challenges for future research to further improve our…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:perception">#perception</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:trust">#trust</a></p>
-<p><strong><a href="https://doi.org/10.2312/TRVIS.20191187">https://doi.org/10.2312/TRVIS.20191187</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/mayr2019trust.webp" length="16494" type="image/webp"/>
-  <dc:creator>Eva Mayr, Nicole Hynek, Saminu Salisu, Florian Windhager</dc:creator>
-  <category>perception</category><category>trust</category>
-</item>
-
-<item>
-  <title>Sketching More-than-human Times: Rethinking Temporal Representations through Embodied, Entangled, and Deep time</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:nisi2026sketching</link>
-  <pubDate>Tue, 24 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:nisi2026sketching</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:nisi2026sketching"><img src="https://infovis.fh-potsdam.de/atlas/images/nisi2026sketching.webp" alt="Sketching More-than-human Times: Rethinking Temporal Representations through Embodied, Entangled, and Deep time"/></a></p>
-<p>Valentina Nisi, Marta Ferreira, Larissa Pschetz</p>
-<p>Proceedings of the Twentieth International Conference on Tangible, Embedded, and Embodied Interaction, 1–14, ACM, 2026</p>
-<blockquote>Temporal representations can have a socio-political impact and change how we see the world and design technologies. In this pictorial, we depart from a critique to classic representations of time that have long guided thinking in Western industrialised societies and design. Through the process of designing the More-than-Human Temporal Ontologies booklet, we describe a journey through practical engagements with the multiple ways time can be seen as created and creating more-than-human worlds. By embodying, imagining and sketching multiple expressions of more-than-human times, and by using these to appropriate, critique and expand representations of times, we propose the final outcome of…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:ecology">#ecology</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:futures">#futures</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:speculation">#speculation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:theory">#theory</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:time">#time</a></p>
-<p><strong><a href="https://www.temporaldesign.eca.ed.ac.uk/temporalontologies/">https://www.temporaldesign.eca.ed.ac.uk/temporalontologies/</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/nisi2026sketching.webp" length="100188" type="image/webp"/>
-  <dc:creator>Valentina Nisi, Marta Ferreira, Larissa Pschetz</dc:creator>
-  <category>design</category><category>ecology</category><category>futures</category><category>speculation</category><category>theory</category><category>time</category>
-</item>
-
-<item>
-  <title>IPPSO: Exploring the Future of Phygital Public Spaces</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:mueller2025ippso</link>
-  <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:mueller2025ippso</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:mueller2025ippso"><img src="https://infovis.fh-potsdam.de/atlas/images/mueller2025ippso.webp" alt="IPPSO: Exploring the Future of Phygital Public Spaces"/></a></p>
-<p>Boris Müller, Markus Kreutzer, Tehilla Shwartz Altshuler, Romi Mikulinsky, Rachel Aridor Hershkovitz, Aya Bentur, Micaela Terk</p>
-<p>Fachhochschule Potsdam, 2025</p>
-<blockquote>IPPSO is a transdisciplinary research initiative exploring the future of phygital public spaces and their impact on democracy, human rights, and urban life.<br/>Initially called Transdisciplinary Legal, Public Policy, and Design Research on Immersive Phygital Public Spaces in Smart Cities, the project explores the intersection of law, policy, and design in the governance of phygital public spaces, where digital layers mediate human interactions and shape urban experiences. Bringing together legal scholars, designers, and policymakers, the project develops new methodologies for regulating emerging technologies such as smart glasses and spatial computing in urban settings.</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:cities">#cities</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:data">#data</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:democracy">#democracy</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:digitization">#digitization</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:futures">#futures</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:surveillance">#surveillance</a></p>
-<p><strong><a href="https://uclab.fh-potsdam.de/ippso/">https://uclab.fh-potsdam.de/ippso/</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/mueller2025ippso.webp" length="33100" type="image/webp"/>
-  <dc:creator>Boris Müller, Markus Kreutzer, Tehilla Shwartz Altshuler, Romi Mikulinsky, Rachel Aridor Hershkovitz, Aya Bentur, Micaela Terk</dc:creator>
-  <category>cities</category><category>data</category><category>democracy</category><category>digitization</category><category>futures</category><category>surveillance</category>
-</item>
-
-<item>
-  <title>ARETE: A Visual History of the Latin Alphabet</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:mueller2023arete</link>
-  <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:mueller2023arete</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:mueller2023arete"><img src="https://infovis.fh-potsdam.de/atlas/images/mueller2023arete.webp" alt="ARETE: A Visual History of the Latin Alphabet"/></a></p>
-<p>Boris Müller, Jonas Pelzer, Ayse Nacak, Elsa Woelk</p>
-<p>Fachhochschule Potsdam, 2023</p>
-<blockquote>The ARETE project is an interactive visualization of the history of the Latin alphabet. In particular, the visualization shows the temporal and formal relationships of the different scripts and typefaces to each other.</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:education">#education</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:history">#history</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:text">#text</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:time">#time</a></p>
-<p><strong><a href="https://uclab.fh-potsdam.de/arete/">https://uclab.fh-potsdam.de/arete/</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/mueller2023arete.webp" length="33538" type="image/webp"/>
-  <dc:creator>Boris Müller, Jonas Pelzer, Ayse Nacak, Elsa Woelk</dc:creator>
-  <category>design</category><category>education</category><category>history</category><category>text</category><category>time</category>
-</item>
-
-<item>
-  <title>Organigrams for/from the future</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:doerk2023organigrams</link>
-  <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:doerk2023organigrams</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:doerk2023organigrams"><img src="https://infovis.fh-potsdam.de/atlas/images/doerk2023organigrams.webp" alt="Organigrams for/from the future"/></a></p>
-<p>Marian Dörk, Myriel Milicevic</p>
-<p>Fachhochschule Potsdam, 2023</p>
-<blockquote>How can we visualize an economy built on solidarity, sustainability, and survival—instead of exploitation, extraction, and extinction? Given multiple interconnected crises, there is an urgent need to devise new kinds of structures that let us weave resilient relations with each other and the world we live in. Data visualization is typically used to represent what is, but rarely how things could and maybe should be.<br/>This course takes on the challenge to visualize organizational structures that hardly exist yet, but are foreshadowed in the experimental configurations of cooperatives, projects, and initiatives. To seek inspiration we visit organizations that are committed…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:collaboration">#collaboration</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:diagrams">#diagrams</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:economics">#economics</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:education">#education</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:futures">#futures</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:work">#work</a></p>
-<p><strong><a href="https://infovis.fh-potsdam.de/organigrams/">https://infovis.fh-potsdam.de/organigrams/</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/doerk2023organigrams.webp" length="118948" type="image/webp"/>
-  <dc:creator>Marian Dörk, Myriel Milicevic</dc:creator>
-  <category>collaboration</category><category>diagrams</category><category>economics</category><category>education</category><category>futures</category><category>work</category>
-</item>
-
-<item>
-  <title>Decolonizing Data Visualization – Visualizing Postcolonies</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:manneh2022decolonizing</link>
-  <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:manneh2022decolonizing</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:manneh2022decolonizing"><img src="https://infovis.fh-potsdam.de/atlas/images/manneh2022decolonizing.webp" alt="Decolonizing Data Visualization – Visualizing Postcolonies"/></a></p>
-<p>Lamin Manneh, Marian Dörk</p>
-<p>Fachhochschule Potsdam, 2022</p>
-<blockquote>The call to decolonize is a call to reexamine and unsettle unequal power relationships within society and between societies and to consider the possibilities and practices that would transform those power relationships. As such, to decolonize is also a practice of seeking new relationships that favor liberated interdependence, multiplicity, and democratic participation. By examining historic data visualizations and the contexts of their use this course invites students to interrogate the relationship between power and data visualization. This class offers the long arch of Black Atlantic History as a context for raising questions of data, visualization and power. Following the story…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:decolonization">#decolonization</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:education">#education</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:history">#history</a></p>
-<p><strong><a href="https://infovis.fh-potsdam.de/decolonizing/">https://infovis.fh-potsdam.de/decolonizing/</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/manneh2022decolonizing.webp" length="135120" type="image/webp"/>
-  <dc:creator>Lamin Manneh, Marian Dörk</dc:creator>
-  <category>decolonization</category><category>design</category><category>education</category><category>history</category>
-</item>
-
-<item>
-  <title>Untangling Rhetoric, Pathos, and Aesthetics in Data Visualization</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:prantl2026untangling</link>
-  <pubDate>Fri, 13 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:prantl2026untangling</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:prantl2026untangling"><img src="https://infovis.fh-potsdam.de/atlas/images/prantl2026untangling.webp" alt="Untangling Rhetoric, Pathos, and Aesthetics in Data Visualization"/></a></p>
-<p>Verena Prantl, Torsten Möller, Laura Koesten</p>
-<p>IEEE Transactions on Visualization and Computer Graphics, 32(2), 2435–2453, 2026</p>
-<blockquote>Contemporary discourse on data communication has discussed logos (reason) and, more recently, ethos (credibility) extensively. While the concept of pathos (emotional appeal) has received growing attention in the visualization community in recent years, its connection to related concepts such as rhetoric and aesthetics remains underexplored. In this paper, we provide working definitions of these terms, contextualize them within data visualization, and explore their overlaps and differences in light of their historical development. This historical perspective offers a more holistic understanding of how these approaches in science and philosophy have evolved over time, contributing to a deeper comprehension of their integration…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:aesthetics">#aesthetics</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:communication">#communication</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:emotion">#emotion</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:rhetoric">#rhetoric</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:theory">#theory</a></p>
-<p><strong><a href="https://doi.org/10.1109/tvcg.2025.3628181">https://doi.org/10.1109/tvcg.2025.3628181</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/prantl2026untangling.webp" length="58916" type="image/webp"/>
-  <dc:creator>Verena Prantl, Torsten Möller, Laura Koesten</dc:creator>
-  <category>aesthetics</category><category>communication</category><category>emotion</category><category>rhetoric</category><category>theory</category>
-</item>
-
-<item>
-  <title>Data Comics: For visual storytelling</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:bach2020data</link>
-  <pubDate>Fri, 13 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:bach2020data</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:bach2020data"><img src="https://infovis.fh-potsdam.de/atlas/images/bach2020data.webp" alt="Data Comics: For visual storytelling"/></a></p>
-<p>Benjamin Bach, Zezhong Wang, Nathalie Henry Riche, Matteo Farinella, Dave Murray-Rust, Sheelagh Carpendale, Hanspeter Pfister</p>
-<p>2020</p>
-<blockquote>Data comics are a way of effectively communicating with data through data visualizations. They are inspired by the visual language of comics. This website lists examples we found online and those created during our research. We hope this website and our examples support a wider discussion and inspire journalists, artists, data scientists, and others to create their own data comics and help exploring and discovering this novel medium.</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:comics">#comics</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:data">#data</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:illustration">#illustration</a></p>
-<p><strong><a href="https://datacomics.github.io">https://datacomics.github.io</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/bach2020data.webp" length="13784" type="image/webp"/>
-  <dc:creator>Benjamin Bach, Zezhong Wang, Nathalie Henry Riche, Matteo Farinella, Dave Murray-Rust, Sheelagh Carpendale, Hanspeter Pfister</dc:creator>
-  <category>comics</category><category>data</category><category>illustration</category>
-</item>
-
-<item>
-  <title>From Exploration to Critique: Catalyzing Critical Inquiry with Cultural Collection Visualizations</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:windhager2025from</link>
-  <pubDate>Mon, 09 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:windhager2025from</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:windhager2025from"><img src="https://infovis.fh-potsdam.de/atlas/images/windhager2025from.webp" alt="From Exploration to Critique: Catalyzing Critical Inquiry with Cultural Collection Visualizations"/></a></p>
-<p>Florian Windhager, Eva Mayr, Katrin Glinka</p>
-<p>IEEE Computer Graphics and Applications, 45(4), 45–59, 2025</p>
-<blockquote>This article examines whether visualizations in cultural heritage fields can move beyond their traditional roles of exploration and analysis to facilitate higher order cognitive processes central to the practice of “critique.” Drawing on arts and humanities perspectives, we define critical cognition as a mode of inquiry that explores and evaluates the potentiality of cultural objects and topics—and interrogates the associated representation and research systems that shape them—against the background of their actual state. We propose a framework for thinking about the critical potential of visualization systems and outline design strategies that enhance critical cognition and encourage responsive action. To that…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:cognition">#cognition</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:collections">#collections</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:culture">#culture</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:exploration">#exploration</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:humanities">#humanities</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:theory">#theory</a></p>
-<p><strong><a href="https://doi.org/10.1109/mcg.2025.3559769">https://doi.org/10.1109/mcg.2025.3559769</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/windhager2025from.webp" length="37378" type="image/webp"/>
-  <dc:creator>Florian Windhager, Eva Mayr, Katrin Glinka</dc:creator>
-  <category>cognition</category><category>collections</category><category>culture</category><category>design</category><category>exploration</category><category>humanities</category><category>theory</category>
-</item>
-
-<item>
-  <title>V-FRAMER: Visualization Framework for Mitigating Reasoning Errors in Public Policy</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:ge2024v-framer</link>
-  <pubDate>Thu, 05 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:ge2024v-framer</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:ge2024v-framer"><img src="https://infovis.fh-potsdam.de/atlas/images/ge2024v-framer.webp" alt="V-FRAMER: Visualization Framework for Mitigating Reasoning Errors in Public Policy"/></a></p>
-<p>Lily W. Ge, Matthew Easterday, Matthew Kay, Evanthia Dimara, Peter Cheng, Steven L Franconeri</p>
-<p>Proceedings of the CHI Conference on Human Factors in Computing Systems, 1–15, ACM, 2024</p>
-<blockquote>Existing data visualization design guidelines focus primarily on constructing grammatically-correct visualizations that faithfully convey the values and relationships in the underlying data. However, a designer may create a grammatically-correct visualization that still leaves audiences susceptible to reasoning misleaders, e.g. by failing to normalize data or using unrepresentative samples. Reasoning misleaders are especially pernicious when presenting public policy data, where data-driven decisions can affect public health, safety, and economic development. Through textual analysis, a formative evaluation, and iterative design with 19 policy communicators, we construct an actionable visualization design framework, V-FRAMER, that effectively synthesizes ways of mitigating reasoning misleaders. We discuss…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:framing">#framing</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:interpretation">#interpretation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:persuasion">#persuasion</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:politics">#politics</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:rhetoric">#rhetoric</a></p>
-<p><strong><a href="https://osf.io/q3uta/">https://osf.io/q3uta/</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/ge2024v-framer.webp" length="63986" type="image/webp"/>
-  <dc:creator>Lily W. Ge, Matthew Easterday, Matthew Kay, Evanthia Dimara, Peter Cheng, Steven L Franconeri</dc:creator>
-  <category>framing</category><category>interpretation</category><category>persuasion</category><category>politics</category><category>rhetoric</category>
-</item>
-
-<item>
-  <title>Situating Datasets: Making Public Eviction Data Actionable for Housing Justice</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:tran2024situating</link>
-  <pubDate>Tue, 03 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:tran2024situating</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:tran2024situating"><img src="https://infovis.fh-potsdam.de/atlas/images/tran2024situating.webp" alt="Situating Datasets: Making Public Eviction Data Actionable for Housing Justice"/></a></p>
-<p>Anh-Ton Tran, Grace Guo, Jordan Taylor, Katsuki Andrew Chan, Elora Lee Raymond, Carl Disalvo</p>
-<p>Proceedings of the CHI Conference on Human Factors in Computing Systems, 1–16, ACM, 2024</p>
-<blockquote>Activists, governments, and academics regularly advocate for more open data. But how is data made open, and for whom is it made useful and usable? In this paper, we investigate and describe the work of making eviction data open to tenant organizers. We do this through an ethnographic description of ongoing work with a local housing activist organization. This work combines observation, direct participation in data work, and creating media artifacts, specifically digital maps. Our interpretation is grounded in D’Ignazio and Klein’s Data Feminism, emphasizing standpoint theory. Through our analysis and discussion, we highlight how shifting positionalities from data intermediaries…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:advocacy">#advocacy</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:context">#context</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:data">#data</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:feminism">#feminism</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:housing">#housing</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:justice">#justice</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:mapping">#mapping</a></p>
-<p><strong><a href="https://doi.org/10.1145/3613904.3642452">https://doi.org/10.1145/3613904.3642452</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/tran2024situating.webp" length="39518" type="image/webp"/>
-  <dc:creator>Anh-Ton Tran, Grace Guo, Jordan Taylor, Katsuki Andrew Chan, Elora Lee Raymond, Carl Disalvo</dc:creator>
-  <category>advocacy</category><category>context</category><category>data</category><category>feminism</category><category>housing</category><category>justice</category><category>mapping</category>
-</item>
-
-<item>
-  <title>Chemicals in the Creek: designing a situated data physicalization of open government data with the community</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:perovich2020chemicals</link>
-  <pubDate>Tue, 03 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:perovich2020chemicals</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:perovich2020chemicals"><img src="https://infovis.fh-potsdam.de/atlas/images/perovich2020chemicals.webp" alt="Chemicals in the Creek: designing a situated data physicalization of open government data with the community"/></a></p>
-<p>Laura J Perovich, Sara Ann Wylie, Roseann Bongiovanni</p>
-<p>IEEE Transactions on Visualization and Computer Graphics, 27(2), 913–923, 2020</p>
-<blockquote>Over the last decade growing amounts of government data have been made available in an attempt to increase transparency and civic participation, but it is unclear if this data serves non-expert communities due to gaps in access and the technical knowledge needed to interpret this “open” data. We conducted a two-year design study focused on the creation of a community-based data display using the United States Environmental Protection Agency data on water permit violations by oil storage facilities on the Chelsea Creek in Massachusetts to explore whether situated data physicalization and Participatory Action Research could support meaningful engagement with open…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:advocacy">#advocacy</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:community">#community</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:context">#context</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:environment">#environment</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:methods">#methods</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:participation">#participation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:physicalization">#physicalization</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:water">#water</a></p>
-<p><strong><a href="https://doi.org/10.1109/tvcg.2020.3030472">https://doi.org/10.1109/tvcg.2020.3030472</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/perovich2020chemicals.webp" length="61124" type="image/webp"/>
-  <dc:creator>Laura J Perovich, Sara Ann Wylie, Roseann Bongiovanni</dc:creator>
-  <category>advocacy</category><category>community</category><category>context</category><category>environment</category><category>methods</category><category>participation</category><category>physicalization</category><category>water</category>
-</item>
-
-<item>
-  <title>What the Street!?</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:szell2017what</link>
-  <pubDate>Mon, 02 Mar 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:szell2017what</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:szell2017what"><img src="https://infovis.fh-potsdam.de/atlas/images/szell2017what.webp" alt="What the Street!?"/></a></p>
-<p>Michael Szell, Stephan Bogner, Benedikt Groß, Thibault Durand, Tobias Lauer, others</p>
-<p>moovel lab, 2017</p>
-<blockquote>What the Street!? was derived out of the question “How do new and old mobility concepts change our cities?”. It was raised by Michael Szell and Stephan Bogner during their residency at moovel lab in 2016. With support of the lab team they set out to wrangle data of cities around the world to develop and design this unique mobility space report.</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:cities">#cities</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:mapping">#mapping</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:mobility">#mobility</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:participation">#participation</a></p>
-<p><strong><a href="https://whatthestreet.com">https://whatthestreet.com</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/szell2017what.webp" length="30970" type="image/webp"/>
-  <dc:creator>Michael Szell, Stephan Bogner, Benedikt Groß, Thibault Durand, Tobias Lauer, others</dc:creator>
-  <category>cities</category><category>mapping</category><category>mobility</category><category>participation</category>
-</item>
-
-<item>
-  <title>From Invisible to Visible: Impacts of Metadata in Communicative Data Visualization</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:burns2024from</link>
-  <pubDate>Fri, 27 Feb 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:burns2024from</guid>
-  <description><![CDATA[<p>Alyxander Burns, Christiana Lee, Thai On, Cindy Xiong, Evan Peck, Narges Mahyar</p>
-<p>IEEE Transactions on Visualization and Computer Graphics, 30(7), 3427–3443, 2024</p>
-<blockquote>Leaving the context of visualizations invisible can have negative impacts on understanding and transparency. While common wisdom suggests that recontextualizing visualizations with metadata (e.g., disclosing the data source or instructions for decoding the visualizations’ encoding) may counter these effects, the impact remains largely unknown. To fill this gap, we conducted two experiments. In Experiment 1, we explored how chart type, topic, and user goal impacted which categories of metadata participants deemed most relevant. We presented 64 participants with four real-world visualizations. For each visualization, participants were given four goals and selected the type of metadata they most wanted from a…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:context">#context</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:data">#data</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:provenance">#provenance</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:trust">#trust</a></p>
-<p><strong><a href="https://doi.org/10.1109/tvcg.2022.3231716">https://doi.org/10.1109/tvcg.2022.3231716</a></strong></p>]]></description>
-  <dc:creator>Alyxander Burns, Christiana Lee, Thai On, Cindy Xiong, Evan Peck, Narges Mahyar</dc:creator>
-  <category>context</category><category>data</category><category>provenance</category><category>trust</category>
-</item>
-
-<item>
-  <title>How Do We Measure Trust in Visual Data Communication?</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:elhamdadi2022measure</link>
-  <pubDate>Fri, 27 Feb 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:elhamdadi2022measure</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:elhamdadi2022measure"><img src="https://infovis.fh-potsdam.de/atlas/images/elhamdadi2022measure.webp" alt="How Do We Measure Trust in Visual Data Communication?"/></a></p>
-<p>Hamza Elhamdadi, Aimen Gaba, Yea-Seul Kim, Cindy Xiong</p>
-<p>2022 IEEE Evaluation and Beyond - Methodological Approaches for Visualization (BELIV), 85–92, IEEE, 2022</p>
-<blockquote>Trust is fundamental to effective visual data communication between the visualization designer and the reader. Although personal experience and preference influence readers’ trust in visualizations, visualization designers can leverage design techniques to create visualizations that evoke a "calibrated trust," at which readers arrive after critically evaluating the information presented. To systematically understand what drives readers to engage in "calibrated trust," we must first equip ourselves with reliable and valid methods for measuring trust. Computer science and data visualization researchers have not yet reached a consensus on a trust definition or metric, which are essential to building a comprehensive trust model…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:communication">#communication</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:data">#data</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:methods">#methods</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:trust">#trust</a></p>
-<p><strong><a href="https://doi.org/10.1109/beliv57783.2022.00014">https://doi.org/10.1109/beliv57783.2022.00014</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/elhamdadi2022measure.webp" length="20444" type="image/webp"/>
-  <dc:creator>Hamza Elhamdadi, Aimen Gaba, Yea-Seul Kim, Cindy Xiong</dc:creator>
-  <category>communication</category><category>data</category><category>methods</category><category>trust</category>
-</item>
-
-<item>
-  <title>AnnoGram: An Annotative Grammar of Graphics Extension</title>
-  <link>https://infovis.fh-potsdam.de/atlas/#i:rahman2025annogram</link>
-  <pubDate>Thu, 26 Feb 2026 00:00:00 GMT</pubDate>
-  <guid isPermaLink="true">https://infovis.fh-potsdam.de/atlas/#i:rahman2025annogram</guid>
-  <description><![CDATA[<p><a href="https://infovis.fh-potsdam.de/atlas/#i:rahman2025annogram"><img src="https://infovis.fh-potsdam.de/atlas/images/rahman2025annogram.webp" alt="AnnoGram: An Annotative Grammar of Graphics Extension"/></a></p>
-<p>Md Dilshadur Rahman, Md Rahat-Uz-Zaman, Andrew McNutt, Paul Rosen</p>
-<p>2025 IEEE Visualization and Visual Analytics (VIS), 236–240, IEEE, 2025</p>
-<blockquote>Annotations are central to effective data communication, yet most visualization tools treat them as secondary constructs—manually defined, difficult to reuse, and loosely coupled to the underlying visualization grammar. We propose a declarative extension to Wilkinson’s Grammar of Graphics that reifies annotations as first-class design elements, enabling structured specification of annotation targets, types, and positioning strategies. To demonstrate the utility of our approach, we develop a prototype extension called Vega-Lite Annotation. Through comparison with eight existing tools, we show that our approach enhances expressiveness, reduces authoring effort, and enables portable, semantically integrated annotation workflows.</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:annotation">#annotation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:programming">#programming</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:tool">#tool</a></p>
-<p><strong><a href="https://vl-annotation.netlify.app">https://vl-annotation.netlify.app</a></strong></p>]]></description>
-  <enclosure url="https://infovis.fh-potsdam.de/atlas/images/rahman2025annogram.webp" length="71560" type="image/webp"/>
-  <dc:creator>Md Dilshadur Rahman, Md Rahat-Uz-Zaman, Andrew McNutt, Paul Rosen</dc:creator>
-  <category>annotation</category><category>programming</category><category>tool</category>
 </item>
 
 </channel>
