@@ -778,6 +778,10 @@ const MONAD_RING_MIN_BAND = 0.08;   // the band's depth, as a fraction of min(vw
    linked and merely similar keep their relative sizes. Mirrored in the CSS as --monad-ring-boost. */
 const MONAD_RING_IMG_BOOST = 1.6875;
 const MONAD_LINKED_LABEL_SCALE = 0.55; // --monad-h2-scale for linked items on the ring. Raised 30% from 0.42, in step with --monadLabelScale for the merely similar ones, so the two tiers keep their relative sizes.
+/* What a ring item's title occupies under its image, in rem. The h2 is 2rem type with a 0.5em gap above it, so
+   1rem of gap and a line box of about 1.2em = 2.4rem, drawn at the scale above. Its own padding is not counted:
+   the bottom one is room for the knock-out halo and shows nothing. */
+const MONAD_RING_LABEL_REM = 3.4 * MONAD_LINKED_LABEL_SCALE;
 /* Mirrored onto the root so the stylesheet can aim at the same number: hovering a merely similar item promotes its label to exactly the size a linked one carries at rest, and a second copy of the value written into the CSS would drift from this one. */
 document.documentElement.style.setProperty('--monadLabelScaleLinked', String(MONAD_LINKED_LABEL_SCALE));
 
@@ -794,7 +798,13 @@ function __monadRingGeom(vw, vh, imgHalfW) {
     const edge = u * MONAD_RING_EDGE;
     const band = u * MONAD_RING_MIN_BAND;
     const cx = __mainCenterX();
-    const cy = vh / 2;
+    /* Lifted by half a label, rather than the window's own middle. An item on the ring is an image with its title
+       under it, and it is the image's CENTRE that rides the circle: at the top of the band an item reaches half an
+       image above the circle, at the bottom half an image AND a whole label below it. Centred on the window the
+       arrangement therefore sits low — measurably, and the lowest title ran past the bottom edge. Half a label up
+       makes the two ends match: from here to the top of the window is cy, and to the bottom cy + a label, which is
+       exactly the room that label needs. rOut reads cy below as the distance to the nearer edge, which it still is. */
+    const cy = (vh - MONAD_RING_LABEL_REM * _rootRemPx()) / 2;
     // Visible width excludes the desktop tag pane, so the band isn't laid out under it. On the left now, so it is the distance from the centre to the pane's inner edge that is short, not the one to the window's right edge.
     const visLeft = __mapTagOcclusionPx();
     const rOut = Math.max(40, Math.min(Math.min(cx - visLeft, vw - cx), cy) - edge);

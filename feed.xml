@@ -5,7 +5,7 @@
   <link>https://infovis.fh-potsdam.de/atlas/</link>
   <description>An Interactive Atlas of Critical Data Visualization</description>
   <atom:link href="https://infovis.fh-potsdam.de/atlas/feed.xml" rel="self" type="application/rss+xml" />
-  <lastBuildDate>Thu, 01 Oct 2026 10:34:26 GMT</lastBuildDate>
+  <lastBuildDate>Thu, 01 Oct 2026 12:56:20 GMT</lastBuildDate>
   <image>
     <url>https://infovis.fh-potsdam.de/atlas/favicon.png</url>
     <title>Data in Dialogue</title>
@@ -83,11 +83,11 @@
 <p>Miriah Meyer, Jason Dykes</p>
 <p>IEEE transactions on visualization and computer graphics, 26(1), 87–97, 2019</p>
 <blockquote>We develop a new perspective on research conducted through visualization design study that emphasizes design as a method of inquiry and the broad range of knowledge-contributions achieved through it as multiple, subjective, and socially constructed. From this interpretivist position we explore the nature of visualization design study and develop six criteria for rigor. We propose that rigor is established and judged according to the extent to which visualization design study research and its reporting are INFORMED, REFLEXIVE, ABUNDANT, PLAUSIBLE, RESONANT, and TRANSPARENT. This perspective and the criteria were constructed through a four-year engagement with the discourse around rigor and the…</blockquote>
-<p><a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:epistemology">#epistemology</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:interpretation">#interpretation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:methods">#methods</a></p>
+<p><a href="https://infovis.fh-potsdam.de/atlas/#t:design">#design</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:epistemology">#epistemology</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:evaluation">#evaluation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:interpretation">#interpretation</a> <a href="https://infovis.fh-potsdam.de/atlas/#t:methods">#methods</a></p>
 <p><strong><a href="https://arxiv.org/pdf/1907.08495.pdf">https://arxiv.org/pdf/1907.08495.pdf</a></strong></p>]]></description>
   <enclosure url="https://infovis.fh-potsdam.de/atlas/images/meyer2019criteria.webp" length="31016" type="image/webp"/>
   <dc:creator>Miriah Meyer, Jason Dykes</dc:creator>
-  <category>design</category><category>epistemology</category><category>interpretation</category><category>methods</category>
+  <category>design</category><category>epistemology</category><category>evaluation</category><category>interpretation</category><category>methods</category>
 </item>
 
 <item>

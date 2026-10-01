@@ -2,7 +2,7 @@
 
 **An Interactive Atlas of Critical Data Visualization**
 
-<img src="https://infovis.fh-potsdam.de/atlas/src/img/bubbles.svg" width="600" height="200" alt="Three speech bubbles on a gray background, holding a bar chart, a bubble map, and a node-link diagram.">
+<img src="https://infovis.fh-potsdam.de/atlas/src/img/walkthrough.webp" width="600" height="600" alt="Screen recording that switches between the three views, opens the book Data Feminism, and filters the items by the tag art.">
 
 This growing collection gathers projects and publications about data visualization for critique, deliberation, and empowerment.
 
